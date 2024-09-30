@@ -1,0 +1,52 @@
+.section01 {
+    height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.section01 div {
+    width: 43%;
+}
+
+.words-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.button-box {
+    display: flex;
+    align-items: center;
+}
+
+.button {
+    font-size: 0.9rem;
+    width: 130%;
+}
+
+.arrow {
+    position: relative;
+    transform: translate(170%);
+}
+
+.blueColor {
+    color: #0066cc;
+}
+
+.title {
+    font-size: 2.5rem;
+    width: 81%;
+    font-weight: bold;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: #010726;
+    font-weight: bold;
+    width: 60%;
+}
+
+.img01 {
+    width: 42vw;
+}
