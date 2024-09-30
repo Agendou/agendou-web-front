@@ -5,7 +5,7 @@ import arrow from '../../../assets/images/arrow.png'
 
 const Start = () => {
     return (
-        <section className={style["section01"]}>
+        <section className={style["section"]}>
             <div className={style["words-box"]}>
                 <h1 className={style["title"]}><span className={style["blueColor"]}>Otimize</span> seu tempo, maximize o seu <span className={style["blueColor"]}>potencial</span>.</h1>
                 <p className={style["subtitle"]}>Agilize seus agendamentos, organize seu comércio e conquiste mais clientes com a simplicidade que você sempre quis.</p>

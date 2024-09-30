@@ -1,11 +1,11 @@
-.section01 {
+.section {
     height: 90vh;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.section01 div {
+.section div {
     width: 43%;
 }
 
@@ -23,6 +23,7 @@
 .button {
     font-size: 0.9rem;
     width: 130%;
+    box-shadow: 4px 8px 4px rgba(0, 0, 0, 0.25);;
 }
 
 .arrow {
