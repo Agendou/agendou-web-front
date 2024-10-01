@@ -4,7 +4,7 @@ import arrow from "../../../assets/images/arrow.png"
 
 const Use = () => {
   return (
-    <div className={styles.container}>
+    <div id="use" className={styles.container}>
       <h2 className={styles.title}>Como Utilizar</h2>
       <p className={styles.subtitle}>Em 4 passos</p>
 

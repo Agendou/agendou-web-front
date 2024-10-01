@@ -12,10 +12,9 @@ const Header = () => {
         <nav className={style["navigation"]}>
           <ul>
             <li><a href="#inicio">INÍCIO</a></li>
-            <li><a href="#sobre-nos">SOBRE NÓS</a></li>
-            <li><a href="#beneficios">BENEFÍCIOS</a></li>
-            <li><a href="#contato">CONTATE-NOS</a></li>
-            <li><a href="#como-utilizar">COMO UTILIZAR</a></li>
+            <li><a href="#about-us">SOBRE NÓS</a></li>
+            <li><a href="#benefits">BENEFÍCIOS</a></li>
+            <li><a href="#use">COMO UTILIZAR</a></li>
           </ul>
         </nav>
         <div className={style["auth-buttons"]}>

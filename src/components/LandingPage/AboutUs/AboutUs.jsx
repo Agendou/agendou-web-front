@@ -4,7 +4,7 @@ import img from "../../../assets/images/image 2.png"
 
 const AboutUs = () => {
     return (
-        <section className={style["section"]}>
+        <section id="about-us" className={style["section"]}>
             <div className={style["left-container"]}>
                 <div className={style["left-title-box"]}>
                     <h1>SOBRE NÓS</h1>

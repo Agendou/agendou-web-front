@@ -6,7 +6,7 @@ import dashboard from "../../../assets/images/dashboard.png"
 
 const Benefits = () => {
     return (
-        <section>
+        <section id="benefits">
             <div className={styles["title-container"]}>
                 <h1>BENEFÍCIOS</h1>
                 <h2>Nossos impactos no seu negócio!</h2>
