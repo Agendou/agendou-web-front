@@ -4,6 +4,7 @@ import Start from "../../components/LandingPage/Start/Start";
 import AboutUs from "../../components/LandingPage/AboutUs/AboutUs";
 import Benefits from "../../components/LandingPage/Benefits/Benefits"
 import Use from "../../components/LandingPage/Use/Use";
+import Footer from "../../components/Footer/Footer";
 
 const Home = () => {
   return (
@@ -13,6 +14,7 @@ const Home = () => {
       <AboutUs/>
       <Benefits/>
       <Use/>
+      <Footer/>
     </>
   );
 };
