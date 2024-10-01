@@ -11,7 +11,7 @@ const AboutUs = () => {
                     <h2 className={style["left-subtitle"]}>Solução Inteligente</h2>
                 </div>
                 <div>
-                    <img src={img} alt="" />
+                    <img src={img} alt="Mulher apontando para um calendário" />
                 </div>
             </div>
             <div className={style["right-container"]}>

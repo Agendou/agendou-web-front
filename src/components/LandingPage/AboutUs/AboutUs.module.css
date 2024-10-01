@@ -1,5 +1,5 @@
 .section {
-    height: 100vh;
+    height: 118vh;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
@@ -38,7 +38,7 @@
     flex-direction: column;
     gap: 3rem;
     position: relative;
-    transform: translate(0%, 21%);
+    transform: translate(1%, 21%);
 }
 
 .button {
