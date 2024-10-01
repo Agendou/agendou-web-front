@@ -11,13 +11,14 @@ section {
 
 .container {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-around;
     padding: 2rem;
     margin-top: 5%;
+    width: 100%;
   }
   
   .card {
-    background-color: #0B1E3D;
+    background-color: #010726;
     color: #fff;
     text-align: center;
     border-radius: 20px;
@@ -42,13 +43,13 @@ section {
     margin-bottom: 1rem;
   }
   
-  p {
+  .paragraph {
     font-size: 1rem;
     margin-bottom: 1.5rem;
   }
   
   .button {
-    background-color: #007BFF;
+    background-color: #04588C;
     color: #fff;
     border: none;
     padding: 0.75rem 1.5rem;
@@ -59,6 +60,6 @@ section {
   }
   
   .button:hover {
-    background-color: #0056b3;
+    background-color: #04588ca8;
   }
   
