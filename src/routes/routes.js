@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginRegister from "../pages/LoginRegister/LoginRegister";
+import Home from "../pages/Home/Home";
 
 function Rotas() {
     return (
@@ -8,7 +9,7 @@ function Rotas() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/login-register" element={<LoginRegister />} />
-                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/home" element={<Home />} />
 
                 </Routes>
             </BrowserRouter>

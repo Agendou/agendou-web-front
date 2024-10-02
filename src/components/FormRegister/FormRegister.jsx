@@ -78,3 +78,5 @@ const FormRegister = () => {
         </div>
     )
 }
+
+export default FormRegister;
