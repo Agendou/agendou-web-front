@@ -20,11 +20,13 @@ const Use = () => {
         <div>
             <img src={arrow} alt="Seta para direita"/>
         </div>
-        <div className={styles.step}>
-          <div className={styles.circle}>02</div>
-          <div className={styles.text}>
-              <h3>Explore os serviços</h3>
-              <p>Escolha os serviços disponíveis personalizáveis.</p>
+        <div className={styles["backcircle"]}>
+          <div className={styles.step}>
+            <div className={styles.circle}>02</div>
+            <div className={styles.text}>
+                <h3>Explore os serviços</h3>
+                <p>Escolha os serviços disponíveis personalizáveis.</p>
+            </div>
           </div>
         </div>
 
