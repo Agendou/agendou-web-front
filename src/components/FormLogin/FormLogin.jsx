@@ -5,7 +5,7 @@ import logo from '../../assets/images/logoEscuraAgendou.png';
 const FormLogin = () => {
     return (
         <div className="form-container">
-            <img src={logo} alt="Logotipo Agendou" className="Voltar à página inicial" />
+            <img src={logo} alt="Logotipo Agendou" className={styles["logo"]} />
             <h2>Bem vindo!</h2>
             <p>Insira seus dados para continuar</p>
 
