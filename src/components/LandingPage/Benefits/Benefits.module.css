@@ -1,5 +1,6 @@
-section {
-    height: 100vh;
+.section {
+    height: 120vh;
+    margin-top: 100px;
 }
 
 .title-container {
@@ -7,6 +8,16 @@ section {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 0.5rem;
+}
+
+.title-container h1 {
+  font-size: 2rem;
+}
+
+.title-container h2 {
+  font-size: 1.5rem;
+  font-weight: 300;
 }
 
 .container {
@@ -46,6 +57,10 @@ section {
   .paragraph {
     font-size: 1rem;
     margin-bottom: 1.5rem;
+  }
+
+  .paragraph span {
+    font-weight: bold;
   }
   
   .button {

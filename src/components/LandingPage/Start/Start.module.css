@@ -1,34 +1,41 @@
 .section {
-    height: 90vh;
+    height: 95vh;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .section div {
-    width: 43%;
+    width: 50%;
 }
 
 .words-box {
     display: flex;
     flex-direction: column;
     gap: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
 }
 
 .button-box {
     display: flex;
     align-items: center;
+    transform: translate(-10%);
+    gap: 1rem;
 }
 
 .button {
-    font-size: 0.9rem;
-    width: 130%;
-    box-shadow: 4px 8px 4px rgba(0, 0, 0, 0.25);;
+    font-size: 0.75rem;
+    width: 70%;
+    box-shadow: 4px 8px 4px rgba(0, 0, 0, 0.25);
+    height: 60px;
 }
 
 .arrow {
     position: relative;
-    transform: translate(170%);
+    width: 41px;
+    height: 33px;
 }
 
 .blueColor {
@@ -36,18 +43,18 @@
 }
 
 .title {
-    font-size: 2.5rem;
-    width: 81%;
+    font-size: 2rem;
+    width: 60%;
     font-weight: bold;
 }
 
 .subtitle {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #010726;
     font-weight: bold;
     width: 60%;
 }
 
 .img01 {
-    width: 42vw;
+    width: 41vw;
 }

@@ -11,21 +11,21 @@ const AboutUs = () => {
                     <h2 className={style["left-subtitle"]}>Solução Inteligente</h2>
                 </div>
                 <div>
-                    <img src={img} alt="Mulher apontando para um calendário" />
+                    <img className={style["img"]} src={img} alt="Mulher apontando para um calendário" />
                 </div>
             </div>
             <div className={style["right-container"]}>
                 <div className={style["words-container"]}>
                     <div className={style["right-title-box"]}>
                         <h1>AGENDOU É SIMPLES!</h1>
-                        <h2>O Software que trabalha com você!</h2>
+                        <h2>O Software trabalha com você!</h2>
                     </div>
                     <div className={style["paragraph-box"]}>
                         <p>É a solução definitiva para empresas e equipes que buscam praticidade na organização do dia a dia. </p>
                         <p>O AGENDOU foi criado para trazer eficiência e tranquilidade para sua empresa, com um agendamento simplificado para o seu negócio!</p>
                     </div>
                     <div className={style["button-container"]}>
-                        <a href="#"><button className={`btn ${style.button}`}>SAIBA MAIS</button></a>
+                        <button className={`btn ${style.button}`}>SAIBA MAIS</button>
                     </div>
                 </div>
             </div>

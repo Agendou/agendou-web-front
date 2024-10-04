@@ -32,11 +32,22 @@
   flex: 1;
   text-align: center;
 }
+
+.backcircle {
+  background-color: #0d0d0d5e;
+  border-radius: 50%;
+  width: 10%;
+  height: 40%;
+  display: flex;
+  position: relative;
+  justify-content: center;
+}
+
 .circle {
   border-radius: 50%;
   background-color: #010726;
   color: #FFF;
-  font-size: 2.4rem;
+  font-size: 2rem;
   font-weight: bold;
   display: flex;
   justify-content: center;
