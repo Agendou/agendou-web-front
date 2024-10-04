@@ -10,6 +10,7 @@ function Rotas() {
                 <Routes>
                     <Route path="/login-register" element={<LoginRegister />} />
                     <Route path="/home" element={<Home />} />
+                    <Route path="/" element={<Home />} />
 
                 </Routes>
             </BrowserRouter>

@@ -12,13 +12,30 @@ const LoginRegister = () => {
     };
 
     return (
-        <div className={`container ${isLogin ? 'login-mode' : 'register-mode'}`}>
-            <div className="forms">
-                {isLogin ? <FormLogin /> : <FormRegister />}
-            </div>
-            <AuthPanel isLogin={isLogin} switchForm={switchForm} />
+        <div className={styles["container"]}>
+            {isLogin ? (
+                <>
+                    <div className={styles["leftPanel"]}>
+                        <FormLogin />
+                    </div>
+                    <div className={styles["rightPanel"]}>
+                        <AuthPanel isLogin={isLogin} switchForm={switchForm} />
+                    </div>
+                </>
+            ) : (
+                <>
+                    <div className={styles["leftPanel"]}>
+                        <AuthPanel isLogin={isLogin} switchForm={switchForm} />
+                    </div>
+                    <div className={styles["rightPanel"]}>
+                        <FormRegister />
+                    </div>
+                </>
+            )}
         </div>
     );
 };
 
 export default LoginRegister;
+
+

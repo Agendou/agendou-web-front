@@ -1,21 +1,26 @@
 import React from "react";
+import styles from './AuthPanel.module.css';
 
 const AuthPanel = ({ isLogin, switchForm }) => {
     return (
-        <div className="auth-panel">
-            {isLogin ? (
-                <div>
-                    <h2>Cadastro</h2>
-                    <p>Junte-se e comece a gerenciar seus agendamentos!</p>
-                    <button onClick={switchForm}>Cadastre-se</button>
-                </div>
-            ) : (
-                <div>
-                    <h2>Já tem uma conta?</h2>
-                    <p>Acesse sua conta para continuar!</p>
-                    <button onClick={switchForm}>Entrar</button>
-                </div>
-            )}
+        <div className={styles["container"]}>
+            <div className={styles["leftPanel"]}>
+                {isLogin ? (
+                    <>
+                        <h2>Cadastro</h2>
+                        <p>Junte-se a nós e comece a otimizar o seu tempo!</p>
+                        <p>Ao se cadastrar, você está acesso a uma plataforma fácil e intuitiva, onde poderá agendar seus serviços de forma rápida e prática.</p>
+                        <p>Aproveite todos os benefícios de gerenciar seus compromissos em um só lugar!</p>
+                        <button onClick={switchForm} className={styles["button"]}>Cadastre-se</button>
+                    </>
+                ) : (
+                    <>
+                        <h2>Já tem conta?</h2>
+                        <p>Acesse sua conta e continue gerenciando seus agendamentos com facilidade. Mantenha seu tempo otimizado e seus compromissos sempre organizados!</p>
+                        <button onClick={switchForm} className={styles["button"]}>Entrar</button>
+                    </>
+                )}
+            </div>
         </div>
     );
 };

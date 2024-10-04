@@ -5,56 +5,58 @@ import logo from '../../assets/images/logoEscuraAgendou.png';
 const FormRegister = () => {
     return (
         <div className="form-container">
-            <img src={logo} alt="Logotipo Agendou" className="Voltar à página inicial" />
+            <img src={logo} alt="Logotipo Agendou" className={styles["logo"]} />
             <h2>Cadastre-se</h2>
             <p>Saiba como podemos revolucionar o seu negócio!</p>
 
-            <div className={styles["inputContainer"]}>
-                <label htmlFor="cnpj" className={styles["label"]}></label>
-                <input
-                    id="cnpj"
-                    type="text"
-                    className={styles["input"]}
-                    placeholder="Insira seu CNPJ"
-                />
+            <div className={styles["small-inputs-container"]}>
+                <div className={`${styles["inputContainer"]} ${styles["input-small"]}`}>
+                    <label htmlFor="cnpj" className={styles["label"]}>CNPJ</label>
+                    <input
+                        id="cnpj"
+                        type="text"
+                        className={styles["input"]}
+                        placeholder="Insira seu CNPJ"
+                    />
+                </div>
+
+                <div className={`${styles["inputContainer"]} ${styles["input-small"]}`}>
+                    <label htmlFor="telefone" className={styles["label"]}>Telefone</label>
+                    <input
+                        id="telefone"
+                        type="text"
+                        className={styles["input"]}
+                        placeholder="Insira seu telefone"
+                    />
+                </div>
             </div>
 
             <div className={styles["inputContainer"]}>
-                <label htmlFor="telefone" className={styles["label"]}></label>
-                <input
-                    id="telefone"
-                    type="text"
-                    className={styles["input"]}
-                    placeholder="Insira seu telefone"
-                />
-            </div>
-
-            <div className={styles["inputContainer"]}>
-                <label htmlFor="nomeEmpresa" className={styles["label"]}></label>
+                <label htmlFor="nomeEmpresa" className={styles["label"]}>Nome Empresa</label>
                 <input
                     id="nomeEmpresa"
                     type="text"
-                    className={styles["input"]}
+                    className={`${styles["input"]} ${styles["input-large"]}`}
                     placeholder="Insira o nome da sua empresa"
                 />
             </div>
 
             <div className={styles["inputContainer"]}>
-                <label htmlFor="email" className={styles["label"]}></label>
+                <label htmlFor="email" className={styles["label"]}>Email</label>
                 <input
                     id="email"
                     type="text"
-                    className={styles["input"]}
+                    className={`${styles["input"]} ${styles["input-large"]}`}
                     placeholder="Insira seu email"
                 />
             </div>
 
             <div className={styles["inputContainer"]}>
-                <label htmlFor="senha" className={styles["label"]}></label>
+                <label htmlFor="senha" className={styles["label"]}>Senha</label>
                 <input
                     id="senha"
                     type="password"
-                    className={styles["input"]}
+                    className={`${styles["input"]} ${styles["input-large"]}`}
                     placeholder="Insira sua senha"
                 />
             </div>

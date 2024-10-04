@@ -10,7 +10,7 @@ const FormLogin = () => {
             <p>Insira seus dados para continuar</p>
 
             <div className={styles["inputContainer"]}>
-                <label htmlFor="email" className={styles["label"]}></label>
+                <label htmlFor="email" className={styles["label"]}>Email</label>
                 <input
                     id="email"
                     type="email"
@@ -20,7 +20,7 @@ const FormLogin = () => {
             </div>
 
             <div className={styles["inputContainer"]}>
-                <label htmlFor="senha" className={styles["label"]}></label>
+                <label htmlFor="senha" className={styles["label"]}>Senha</label>
                 <input
                     id="senha"
                     type="password"
