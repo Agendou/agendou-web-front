@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "./Use.module.css";
-import arrow from "../../../assets/images/arrow.png"
 
 const Use = () => {
   return (
@@ -18,7 +17,6 @@ const Use = () => {
         </div>
 
         <div>
-            <img src={arrow} alt="Seta para direita"/>
         </div>
         <div className={styles["backcircle"]}>
           <div className={styles.step}>
@@ -31,7 +29,6 @@ const Use = () => {
         </div>
 
         <div>
-            <img src={arrow} alt="Seta para direita"/>
         </div>
         <div className={styles.step}>
           <div className={styles.circle}>03</div>
@@ -42,7 +39,6 @@ const Use = () => {
         </div>
 
         <div>
-            <img src={arrow} alt="Seta para direita"/>
         </div>
         <div className={styles.step}>
           <div className={styles.circle}>04</div>

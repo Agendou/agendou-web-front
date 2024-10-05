@@ -1,27 +1,28 @@
 import React from "react";
-import style from "./Header.module.css"
-import '../../styles/buttons.css'
+import styles from "./Header.module.css"
 import logo from "../../assets/images/LightLogo.png"
 
 const Header = () => {
     return (
-      <header className={style["header"]}>
-        <div className={style["logo"]}>
-          <img src={logo} alt="Agendou com um relógio no lugar do O" />
+      <header className={styles.header}>
+      <div className={styles.logo}>
+        <img src={logo} alt="Agendou Logo" />
+      </div>
+      <nav>
+        <ul className={styles.navList}>
+          <div>
+            <li><a href="#solucao" className={styles.navText}>Nossa solução</a></li>
+            <li><a href="#recursos" className={styles.navText}>Recursos</a></li>
+            <li><a href="#vantagens" className={styles.navText}>Vantagens</a></li>
+            <li><a href="#depoimentos" className={styles.navText}>Depoimentos</a></li>
         </div>
-        <nav className={style["navigation"]}>
-          <ul>
-            <li><a href="#inicio">INÍCIO</a></li>
-            <li><a href="#about-us">SOBRE NÓS</a></li>
-            <li><a href="#benefits">BENEFÍCIOS</a></li>
-            <li><a href="#use">COMO UTILIZAR</a></li>
-          </ul>
-        </nav>
-        <div className={style["auth-buttons"]}>
-          <a href="#"><button className={`btn transparentBtn ${style.login}`}>ENTRAR</button></a>
-          <a href="#"><button className={`btn blueBtn ${style.register}`}>REGISTRAR-SE</button></a>
-        </div>
-      </header>
+          <div>
+            <li><a href="#experimente" className={styles.experimente}>EXPERIMENTE</a></li>
+            <li><a href="#login" className={styles.login}>LOGIN</a></li>
+          </div>
+        </ul>
+      </nav>
+    </header>
     );
   };
   

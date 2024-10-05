@@ -1,6 +1,5 @@
 import React from "react";
 import style from "./AboutUs.module.css"
-import img from "../../../assets/images/image 2.png"
 
 const AboutUs = () => {
     return (
@@ -11,7 +10,6 @@ const AboutUs = () => {
                     <h2 className={style["left-subtitle"]}>Solução Inteligente</h2>
                 </div>
                 <div>
-                    <img className={style["img"]} src={img} alt="Mulher apontando para um calendário" />
                 </div>
             </div>
             <div className={style["right-container"]}>
