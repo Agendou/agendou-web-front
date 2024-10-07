@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./Solution.module.css";
+import styles from "./WhoCanUse.module.css";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
