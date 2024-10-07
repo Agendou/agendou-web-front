@@ -6,7 +6,7 @@ const Start = () => {
     return (
         <section className={styles.section}>
           <div className={styles.text}>
-              <h1>Cansado de perder tempo com agendamentos? Nós temos a solução!</h1>
+              <h1>Cansado de perder tempo com agendamentos? Nós te ajudamos</h1>
               <h2>A Agendou transforma a gestão de agendamentos do seu salão em uma tarefa simples e rápida.</h2>
           </div>
         </section>
