@@ -7,10 +7,7 @@ import Menu from '@mui/material/Menu';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import logoImg from '../../assets/images/LightLogo.png';
-import styles from './Header.module.css';
 
 const pages = ['Quem pode usar', 'Recursos', 'Sobre nós'];
 
@@ -37,9 +34,9 @@ function ResponsiveAppBar() {
     <AppBar position="fixed" sx={{ backgroundColor: '#010726', fontFamily: 'Poppins, sans-serif' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters sx={{ padding: '0 16px' }}>
-          <img className={styles.logo} src={logoImg} alt="Logo" style={{ height: '60px', marginRight: '8px' }} />
+          <img src={logoImg} alt="Logo" style={{ height: '60px', marginRight: '8px' }} />
           
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none', width: '30%' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none'} }}>
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
