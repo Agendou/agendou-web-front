@@ -16,9 +16,9 @@ const WhoCanUse = () => {
     <Box
       sx={{
         height: {
-          xs: '190vh',
-          sm: '190vh',
-          md: '130vh',
+          xs: 'auto', // Muda para auto para se ajustar ao conteúdo
+          sm: '100vh',
+          md: '100vh',
           lg: '100vh'
         },
         width: '100%',
@@ -27,6 +27,7 @@ const WhoCanUse = () => {
         alignItems: 'center',
         justifyContent: 'center',
         gap: '2rem',
+        padding: '1rem' // Adiciona padding para evitar que o conteúdo fique muito perto da borda
       }}
     >
       <Box sx={{ width: '100%', textAlign: 'center', color: '#010726' }}>
@@ -34,16 +35,17 @@ const WhoCanUse = () => {
           variant="h1"
           sx={{
             fontSize: {
-              xs: '2rem',
+              xs: '2rem',  // Ajuste para uma leitura melhor em telas pequenas
               sm: '2.5rem',
               md: '3rem',
             },
+            marginBottom: '1rem' // Adiciona espaço abaixo do título
           }}
         >
           Quem pode usar?
         </Typography>
       </Box>
-      <Grid container spacing={2} justifyContent="center" width="80%">
+      <Grid container spacing={2} justifyContent="center" width="100%">
         {[
           {
             img: BarberImg,
@@ -61,10 +63,8 @@ const WhoCanUse = () => {
             description: "Organize os agendamentos da sua clínica com eficiência, oferecendo um atendimento impecável para seus clientes enquanto otimiza suas operações."
           }
         ].map((card, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card sx={{ height: {
-              sm: '100%'
-            }, width: '100%', display: 'flex', flexDirection: 'column', padding: '1rem' }}>
+          <Grid item xs={12} sm={6} md={4} key={index} sx={{ display: (index === 2) ? { xs: 'none', md: 'block' } : 'block' }}>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '1rem' }}>
               <CardActionArea>
                 <CardMedia
                   component="img"
@@ -76,17 +76,17 @@ const WhoCanUse = () => {
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Typography variant="h2" sx={{
                     fontSize: {
-                      xs: '1.5rem',
-                      sm: '1.8rem',
-                      md: '2rem',
-                      lg: '2.2rem', // Aumenta para telas maiores
+                      xs: '1.3rem',  // Ajuste para uma leitura melhor em telas pequenas
+                      sm: '1.5rem',
+                      md: '1.8rem',
+                      lg: '2rem',
                     },
                     color: '#010726',
-                    marginBottom: '1rem',
+                    marginBottom: '0.5rem',
                     }}>
                     {card.title}
                   </Typography>
-                  <Typography variant="body1" sx={{ color: '#333333', fontSize: { xs: '0.9rem', sm: '1rem' } }}>
+                  <Typography variant="body1" sx={{ color: '#333333', fontSize: { xs: '0.8rem', sm: '1rem' } }}>
                     {card.description}
                   </Typography>
                 </CardContent>
