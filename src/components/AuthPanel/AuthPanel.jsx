@@ -3,7 +3,7 @@ import styles from './AuthPanel.module.css';
 
 const AuthPanel = ({ isLogin, switchForm }) => {
     return (
-        <div className={styles["container"]}>
+        <div className={`${styles["container"]} ${isLogin ? styles["loginPanel"] : styles["registerPanel"]}`}>
             <div className={styles["leftPanel"]}>
                 {isLogin ? (
                     <>

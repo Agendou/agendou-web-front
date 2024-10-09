@@ -1,6 +1,7 @@
 /* Logo */
 img {
     width: 160px;
+    padding-bottom: 50px;
 }
 
 body {
@@ -26,14 +27,32 @@ body {
     align-items: center;
     max-width: 1440px;
     width: 100%;
-    margin: 0 auto;
+    margin: 0;
     background-color: #f8f4f8;
-    border-radius: 10px;
+    border-radius: 0;
     overflow: hidden;
 }
 
 ::placeholder {
     color: #010726;
+}
+
+.registerMode .leftPanel {
+    width: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    min-height: 100%;
+    border-bottom-right-radius: 100%;
+    border-top-right-radius: 100%;
+    z-index: 10;
+}
+
+.registerMode .leftPanel h2,
+.registerMode .leftPanel p {
+    color: #f8f4f8;
 }
 
 .leftPanel,
@@ -45,19 +64,6 @@ body {
     transition: opacity 0.9s;
 }
 
-.registerMode .leftPanel {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    min-height: 100%;
-    padding: 100px;
-    border-bottom-right-radius: 100%;
-    border-top-right-radius: 100%;
-    background-color: #04588c;
-    z-index: 10;
-}
 
 /* Responsividade */
 @media (max-width: 768px) {

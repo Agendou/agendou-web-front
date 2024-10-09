@@ -4,7 +4,7 @@ import logo from '../../assets/images/logoEscuraAgendou.png';
 
 const FormRegister = () => {
     return (
-        <div className="form-container">
+        <div className={styles["form-container"]}>
             <img src={logo} alt="Logotipo Agendou" className={styles["logo"]} />
             <h2>Cadastre-se</h2>
             <p>Saiba como podemos revolucionar o seu negócio!</p>

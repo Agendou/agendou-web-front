@@ -1,26 +1,53 @@
 .container {
     display: flex;
-    justify-content: center;
+    margin: 0;
+    justify-content: end;
     align-items: center;
     min-height: 100vh;
     padding: 100px;
+    background-color: #04588c;
+    transition: border-radius 0.5s ease;
+}
+
+.loginPanel {
+    display: flex;
+    justify-content: center;
     border-bottom-left-radius: 100%;
     border-top-left-radius: 100%;
-    background-color: #04588c;
     text-align: right;
 }
 
-.container h2 {
+.loginPanel h2,
+.loginPanel p {
+    text-align: end;
+    color: #f8f4f8;
+}
+
+.registerPanel {
+    display: flex;
+    justify-content: center;
+    border-bottom-right-radius: 100%;
+    border-top-right-radius: 100%;
+    text-align: left;
+
+}
+
+.registerPanel h2,
+.registerPanel p {
+    text-align: left;
+    color: #f8f4f8;
+}
+
+
+h2 {
     font-size: 50px;
     color: #f8f4f8;
     font-weight: bold;
-    text-align: end;
 }
 
-.container p {
+p {
     font-size: 18px;
     color: #f8f4f8;
-    text-align: end;
 }
 
 .button {

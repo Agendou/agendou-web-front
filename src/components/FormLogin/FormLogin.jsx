@@ -4,7 +4,7 @@ import logo from '../../assets/images/logoEscuraAgendou.png';
 
 const FormLogin = () => {
     return (
-        <div className="form-container">
+        <div className={styles["form-container"]}>
             <img src={logo} alt="Logotipo Agendou" className={styles["logo"]} />
             <h2>Bem vindo!</h2>
             <p>Insira seus dados para continuar</p>
@@ -29,16 +29,16 @@ const FormLogin = () => {
                 />
             </div>
 
-            <div className={styles["checkboxContainer"]}>
-                <input
-                    type="checkbox"
-                    className={styles["checkboxInput"]}
-                    id="lembrar"
-                />
-                <label htmlFor="lembrar" className={styles["label"]}>Lembrar</label>
-            </div>
+            <div className={styles["checkboxLinkContainer"]}>
+                <div className={styles["checkboxContainer"]}>
+                    <input
+                        type="checkbox"
+                        className={styles["checkboxInput"]}
+                        id="lembrar"
+                    />
+                    <label htmlFor="lembrar" className={styles["label"]}>Lembrar</label>
+                </div>
 
-            <div className={styles["linkContainer"]}>
                 <a href="#" className={styles["link"]}>Esqueceu sua senha?</a>
             </div>
 
