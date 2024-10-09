@@ -16,10 +16,10 @@ const WhoCanUse = () => {
     <Box
       sx={{
         height: {
-          xs: '180vh',
-          sm: '170vh',
-          md: '100vh',
-          lg: '80vh'
+          xs: '190vh',
+          sm: '190vh',
+          md: '130vh',
+          lg: '100vh'
         },
         width: '100%',
         display: 'flex',
