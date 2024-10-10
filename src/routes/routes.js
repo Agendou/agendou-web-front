@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LoginRegister from "../pages/LoginRegister/LoginRegister";
+import LoginRegisterComerciante from "../pages/LoginRegisterComerciante/LoginRegisterComerciante";
 import Home from "../pages/Home/Home";
 
 function Rotas() {
@@ -8,7 +8,7 @@ function Rotas() {
         <>
             <BrowserRouter>
                 <Routes>
-                    <Route path="/login-register" element={<LoginRegister />} />
+                    <Route path="/login-register" element={<LoginRegisterComerciante />} />
                     <Route path="/home" element={<Home />} />
                     <Route path="/" element={<Home />} />
 

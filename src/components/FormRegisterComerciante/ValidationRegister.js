@@ -1,7 +1,7 @@
 export const validarCnpj = (cnpj) => {
     const cnpjNumerico = cnpj.replace(/\D/g, '');
 
-    if (cnpjNumerico.lentgh !== 14) {
+    if (cnpjNumerico.length !== 14) {
         return false;
     }
 
@@ -11,7 +11,7 @@ export const validarCnpj = (cnpj) => {
 export const validarTelefone = (telefone) => {
     const telefoneNumerico = telefone.replace(/\D/g, '');
 
-    if (telefoneNumerico.lentgh < 10 || telefoneNumerico.lentgh > 11) {
+    if (telefoneNumerico.length < 10 || telefoneNumerico.lentgh > 11) {
         return false;
     }
 

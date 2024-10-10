@@ -11,8 +11,12 @@
     position: relative;
 }
 
+form {
+    width: 100%;
+}
+
 .logo {
-    display: flex;
+    display: block;
 }
 
 .form-container h2,

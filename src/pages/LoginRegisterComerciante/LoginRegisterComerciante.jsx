@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import FormLogin from '../../components/FormLogin/FormLogin';
-import FormRegister from '../../components/FormRegister/FormRegister';
+import FormRegister from '../../components/FormRegisterComerciante/FormRegister';
 import AuthPanel from '../../components/AuthPanel/AuthPanel';
-import styles from './LoginRegister.module.css';
+import styles from './LoginRegisterComerciante.module.css';
 
-const LoginRegister = () => {
+const LoginRegisterComerciante = () => {
     const [isLogin, setIsLogin] = useState(true);
 
     const switchForm = () => {
@@ -36,6 +36,6 @@ const LoginRegister = () => {
     );
 };
 
-export default LoginRegister;
+export default LoginRegisterComerciante;
 
 
