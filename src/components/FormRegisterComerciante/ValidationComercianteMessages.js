@@ -5,9 +5,9 @@ import {
     validarSenha,
     validarCheckboxTermos,
     validarCampoTexto
-} from './ValidationRegister';
+} from './ValidationRegisterComerciante';
 
-export const ValidationRegisterMessages = (formValues) => {
+export const ValidationComercianteMessages = (formValues) => {
     const { cnpj, telefone, nomeEmpresa, representanteLegal, email, senha, aceitarTermos } = formValues;
 
     if (!validarCnpj(cnpj)) {

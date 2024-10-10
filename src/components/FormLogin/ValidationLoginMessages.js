@@ -3,8 +3,7 @@ import {
     validarSenha
 } from './ValidationLogin';
 
-export const ValidationLoginMessages = (formValues) => {
-    const { email, senha } = formValues;
+export const ValidationLoginMessages = (email, senha) => {
 
     if (!validarEmail(email)) {
         return "Por favor insira um email válido.";

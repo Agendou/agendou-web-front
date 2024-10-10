@@ -11,6 +11,10 @@
     position: relative;
 }
 
+form {
+    width: 100%;
+}
+
 
 .logo {
     display: flex;

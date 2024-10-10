@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import styles from './FormRegister.module.css';
+import styles from './FormRegisterCliente.module.css';
 import logo from '../../assets/images/logoEscuraAgendou.png';
-import { ValidationRegisterMessages } from "./ValidationRegisterMessages";
+import { ValidationClienteMessages } from "./ValidationClienteMessages";
 
-const FormRegister = () => {
-    const [cnpj, setCnpj] = useState('');
+const FormRegisterCliente = () => {
+    const [nome, setNome] = useState('');
     const [telefone, setTelefone] = useState('');
-    const [nomeEmpresa, setNomeEmpresa] = useState('');
-    const [representanteLegal, setRepresentanteLegal] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [aceitarTermos, setAceitarTermos] = useState(false);
@@ -15,8 +13,8 @@ const FormRegister = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const formValues = { cnpj, telefone, nomeEmpresa, representanteLegal, email, senha, aceitarTermos };
-        const validationMessages = ValidationRegisterMessages(formValues);
+        const formValues = { nome, telefone, email, senha, aceitarTermos };
+        const validationMessages = ValidationClienteMessages(formValues);
 
         if (validationMessages) {
             alert(validationMessages);
@@ -32,59 +30,31 @@ const FormRegister = () => {
             <h2>Cadastre-se</h2>
             <p>Saiba como podemos revolucionar o seu negócio!</p>
 
-
             <form onSubmit={handleSubmit}>
-                <div className={styles["small-inputs-container"]}>
-                    <div className={`${styles["inputContainer"]} ${styles["input-small"]}`}>
-                        <label htmlFor="cnpj" className={styles["label"]}>CNPJ</label>
-                        <input
-                            value={cnpj}
-                            onChange={(e) => setCnpj(e.target.value)}
-                            required
-                            id="cnpj"
-                            type="text"
-                            className={styles["input"]}
-                            placeholder="Insira seu CNPJ"
-                        />
-                    </div>
-
-                    <div className={`${styles["inputContainer"]} ${styles["input-small"]}`}>
-                        <label htmlFor="telefone" className={styles["label"]}>Telefone</label>
-                        <input
-                            value={telefone}
-                            onChange={(e) => setTelefone(e.target.value)}
-                            required
-                            id="telefone"
-                            type="text"
-                            className={styles["input"]}
-                            placeholder="Insira seu telefone"
-                        />
-                    </div>
-                </div>
 
                 <div className={styles["inputContainer"]}>
-                    <label htmlFor="nomeEmpresa" className={styles["label"]}>Nome Empresa</label>
+                    <label htmlFor="nome" className={styles["label"]}>Nome</label>
                     <input
-                        value={nomeEmpresa}
-                        onChange={(e) => setNomeEmpresa(e.target.value)}
+                        value={nome}
+                        onChange={(e) => setNome(e.target.value)}
                         required
-                        id="nomeEmpresa"
+                        id="nome"
                         type="text"
                         className={`${styles["input"]} ${styles["input-large"]}`}
-                        placeholder="Insira o nome da sua empresa"
+                        placeholder="Insira seu nome"
                     />
                 </div>
 
                 <div className={styles["inputContainer"]}>
-                    <label htmlFor="representanteLegal" className={styles["label"]}>Representante Legal</label>
+                    <label htmlFor="telefone" className={styles["label"]}>Telefone</label>
                     <input
-                        value={representanteLegal}
-                        onChange={(e) => setRepresentanteLegal(e.target.value)}
+                        value={telefone}
+                        onChange={(e) => setTelefone(e.target.value)}
                         required
-                        id="representanteLegal"
+                        id="telefone"
                         type="text"
                         className={`${styles["input"]} ${styles["input-large"]}`}
-                        placeholder="Insira o nome do representante legal"
+                        placeholder="Insira seu telefone"
                     />
                 </div>
 
@@ -140,4 +110,4 @@ const FormRegister = () => {
     );
 };
 
-export default FormRegister;
+export default FormRegisterCliente;

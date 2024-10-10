@@ -21,6 +21,7 @@
 .loginPanel p {
     text-align: end;
     color: #f8f4f8;
+    flex-wrap: nowrap;
 }
 
 .registerPanel {
@@ -51,7 +52,7 @@ p {
 }
 
 .button {
-    width: 40%;
+    width: 60%;
     background-color: #f8f4f8;
     color: #010726;
     font-size: 16px;
