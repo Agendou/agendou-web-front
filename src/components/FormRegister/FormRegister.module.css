@@ -7,7 +7,7 @@
     padding: 2%;
     width: 100%;
     max-width: 400px;
-    margin: 0 auto;
+    margin-bottom: 5%;
     position: relative;
 }
 
@@ -50,7 +50,7 @@ p {
 
 .input {
     background-color: #737373;
-    opacity: 20%;
+    opacity: 43%;
     border: none;
     border-radius: 8px;
     margin-bottom: 10px;

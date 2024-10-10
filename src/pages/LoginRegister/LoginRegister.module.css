@@ -1,7 +1,6 @@
 /* Logo */
 img {
     width: 160px;
-    padding-bottom: 50px;
 }
 
 body {
@@ -12,7 +11,6 @@ body {
     padding: 40px;
     box-sizing: border-box;
     background-color: #010726;
-
 }
 
 .container h2 {
@@ -34,7 +32,7 @@ body {
 }
 
 ::placeholder {
-    color: #010726;
+    color: #000000;
 }
 
 .registerMode .leftPanel {

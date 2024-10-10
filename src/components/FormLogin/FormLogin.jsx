@@ -12,6 +12,7 @@ const FormLogin = () => {
             <div className={styles["inputContainer"]}>
                 <label htmlFor="email" className={styles["label"]}>Email</label>
                 <input
+                    required
                     id="email"
                     type="email"
                     className={styles["input"]}
@@ -22,6 +23,7 @@ const FormLogin = () => {
             <div className={styles["inputContainer"]}>
                 <label htmlFor="senha" className={styles["label"]}>Senha</label>
                 <input
+                    required
                     id="senha"
                     type="password"
                     className={styles["input"]}
