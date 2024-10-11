@@ -1,14 +1,17 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from './FormRegisterCliente.module.css';
 import logo from '../../assets/images/logoEscuraAgendou.png';
 import { ValidationClienteMessages } from "./ValidationClienteMessages";
 
-const FormRegisterCliente = () => {
+const FormRegisterCliente = ({ switchForm }) => {
     const [nome, setNome] = useState('');
     const [telefone, setTelefone] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [aceitarTermos, setAceitarTermos] = useState(false);
+
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -24,9 +27,13 @@ const FormRegisterCliente = () => {
         alert("Cadastrado com sucesso!");
     };
 
+    const handleLogoClick = () => {
+        navigate("/home");
+    }
+
     return (
         <div className={styles["form-container"]}>
-            <img src={logo} alt="Logotipo Agendou" className={styles["logo"]} />
+            <img src={logo} alt="Logotipo Agendou" className={styles["logo"]} onClick={handleLogoClick} />
             <h2>Cadastre-se</h2>
             <p>Saiba como podemos revolucionar o seu negócio!</p>
 
@@ -104,7 +111,7 @@ const FormRegisterCliente = () => {
 
             <div className={styles["linkContainer"]}>
                 <p>Já tem uma conta?</p>
-                <a href="#" className={styles["link"]}>Acesse aqui</a>
+                <a href="#" className={styles["link"]} onClick={switchForm}>Acesse aqui</a>
             </div>
         </div>
     );

@@ -16,7 +16,7 @@ const LoginRegisterComerciante = () => {
             {isLogin ? (
                 <>
                     <div className={styles["leftPanel"]}>
-                        <FormLogin />
+                        <FormLogin switchForm={switchForm} />
                     </div>
                     <div className={styles["rightPanel"]}>
                         <AuthPanel
@@ -52,7 +52,7 @@ const LoginRegisterComerciante = () => {
                         />
                     </div>
                     <div className={styles["rightPanel"]}>
-                        <FormRegister />
+                        <FormRegister switchForm={switchForm} />
                     </div>
                 </>
             )}

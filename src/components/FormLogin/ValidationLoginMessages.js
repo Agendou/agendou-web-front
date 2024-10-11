@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import {
     validarEmail,
     validarSenha
@@ -6,11 +7,11 @@ import {
 export const ValidationLoginMessages = (email, senha) => {
 
     if (!validarEmail(email)) {
-        return "Por favor insira um email válido.";
+        return toast.error("Por favor, insira um e-mail válido.");
     }
 
     if (!validarSenha(senha)) {
-        return "Por favor insira sua senha.a";
+        return toast.error("Por favor, insira uma senha válida.");
     }
 
     return null;

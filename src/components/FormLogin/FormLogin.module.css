@@ -17,6 +17,7 @@ form {
 
 .logo {
     display: block;
+    cursor: pointer;
 }
 
 .form-container h2,

@@ -1,12 +1,16 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from './FormLogin.module.css';
 import logo from '../../assets/images/logoEscuraAgendou.png';
 import { ValidationLoginMessages } from './ValidationLoginMessages';
+import { toast } from "react-toastify";
 
-const FormLogin = () => {
+const FormLogin = ({ switchForm }) => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [lembrar, setLembrar] = useState(false);
+
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -14,16 +18,20 @@ const FormLogin = () => {
         const validationMessages = ValidationLoginMessages(email, senha);
 
         if (validationMessages) {
-            alert(validationMessages);
+            toast.error(validationMessages);
             return;
         }
 
-        alert("Bem-vindo(a) de volta!");
+        return toast.success("Bem vindo(a) de volta!");
+    };
+
+    const handleLogoClick = () => {
+        navigate("/home");
     };
 
     return (
         <div className={styles["form-container"]}>
-            <img src={logo} alt="Logotipo Agendou" className={styles["logo"]} />
+            <img src={logo} alt="Logotipo Agendou" className={styles["logo"]} onClick={handleLogoClick} />
             <h2>Bem vindo!</h2>
             <p>Insira seus dados para continuar</p>
 
@@ -74,7 +82,7 @@ const FormLogin = () => {
 
             <div className={styles["linkContainer"]}>
                 <p>Não tem uma conta?</p>
-                <a href="#" className={styles["link"]}>Registre-se</a>
+                <a href="#" className={styles["link"]} onClick={switchForm}>Registre-se</a>
             </div>
         </div>
     );

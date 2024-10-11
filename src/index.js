@@ -3,11 +3,15 @@ import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import Rotas from './routes/routes';
 import './styles/globals.css'
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from 'react-toastify';
+import "./global.js";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Rotas />
+    <ToastContainer />
   </React.StrictMode>
 );
 
