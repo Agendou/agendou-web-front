@@ -1,20 +1,27 @@
 /* Logo */
 .logo {
-    width: 160px;
+    max-width: 150px;
 }
 
-.containerComerciante {
+.page {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0;
+    height: 100vh;
     box-sizing: border-box;
     background-color: #010726;
 }
 
+
 .container h2 {
     font-weight: bold;
-    font-size: 50px;
+    font-size: 3rem;
+}
+
+.container p {
+    font-weight: 400;
+    font-size: 1rem;
 }
 
 .container {
@@ -22,17 +29,15 @@
     max-height: 90vh;
     justify-content: center;
     align-items: center;
-    min-width: 1440px;
     width: 100%;
     max-width: 1440px;
+    height: 100vh;
+    max-height: 90vh;
     margin: 0;
     background-color: #f8f4f8;
     border-radius: 0;
+    box-sizing: border-box;
     overflow: hidden;
-}
-
-form {
-    width: 100%;
 }
 
 ::placeholder {
@@ -40,13 +45,12 @@ form {
 }
 
 .registerMode .leftPanel {
-    flex: 1;
     width: 100%;
     margin: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     min-height: 100%;
     border-bottom-right-radius: 100%;
     border-top-right-radius: 100%;
@@ -56,31 +60,92 @@ form {
 .registerMode .leftPanel h2,
 .registerMode .leftPanel p {
     color: #f8f4f8;
+
 }
 
 .leftPanel,
 .rightPanel {
-    width: 100%;
-    min-height: 100%;
     flex: 1;
     display: flex;
+    width: 50%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
     justify-content: center;
     align-items: center;
     transition: opacity 0.9s;
 }
 
+@media (max-width: 375px) {
+    .logo {
+        max-width: 120px;
+    }
 
-/* Responsividade */
-@media (max-width: 768px) {
+    .page {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        height: 100vh;
+        box-sizing: border-box;
+        background-color: #010726;
+    }
+
+    .container h2 {
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+
+    .container p {
+        font-weight: 400;
+        font-size: 0.9rem;
+    }
+
     .container {
-        padding: 20px;
+        display: flex;
+        max-height: 90vh;
+        justify-content: center;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: column;
+        width: 100%;
+        max-height: 90vh;
+        margin: 0;
+        background-color: #f8f4f8;
+        border-radius: 0;
+        box-sizing: border-box;
+        overflow-y: auto;
     }
 
-    h2 {
-        font-size: 36px;
+    ::placeholder {
+        color: #000000;
     }
 
-    p {
-        font-size: 16px;
+    .registerMode .leftPanel {
+        width: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        min-height: 100%;
+        border-radius: 0;
+        z-index: 10;
+    }
+
+    .registerMode .leftPanel h2,
+    .registerMode .leftPanel p {
+        color: #f8f4f8;
+
+    }
+
+    .leftPanel,
+    .rightPanel {
+        flex: 1;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: opacity 0.9s;
     }
 }
