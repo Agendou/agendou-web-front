@@ -1,9 +1,10 @@
 .container {
     display: flex;
     margin: 0;
-    justify-content: end;
+    justify-content: center;
     align-items: center;
     height: 90vh;
+    max-width: 100%;
     padding: 15%;
     background-color: #04588c;
     transition: border-radius 0.5s ease;
@@ -253,7 +254,7 @@ p {
     .container {
         display: flex;
         margin: 0;
-        justify-content: end;
+        justify-content: center;
         align-items: center;
         height: 100vh;
         padding: 10%;
@@ -262,6 +263,7 @@ p {
     }
 
     .loginPanel {
+        max-width: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -276,15 +278,6 @@ p {
         text-align: end;
         color: #f8f4f8;
         flex-wrap: nowrap;
-    }
-
-    .registerPanel {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 0;
-        text-align: left;
-        flex-direction: column;
     }
 
     .registerPanel h2,
@@ -305,11 +298,6 @@ p {
     .registerPanel p {
         font-size: 1.125rem;
         color: #f8f4f8;
-    }
-
-    h2,
-    p {
-        width: 100%;
     }
 
     .button {
