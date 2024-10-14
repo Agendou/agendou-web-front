@@ -4,37 +4,38 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import EventNoteIcon from '@mui/icons-material/EventNote'; 
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import GroupIcon from '@mui/icons-material/Group'; 
-import BarChartIcon from '@mui/icons-material/BarChart'; 
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import DescriptionIcon from '@mui/icons-material/Description';
+import BarChartIcon from '@mui/icons-material/BarChart';
+
 
 const Features = [
   {
-    icon: <AccessTimeIcon style={{ fontSize: 70, color: '#00a2e8' }} />,
+    icon: <AccessTimeIcon style={{ fontSize: 70, color: '#010726' }} />,
     title: 'Agendamento online',
     description: 'Apenas encaminhe o link e deixe o cliente fazer o agendamento.',
   },
   {
-    icon: <EventNoteIcon style={{ fontSize: 70, color: '#00a2e8' }} />,
+    icon: <EventNoteIcon style={{ fontSize: 70, color: '#010726' }} />,
     title: 'Agenda',
     description: 'Gerencie sua agenda de forma fácil e rápida quando e onde estiver.',
   },
   {
-    icon: <NotificationsIcon style={{ fontSize: 70, color: '#00a2e8' }} />,
+    icon: <NotificationsIcon style={{ fontSize: 70, color: '#010726' }} />,
     title: 'Lembretes automatizados',
     description: 'Reduza o índice de faltas de última hora em até 70% com os lembretes por e-mail.',
   },
   {
-    icon: <GroupIcon style={{ fontSize: 70, color: '#00a2e8' }} />,
+    icon: <GroupIcon style={{ fontSize: 70, color: '#010726' }} />,
     title: 'Quadro de funcionários',
     description: 'Tenha uma visão detalhada do rendimento de cada funcionário.',
   },
   {
-    icon: <BarChartIcon style={{ fontSize: 70, color: '#00a2e8' }} />,
-    title: 'Relatórios e análises',
+    icon: <DescriptionIcon style={{ fontSize: 70, color: '#010726' }} />,
+    title: 'Relatórios',
     description: 'Relatórios periódicos e práticos para manter-se sempre informado sobre seu negócio.',
   },
   {
-    icon: <AttachMoneyIcon style={{ fontSize: 70, color: '#00a2e8' }} />,
+    icon: <BarChartIcon style={{ fontSize: 70, color: '#010726' }} />,
     title: 'Painel de monitoramento',
     description: 'Acesse nossa poderosa Dashboard para melhorar sua tomada de decisões.',
   },
