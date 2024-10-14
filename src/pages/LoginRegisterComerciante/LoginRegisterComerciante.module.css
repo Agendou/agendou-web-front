@@ -1,6 +1,6 @@
 /* Logo */
 img {
-    width: 160px;
+    max-width: 150px;
 }
 
 body {
@@ -15,7 +15,12 @@ body {
 
 .container h2 {
     font-weight: bold;
-    font-size: 50px;
+    font-size: 3rem;
+}
+
+.container p {
+    font-weight: 400;
+    font-size: 1rem;
 }
 
 .container {
@@ -23,9 +28,10 @@ body {
     max-height: 90vh;
     justify-content: center;
     align-items: center;
-    min-width: 1440px;
     width: 100%;
     max-width: 1440px;
+    height: 100vh;
+    max-height: 90vh;
     margin: 0;
     background-color: #f8f4f8;
     border-radius: 0;

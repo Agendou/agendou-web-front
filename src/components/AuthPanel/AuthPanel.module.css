@@ -4,7 +4,7 @@
     justify-content: end;
     align-items: center;
     min-height: 100vh;
-    padding: 100px;
+    padding: 10%;
     background-color: #04588c;
     transition: border-radius 0.5s ease;
 }
@@ -12,9 +12,11 @@
 .loginPanel {
     display: flex;
     justify-content: center;
+    align-items: center;
     border-bottom-left-radius: 100%;
     border-top-left-radius: 100%;
     text-align: right;
+    flex-direction: column;
 }
 
 .loginPanel h2,
@@ -27,10 +29,11 @@
 .registerPanel {
     display: flex;
     justify-content: center;
+    align-items: center;
     border-bottom-right-radius: 100%;
     border-top-right-radius: 100%;
     text-align: left;
-
+    flex-direction: column;
 }
 
 .registerPanel h2,
@@ -40,15 +43,22 @@
 }
 
 
-h2 {
-    font-size: 50px;
+.loginPanel h2,
+.registerPanel h2 {
+    font-size: 2.5rem;
     color: #f8f4f8;
     font-weight: bold;
 }
 
-p {
-    font-size: 18px;
+.loginPanel p,
+.registerPanel p {
+    font-size: 1.125rem;
     color: #f8f4f8;
+}
+
+h2,
+p {
+    width: 100%;
 }
 
 .button {
