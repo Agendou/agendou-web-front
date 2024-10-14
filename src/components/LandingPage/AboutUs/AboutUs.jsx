@@ -54,7 +54,13 @@ const AboutUs = () => {
             >
               Missão
             </Typography>
-            <Typography variant="body1" sx={{ fontSize: { xs: '0.9rem', md: '1rem' } }}>
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                fontSize: { xs: '0.9rem', md: '1rem' }, 
+                color: '#333' // Coloração de cinza escuro
+              }}
+            >
               Proporcionar um sistema de agendamentos online eficiente e fácil de usar, otimizando tempo de profissionais e clientes.
             </Typography>
           </Paper>
@@ -85,7 +91,13 @@ const AboutUs = () => {
             >
               Visão
             </Typography>
-            <Typography variant="body1" sx={{ fontSize: { xs: '0.9rem', md: '1rem' } }}>
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                fontSize: { xs: '0.9rem', md: '1rem' }, 
+                color: '#333' // Coloração de cinza escuro
+              }}
+            >
               Ser a plataforma líder em agendamentos online para o setor de beleza, reconhecida pela inovação e pela facilidade de uso.
             </Typography>
           </Paper>
@@ -116,7 +128,13 @@ const AboutUs = () => {
             >
               Valores
             </Typography>
-            <Typography variant="body1" sx={{ fontSize: { xs: '0.9rem', md: '1rem' } }}>
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                fontSize: { xs: '0.9rem', md: '1rem' }, 
+                color: '#333' // Coloração de cinza escuro
+              }}
+            >
               Inovação, simplicidade, comprometimento com a satisfação do cliente e respeito ao tempo de todos.
             </Typography>
           </Paper>
@@ -141,21 +159,33 @@ const AboutUs = () => {
         <Typography 
           variant="body1" 
           align="center" 
-          sx={{ mb: 2, fontSize: { xs: '0.9rem', md: '1rem' } }}
+          sx={{ 
+            mb: 2, 
+            fontSize: { xs: '0.9rem', md: '1rem' },
+            color: '#333' // Coloração de cinza escuro
+          }}
         >
           Telefone: (11) 98765-4321
         </Typography>
         <Typography 
           variant="body1" 
           align="center" 
-          sx={{ mb: 2, fontSize: { xs: '0.9rem', md: '1rem' } }}
+          sx={{ 
+            mb: 2, 
+            fontSize: { xs: '0.9rem', md: '1rem' },
+            color: '#333' // Coloração de cinza escuro
+          }}
         >
           Email: contato@agendou.com.br
         </Typography>
         <Typography 
           variant="body1" 
           align="center" 
-          sx={{ mb: 2, fontSize: { xs: '0.9rem', md: '1rem' } }}
+          sx={{ 
+            mb: 2, 
+            fontSize: { xs: '0.9rem', md: '1rem' },
+            color: '#333' // Coloração de cinza escuro
+          }}
         >
           Endereço: Rua Haddock Lobo, 595, São Paulo, SP
         </Typography>
