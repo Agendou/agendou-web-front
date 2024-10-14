@@ -1,14 +1,13 @@
 /* Logo */
-img {
+.logo {
     width: 160px;
 }
 
-body {
+.containerComerciante {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0;
-    padding: 40px;
     box-sizing: border-box;
     background-color: #010726;
 }

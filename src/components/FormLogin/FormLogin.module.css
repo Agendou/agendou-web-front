@@ -4,15 +4,11 @@
     align-items: flex-start;
     justify-content: flex-start;
     border-radius: 8px;
-    padding: 1%;
+    padding: 20px;
     width: 90%;
     max-width: 400px;
     margin: 0 auto;
     position: relative;
-}
-
-form {
-    width: 100%;
 }
 
 .logo {
@@ -157,90 +153,68 @@ form {
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 375px) {
     .form-container {
-        padding: 4%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: end;
+        width: 100%;
     }
 
     .logo {
-        width: 60%;
-        max-width: 120px;
-        /* Reduzir o tamanho da logo em telas menores */
+        max-width: 150px;
     }
 
-    .button {
-        padding: 12px;
+    .form-container h2 {
+        font-size: 1.5rem;
+        text-align: left;
+    }
+
+    .form-container p {
+        font-size: 0.85rem;
+        text-align: left;
     }
 
     .input {
-        padding: 12px;
-        font-size: 0.9rem;
+        font-size: 0.75rem;
+        padding: 15px;
+        max-width: 100%;
+    }
+
+    .inputContainer {
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
+    .button {
+        padding: 10px 0;
+        font-size: 0.85rem;
     }
 
     .checkboxLinkContainer {
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 5%;
-    }
-
-    .linkContainer {
+        display: flex;
         flex-direction: column;
         align-items: center;
+        margin-bottom: 5%;
         margin-top: 5%;
     }
-}
 
-@media (max-width: 375px) {
-    .form-container {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        max-height: 100vh;
-        padding: 5px;
-    }
-
-    .button {
-        width: 100%;
-    }
-
-    .input {
-        font-size: 1rem;
+    .checkboxContainer p {
+        text-align: center;
     }
 
     .linkContainer {
-        display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: center;
-        margin-bottom: 5%;
+        justify-content: center;
+        margin-top: 10px;
     }
 
     .linkContainer p {
         margin-right: 0;
-    }
-
-    .inputContainer {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .checkboxLinkContainer {
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 5%;
-    }
-
-    .checkboxInput {
-        margin-right: 5%;
-        vertical-align: middle;
-    }
-
-    .checkboxInput p {
-        font-size: 0.8rem;
-    }
-
-    label p {
-        font-size: 0.8rem;
+        text-align: center;
     }
 }

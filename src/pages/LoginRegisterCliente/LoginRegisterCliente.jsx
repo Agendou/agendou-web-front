@@ -12,7 +12,7 @@ const LoginRegisterCliente = () => {
     };
 
     return (
-        <div className={`${styles.container} ${isLogin ? '' : styles.registerMode}`}>
+        <div className={`${styles.container} ${styles.containerComerciante} ${isLogin ? '' : styles.registerMode}`}>
             {isLogin ? (
                 <>
                     <div className={styles["leftPanel"]}>
