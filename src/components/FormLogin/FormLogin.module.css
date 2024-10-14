@@ -4,7 +4,7 @@
     align-items: flex-start;
     justify-content: flex-start;
     border-radius: 8px;
-    padding: 2%;
+    padding: 1%;
     width: 90%;
     max-width: 400px;
     margin: 0 auto;
@@ -18,8 +18,8 @@ form {
 .logo {
     display: block;
     cursor: pointer;
-    margin-bottom: 5%;
-    width: 50%;
+    margin-bottom: 3%;
+    width: 40%;
 }
 
 .form-container h2,
@@ -190,23 +190,57 @@ form {
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 375px) {
     .form-container {
-        padding: 3%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-height: 100vh;
+        padding: 5px;
     }
 
     .button {
-        padding: 10px;
-        font-size: 0.9rem;
+        width: 100%;
     }
 
     .input {
-        padding: 10px;
+        font-size: 1rem;
+    }
+
+    .linkContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 5%;
+    }
+
+    .linkContainer p {
+        margin-right: 0;
+    }
+
+    .inputContainer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .checkboxLinkContainer {
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 5%;
+    }
+
+    .checkboxInput {
+        margin-right: 5%;
+        vertical-align: middle;
+    }
+
+    .checkboxInput p {
         font-size: 0.8rem;
     }
 
-    .linkContainer p,
-    .linkContainer .link {
-        font-size: 0.9rem;
+    label p {
+        font-size: 0.8rem;
     }
 }

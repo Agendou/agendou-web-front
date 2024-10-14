@@ -3,7 +3,7 @@
     margin: 0;
     justify-content: end;
     align-items: center;
-    min-height: 100vh;
+    height: 100vh;
     padding: 10%;
     background-color: #04588c;
     transition: border-radius 0.5s ease;
@@ -79,4 +79,53 @@ p {
     border: 2px solid #f8f4f8;
     color: #f8f4f8;
     background-color: transparent;
+}
+
+@media (max-width: 375px) {
+    .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-height: 100vh;
+        padding: 1rem;
+    }
+
+    .container h2 {
+        font-size: 0.25rem;
+        text-align: left;
+        width: 100%;
+    }
+
+    .container p {
+        font-size: 0.85rem;
+        text-align: left;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .button {
+        font-size: 0.85rem;
+        padding: 10px;
+        width: 60%;
+    }
+
+    .loginPanel {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 0;
+        text-align: center;
+        flex-direction: column;
+    }
+
+    .registerPanel {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 0;
+        text-align: center;
+        flex-direction: column;
+    }
 }

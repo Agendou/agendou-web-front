@@ -164,20 +164,62 @@ form {
     border-bottom: 1px solid #04588c;
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
+@media (max-width: 375px) {
+
+    .logo {
+        max-width: 150px;
+    }
+
+    .form-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 5%;
+        max-width: 100%;
+        max-height: 100vh;
+    }
+
+    h2 {
+        text-align: center;
+    }
+
+    p {
+        text-align: center;
+    }
+
+    .input {
+        font-size: 0.75rem;
+        padding: 10px;
+    }
+
     .small-inputs-container {
+        display: flex;
         flex-direction: column;
     }
 
-    .input-small {
-        margin-right: 0;
-        margin-bottom: 10px;
-        width: 100%;
+    .button {
+        padding: 12px 0;
+        font-size: 14px;
     }
 
-    .button {
-        width: 100%;
+    .linkContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .checkboxContainer a {
+        font-size: 0.8rem;
+    }
+
+    .linkContainer a {
+        font-size: 0.8rem;
+    }
+
+    label {
+        font-size: 0.8rem;
     }
 
     .linkContainer p {
