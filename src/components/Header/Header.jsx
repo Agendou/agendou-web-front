@@ -1,28 +1,108 @@
-import React from "react";
-import style from "./Header.module.css"
-import '../../styles/buttons.css'
-import logo from "../../assets/images/LightLogo.png"
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import Container from '@mui/material/Container';
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
+import logoImg from '../../assets/images/LightLogo.png';
 
-const Header = () => {
-    return (
-      <header className={style["header"]}>
-        <div className={style["logo"]}>
-          <img src={logo} alt="Agendou com um relógio no lugar do O" />
-        </div>
-        <nav className={style["navigation"]}>
-          <ul>
-            <li><a href="#inicio">INÍCIO</a></li>
-            <li><a href="#about-us">SOBRE NÓS</a></li>
-            <li><a href="#benefits">BENEFÍCIOS</a></li>
-            <li><a href="#use">COMO UTILIZAR</a></li>
-          </ul>
-        </nav>
-        <div className={style["auth-buttons"]}>
-          <a href="#"><button className={`btn transparentBtn ${style.login}`}>ENTRAR</button></a>
-          <a href="#"><button className={`btn blueBtn ${style.register}`}>REGISTRAR-SE</button></a>
-        </div>
-      </header>
-    );
+const pages = ['Quem pode usar', 'Recursos', 'Sobre nós'];
+
+function ResponsiveAppBar() {
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
   };
-  
-  export default Header;
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  return (
+    <AppBar position="fixed" sx={{ backgroundColor: '#010726', fontFamily: 'Poppins, sans-serif' }}>
+      <Container maxWidth="xl">
+        <Toolbar disableGutters sx={{ padding: '0 16px' }}>
+          <img src={logoImg} alt="Logo" style={{ height: '60px', marginRight: '8px' }} />
+          
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none'} }}>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+            >
+              {pages.map((page) => (
+                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+
+          {/* Título do App - Visível em telas médias e grandes */}
+          <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href="#app-bar-with-responsive-menu"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              flexGrow: 1,
+              fontFamily: 'Poppins, sans-serif',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+          </Typography>
+
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'start' }}>
+            {pages.map((page) => (
+              <Button
+                key={page}
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block', fontFamily: 'Poppins, sans-serif' }}
+              >
+                {page}
+              </Button>
+            ))}
+          </Box>
+
+          <Box sx={{ display: 'flex', gap: 2, flexGrow: 0 }}>
+            <Button
+              onClick={() => console.log('Login Clicked')}
+              sx={{ my: 2, color: 'white', display: 'block', fontFamily: 'Poppins, sans-serif', fontWeight: 'bold', border: 'solid 1px', borderRadius: '15px', padding: '10px'}}
+            >
+              Login
+            </Button>
+          </Box>        
+        </Toolbar>
+      </Container>
+    </AppBar>
+  );
+}
+
+export default ResponsiveAppBar;
