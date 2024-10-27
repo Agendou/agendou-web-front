@@ -1,60 +1,22 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
+import LoginRegisterComerciante from "../pages/LoginRegisterComerciante/LoginRegisterComerciante";
+import LoginRegisterCliente from "../pages/LoginRegisterCliente/LoginRegisterCliente";
+import Home from "../pages/Home/Home";
+import Dashboard from "../pages/Dashboard/Dashboard"; 
+import ProfileProfissional from "../pages/ProfileProfissional/ProfileProfissional";
+import ModalAvaliacao from "../components/Modal/ModalAvaliacao";
+import ModalServico from "../components/Modal/ModalServico";
+import ModalValidacao from "../components/Modal/ModalValidacao";
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-  borderRadius: 2,
-  textAlign: 'center',
-};
-
-export default function AvalieModal() {
-  const [open, setOpen] = React.useState(false);
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  return (
-    <div>
-      <Button variant="outlined" onClick={handleOpen}>
-        Abrir Modal de Avaliação
-      </Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      >
-        <Box sx={style}>
-          <Typography
-            id="modal-title"
-            variant="h6"
-            component="h2"
-            sx={{
-              fontFamily: 'Roboto',
-              fontWeight: '600', // semibold
-              color: '#010726',
-            }}
-          >
-            Avalie sua experiência do último agendamento
-          </Typography>
-          <Typography id="modal-description" sx={{ mt: 2 }}>
-            <Link href="#" underline="hover">
-              Clique aqui para avaliar
-            </Link>
-          </Typography>
-        </Box>
-      </Modal>
-    </div>
-  );
-}
+<BrowserRouter>
+            <Routes>
+                <Route path="/home" element={<Home />} />
+                <Route path="/" element={<Home />} />
+                <Route path="/dashboard" element={<Dashboard />} /> 
+                <Route path="/profile-profissional" element={<ProfileProfissional />} />
+                <Route path="/login-register-user-admin" element={<LoginRegisterComerciante />} />
+                <Route path="/login-register-user" element={<LoginRegisterCliente />} />
+                <Route path="/ModalAvaliacao" element={<ModalAvaliacao />} />
+                <Route path="/ModalServico" element={<ModalServico />} />
+                <Route path="/ModalValidacao" element={<ModalValidacao />} />
+            </Routes>
+        </BrowserRouter>
