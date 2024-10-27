@@ -30,8 +30,7 @@
     align-items: center;
     width: 100%;
     max-width: 1440px;
-    height: 100vh;
-    max-height: 90vh;
+    height: 90vh;
     margin: 0;
     background-color: #f8f4f8;
     border-radius: 0;
@@ -50,11 +49,21 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    min-height: 100%;
+    max-height: 90vh;
     border-bottom-right-radius: 100%;
     border-top-right-radius: 100%;
     z-index: 10;
 }
+
+.registerMode .rightPanel {
+    width: 100%;
+    margin: 0;
+    display: flex;
+    margin: auto;
+    max-height: 90vh;
+    height: auto;
+}
+
 
 .registerMode .leftPanel h2,
 .registerMode .leftPanel p {
@@ -70,6 +79,7 @@
     margin: auto;
     align-items: center;
     transition: opacity 0.9s;
+    overflow-y: auto;
 }
 
 @media (max-width: 375px) {
