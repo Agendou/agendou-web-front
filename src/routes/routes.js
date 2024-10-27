@@ -11,30 +11,17 @@ import ProfileProfissional from "../pages/ProfileProfissional/ProfileProfissiona
 
 function Rotas() {
     return (
-<<<<<<< HEAD
         <BrowserRouter>
             <Routes>
                 <Route path="/home" element={<Home />} />
                 <Route path="/" element={<Home />} />
                 <Route path="/dashboard" element={<Dashboard />} /> 
                 <Route path="/profile-profissional" element={<ProfileProfissional />} />
+                <Route path="/login-register-user-admin" element={<LoginRegisterComerciante />} />
+                <Route path="/login-register-user" element={<LoginRegisterCliente />} />
             </Routes>
         </BrowserRouter>
     );
-=======
-        <>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/login-register-user-admin" element={<LoginRegisterComerciante />} />
-                    <Route path="/login-register-user" element={<LoginRegisterCliente />} />
-                    <Route path="/home" element={<Home />} />
-                    <Route path="/" element={<Home />} />
-
-                </Routes>
-            </BrowserRouter>
-        </>
-    )
->>>>>>> 217bdac91a382ab27795a6ac496a33d60dd3991a
 }
 
 export default Rotas;
