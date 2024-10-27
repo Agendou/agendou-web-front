@@ -1,0 +1,39 @@
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #010726;
+  color: #f8f4f8;
+  height: 8vh;
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  border-radius: 10px;
+  width: 80vw; 
+  left: 260px; 
+  transition: left 0.3s ease, width 0.3s ease;
+  margin-top: 5px;
+}
+
+.headerTitle {
+  font-size: 1em;
+  margin: 0;
+}
+
+.headerIcons {
+  display: flex;
+  align-items: center;
+}
+
+.notificationIcon {
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+/* .profilePic {
+  width: 30px;
+  height: 30px;
+  border-radius: 10%;
+} */

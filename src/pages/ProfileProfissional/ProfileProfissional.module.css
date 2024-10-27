@@ -1,0 +1,45 @@
+.employeList {
+background-color: #010726;
+color: #f8f4f8;
+}
+
+.scrollbar {
+    scrollbar-width: thin; 
+    scrollbar-color: #f8f4f8 #010726; 
+  }
+  
+  .scrollbar::-webkit-scrollbar {
+    width: 8px; 
+  }
+  
+  .scrollbar::-webkit-scrollbar-thumb {
+    background-color: #f8f4f8; 
+    border-radius: 10px;
+  }
+  
+  .scrollbar::-webkit-scrollbar-track {
+    background: #010726; 
+  }
+
+  .bodyProfissional {
+    font-family: 'Poppins', sans-serif;
+    /* background-color: rgb(213, 218, 218); */
+    width: 97vw;
+}
+
+.cadastroBox {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.cadastroBox {
+  opacity: 0;
+  transform: translateX(-100%); 
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.cadastroBox.open {
+  opacity: 1;
+  transform: translateX(0); 
+}
