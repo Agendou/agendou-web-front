@@ -9,7 +9,7 @@ export const validarCampoTexto = (nome) => {
 export const validarTelefone = (telefone) => {
     const telefoneNumerico = telefone.replace(/\D/g, '');
 
-    if (telefoneNumerico.length < 10 || telefoneNumerico.lentgh > 11) {
+    if (telefoneNumerico.length < 10 || telefoneNumerico.length > 11) {
         return false;
     }
 
@@ -31,11 +31,3 @@ export const validarSenha = (senha) => {
 
     return true;
 };
-
-export const validarCheckboxTermos = (termoAceito) => {
-    if (!termoAceito) {
-        return false;
-    }
-
-    return true;
-}

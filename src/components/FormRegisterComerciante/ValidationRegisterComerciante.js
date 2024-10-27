@@ -34,14 +34,6 @@ export const validarSenha = (senha) => {
     return true;
 };
 
-export const validarCheckboxTermos = (termoAceito) => {
-    if (!termoAceito) {
-        return false;
-    }
-
-    return true;
-}
-
 export const validarCampoTexto = (texto) => {
     if (texto.trim() === "") {
         return false;

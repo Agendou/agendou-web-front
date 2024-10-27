@@ -4,10 +4,10 @@
     align-items: flex-end;
     justify-content: flex-end;
     border-radius: 8px;
-    padding: 2%;
+    padding: 1%;
     width: 100%;
     max-width: 400px;
-    margin-bottom: 5%;
+    padding-bottom: 20%;
     position: relative;
 }
 
@@ -94,7 +94,7 @@
 .linkContainer {
     display: flex;
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     max-width: 400px;
 }
 

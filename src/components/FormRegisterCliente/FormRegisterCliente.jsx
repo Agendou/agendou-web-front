@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import styles from './FormRegisterCliente.module.css';
 import logo from '../../assets/images/logoEscuraAgendou.png';
 import { ValidationClienteMessages } from "./ValidationClienteMessages";
+import { toast } from "react-toastify";
+import api from '../../services/api';
 
 const FormRegisterCliente = ({ switchForm }) => {
     const [nome, setNome] = useState('');
@@ -13,18 +15,35 @@ const FormRegisterCliente = ({ switchForm }) => {
 
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const formValues = { nome, telefone, email, senha, aceitarTermos };
-        const validationMessages = ValidationClienteMessages(formValues);
-
-        if (validationMessages) {
-            alert(validationMessages);
+        if (!aceitarTermos) {
+            toast.error("Você deve aceitar os termos e condições para prosseguir.");
             return;
         }
 
-        alert("Cadastrado com sucesso!");
+        const formValues = { nome, telefone, email, senha };
+        const validationMessages = ValidationClienteMessages(formValues);
+
+        if (validationMessages) {
+            toast.error(validationMessages);
+            return;
+        }
+
+        try {
+            const response = await api.post('/usuarios/cadastrar', formValues, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            toast.success("Cadastrado com sucesso!");
+            navigate('/home');
+            console.log(response.data);
+        } catch (error) {
+            toast.error("Usuário não cadastrado! " + (error.response?.data || error.message));
+        }
+
     };
 
     const handleLogoClick = () => {
@@ -102,7 +121,7 @@ const FormRegisterCliente = ({ switchForm }) => {
                         id="aceitar"
                     />
                     <label htmlFor="aceitar" className={styles["label"]}>
-                        Eu aceito os <a href="#" className={styles["linkTerms"]}>Termos e Condições</a>
+                        Eu aceito os <button className={styles["linkTerms"]}>Termos e Condições</button>
                     </label>
                 </div>
 
@@ -111,7 +130,7 @@ const FormRegisterCliente = ({ switchForm }) => {
 
             <div className={styles["linkContainer"]}>
                 <p>Já tem uma conta?</p>
-                <a href="#" className={styles["link"]} onClick={switchForm}>Acesse aqui</a>
+                <button className={styles["link"]} onClick={switchForm}>Acesse aqui</button>
             </div>
         </div>
     );

@@ -3,11 +3,10 @@ import {
     validarTelefone,
     validarEmail,
     validarSenha,
-    validarCheckboxTermos,
 } from './ValidationRegisterCliente';
 
 export const ValidationClienteMessages = (formValues) => {
-    const { nome, telefone, email, senha, aceitarTermos } = formValues;
+    const { nome, telefone, email, senha } = formValues;
 
     if (!validarTelefone(telefone)) {
         return "Por favor, insira um número de telefone válido.";
@@ -23,10 +22,6 @@ export const ValidationClienteMessages = (formValues) => {
 
     if (!validarSenha(senha)) {
         return "A senha deve conter no mínimo 8 caracteres.";
-    }
-
-    if (!validarCheckboxTermos(aceitarTermos)) {
-        return "Você deve aceitar os termos e condições para prosseguir."
     }
 
     return null;

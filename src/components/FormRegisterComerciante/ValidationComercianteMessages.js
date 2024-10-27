@@ -3,12 +3,11 @@ import {
     validarTelefone,
     validarEmail,
     validarSenha,
-    validarCheckboxTermos,
     validarCampoTexto
 } from './ValidationRegisterComerciante';
 
 export const ValidationComercianteMessages = (formValues) => {
-    const { cnpj, telefone, nomeEmpresa, representanteLegal, email, senha, aceitarTermos } = formValues;
+    const { cnpj, telefone, nomeEmpresa, representanteLegal, email, senha } = formValues;
 
     if (!validarCnpj(cnpj)) {
         return "CNPJ inválido.";
@@ -32,10 +31,6 @@ export const ValidationComercianteMessages = (formValues) => {
 
     if (!validarSenha(senha)) {
         return "A senha deve conter no mínimo 8 caracteres.";
-    }
-
-    if (!validarCheckboxTermos(aceitarTermos)) {
-        return "Você deve aceitar os termos e condições para prosseguir."
     }
 
     return null;
