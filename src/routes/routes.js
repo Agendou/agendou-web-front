@@ -8,6 +8,9 @@ import ModalServico from "../components/Modal/ModalServico";
 import ModalValidacao from "../components/Modal/ModalValidacao";
 
 <BrowserRouter>
+function Rotas() {
+    return (
+        <BrowserRouter>
             <Routes>
                 <Route path="/home" element={<Home />} />
                 <Route path="/" element={<Home />} />
@@ -20,3 +23,9 @@ import ModalValidacao from "../components/Modal/ModalValidacao";
                 <Route path="/ModalValidacao" element={<ModalValidacao />} />
             </Routes>
         </BrowserRouter>
+            </Routes>
+        </BrowserRouter>
+    );
+}
+
+export default Rotas;
