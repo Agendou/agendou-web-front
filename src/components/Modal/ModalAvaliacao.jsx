@@ -36,16 +36,7 @@ export default function AvalieModal() {
         aria-describedby="modal-description"
       >
         <Box sx={style}>
-          <Typography
-            id="modal-title"
-            variant="h6"
-            component="h2"
-            sx={{
-              fontFamily: 'Roboto',
-              fontWeight: '600', // semibold
-              color: '#010726',
-            }}
-          >
+          <Typography id="modal-title" variant="h6" component="h2">
             Avalie sua experiência do último agendamento
           </Typography>
           <Typography id="modal-description" sx={{ mt: 2 }}>
