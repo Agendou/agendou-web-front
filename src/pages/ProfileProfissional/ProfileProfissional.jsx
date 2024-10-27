@@ -8,28 +8,47 @@ import {
   ListItemText,
   Typography,
   Box,
-  InputAdornment,
   TextField,
 } from '@mui/material';
-import { Add, Visibility, VisibilityOff, FilterList, Delete } from '@mui/icons-material';
+import { Add, FilterList, Delete } from '@mui/icons-material';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import HeaderApp from '../../components/HeaderApp/HeaderApp';
 import styles from './ProfileProfissional.module.css';
+import api from '../../api';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const ProfileProfissional = () => {
-  const [showPassword, setShowPassword] = useState(false);
+  // const [showPassword, setShowPassword] = useState(false);
   const [filter, setFilter] = useState('');
   const [isCadastroVisible, setIsCadastroVisible] = useState(false);
   const [servicos, setServicos] = useState(['Descoloração', 'Corte de cabelo', 'Sobrancelha']);
 
-  const handleTogglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
+  const [isAscending, setIsAscending] = useState(true);
+
+  const [nome, setNome] = useState('');
+  // const [telefone, setTelefone] = useState('');
+  const [email, setEmail] = useState('');
+  // const [senha, setSenha] = useState('');
+  const [servico, setServico] = useState('');
+  const [descricao, setDescricao] = useState('');
+
+  // const handleTogglePasswordVisibility = () => {
+  //   setShowPassword((prev) => !prev);
+  // };
 
   const toggleCadastro = () => {
-    setIsCadastroVisible((prev) => !prev);
+    setIsCadastroVisible((prev) => {
+      const newState = !prev;
+      if (newState) {
+        setTimeout(() => {
+          setIsCadastroVisible(newState);
+        }, 10); 
+      }
+      return newState;
+    });
   };
-
   const handleRemoveService = (serviceToRemove) => {
     setServicos((prevServices) => prevServices.filter(service => service !== serviceToRemove));
   };
@@ -42,12 +61,52 @@ const ProfileProfissional = () => {
     'José Marques',
     'Julia Alves',
     'Kaique Freitas',
-    'Gustavo Ramos',
+    'Jorge Ramos',
     'José Alberto Dias',
   ];
 
+  const handleSave = async () => {
+    try {
+      const response = await api.post('/funcionarios', {
+        nome,
+        email,
+      });
+      toast.success("Funcionário cadastrado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao cadastrar funcionário:", error);
+      toast.error("Erro ao cadastrar funcionário. Verifique os dados preenchidos.");
+    }
+  };
+
+  const handleCancel = () => {
+    setNome('');
+    setEmail('');
+    setIsCadastroVisible(false); 
+  };
+
+  // const toggleOrder = () => {
+  //   setIsAscending((prev) => !prev);
+  // };
+
+  const [selectedFuncionarioId, setSelectedFuncionarioId] = useState(null);
+
+  const handleDelete = async () => {
+    if (selectedFuncionarioId) {
+      try {
+        await api.delete(`/funcionarios/${selectedFuncionarioId}`);
+        setServicos((prev) => prev.filter(service => service.id !== selectedFuncionarioId));
+        toast.success("Funcionário excluído com sucesso!");
+        setSelectedFuncionarioId(null); 
+      } catch (error) {
+        console.error("Erro ao excluir funcionário:", error);
+        toast.error("Erro ao excluir funcionário. Tente novamente.");
+      }
+    }
+  };
+  
   return (
     <div className={styles.bodyProfissional}>
+         <ToastContainer />
       <Box
         sx={{
           display: 'flex',
@@ -115,9 +174,10 @@ const ProfileProfissional = () => {
                   }}
                   className={styles.scrollbar}
                 >
-                  <List>
+                    <List>
                     {funcionarios
                       .filter((name) => name.toLowerCase().includes(filter.toLowerCase()))
+                      .sort((a, b) => isAscending ? a.localeCompare(b) : b.localeCompare(a))
                       .map((name) => (
                         <ListItem key={name} button>
                           <ListItemText
@@ -173,56 +233,40 @@ const ProfileProfissional = () => {
                       fullWidth
                       margin="dense"
                       size="small"
+                      value={nome}
+                      onChange={(e) => setNome(e.target.value)}
                       sx={{
                         input: { color: '#f8f4f8' },
                         label: { color: '#f8f4f8' },
                         fieldset: { borderColor: '#f8f4f8' },
                       }}
                     />
-                    <TextField
+                    {/* <TextField
                       label="Telefone"
                       fullWidth
                       margin="dense"
                       size="small"
+                      value={telefone}
+                      onChange={(e) => setTelefone(e.target.value)}
                       sx={{
                         input: { color: '#f8f4f8' },
                         label: { color: '#f8f4f8' },
                         fieldset: { borderColor: '#f8f4f8' },
                       }}
-                    />
+                    /> */}
                     <TextField
                       label="Email"
                       fullWidth
                       margin="dense"
                       size="small"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       sx={{
                         input: { color: '#f8f4f8' },
                         label: { color: '#f8f4f8' },
                         fieldset: { borderColor: '#f8f4f8' },
                       }}
                     />
-                    <TextField
-                      label="Senha"
-                      fullWidth
-                      margin="dense"
-                      type={showPassword ? 'text' : 'password'}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton onClick={handleTogglePasswordVisibility}>
-                              {showPassword ? <VisibilityOff sx={{ color: '#f8f4f8' }} /> : <Visibility sx={{ color: '#f8f4f8' }} />}
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                      size="small"
-                      sx={{
-                        input: { color: '#f8f4f8' },
-                        label: { color: '#f8f4f8' },
-                        fieldset: { borderColor: '#f8f4f8' },
-                      }}
-                    />
-
                     <Typography variant="h5" gutterBottom sx={{ mb: 1, color: '#f8f4f8', mt: 2, fontWeight: 'bold' }}>
                       Serviços
                     </Typography>
@@ -232,6 +276,8 @@ const ProfileProfissional = () => {
                           <Button
                             variant="contained"
                             size="small"
+                            value={service}
+                            onChange={(e) => setServico(e.target.value)}
                             sx={{
                               backgroundColor: '#010726',
                               border: '1px solid #f8f4f8',
@@ -243,7 +289,7 @@ const ProfileProfissional = () => {
                           <IconButton
                             size="small"
                             onClick={() => handleRemoveService(service)}
-                            sx={{ ml: 0.1 }} // Ajustado para ficar mais próximo
+                            sx={{ ml: 0.1 }} 
                           >
                             <Delete sx={{ color: '#f8f4f8' }} />
                           </IconButton>
@@ -261,8 +307,10 @@ const ProfileProfissional = () => {
                       fullWidth
                       margin="dense"
                       multiline
-                      rows={5}
+                      rows={9}
                       size="small"
+                      value={descricao}
+                      onChange={(e) => setDescricao(e.target.value)}
                       sx={{
                         input: { color: '#f8f4f8' },
                         bgcolor: '#f8f4f8',
@@ -272,11 +320,25 @@ const ProfileProfissional = () => {
                     />
 
                     <Grid container justifyContent="space-between" sx={{ mt: 1 }}>
-                      <Button variant="contained" color="error" size="small">
+                      <Button variant="contained" color="error" size="small" onClick={handleDelete}>
                         Excluir Perfil
                       </Button>
                       <Grid item>
-                        <Button variant="contained" color="primary" size="small">
+                      <Button 
+                          variant="outlined" 
+                          color="primary" 
+                          size="small" 
+                          onClick={handleCancel} 
+                          sx={{ mr: 2 }} 
+                        >
+                          Cancelar
+                        </Button>
+                        <Button 
+                          variant="contained" 
+                          color="primary"
+                          size="small"
+                          onClick={handleSave}
+                        >
                           Salvar
                         </Button>
                       </Grid>
