@@ -16,7 +16,6 @@ const FormLogin = ({ switchForm }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const formValues = { email, senha };
         const validationMessages = ValidationLoginMessages(email, senha);
 
         if (validationMessages) {
@@ -25,13 +24,12 @@ const FormLogin = ({ switchForm }) => {
         }
 
         try {
-
-            const response = await api.post('/usuarios/login', formValues);
+            const response = await api.get(`/usuarios/login?email=${email}&senha=${senha}`);
 
             localStorage.setItem('token', response.data.token);
             toast.success("Seja bem vindo(a)!");
 
-            navigate('/home');
+            navigate('/dashboard');
 
         } catch (error) {
 

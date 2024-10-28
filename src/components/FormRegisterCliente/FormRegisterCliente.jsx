@@ -32,13 +32,13 @@ const FormRegisterCliente = ({ switchForm }) => {
         }
 
         try {
-            const response = await api.post('/usuarios/cadastrar', formValues, {
+            const response = await api.post("/usuarios/cadastrar", formValues, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
             toast.success("Cadastrado com sucesso!");
-            navigate('/home');
+            window.location.reload();
             console.log(response.data);
         } catch (error) {
             toast.error("Usuário não cadastrado! " + (error.response?.data || error.message));
