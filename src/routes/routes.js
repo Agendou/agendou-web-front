@@ -6,8 +6,9 @@ import ProfileProfissional from "../pages/ProfileProfissional/ProfileProfissiona
 import ModalAvaliacao from "../components/Modal/ModalAvaliacao";
 import ModalServico from "../components/Modal/ModalServico";
 import ModalValidacao from "../components/Modal/ModalValidacao";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-<BrowserRouter>
+
 function Rotas() {
     return (
         <BrowserRouter>
@@ -21,8 +22,6 @@ function Rotas() {
                 <Route path="/ModalAvaliacao" element={<ModalAvaliacao />} />
                 <Route path="/ModalServico" element={<ModalServico />} />
                 <Route path="/ModalValidacao" element={<ModalValidacao />} />
-            </Routes>
-        </BrowserRouter>
             </Routes>
         </BrowserRouter>
     );
