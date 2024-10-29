@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Grid,
   Button,
@@ -10,7 +10,7 @@ import {
   Box,
   TextField,
 } from '@mui/material';
-import { Add, FilterList, Delete } from '@mui/icons-material';
+import { Add, FilterList, Delete, Visibility, VisibilityOff } from '@mui/icons-material';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import HeaderApp from '../../components/HeaderApp/HeaderApp';
 import styles from './ProfileProfissional.module.css';
@@ -18,95 +18,110 @@ import api from '../../api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 const ProfileProfissional = () => {
-  // const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [filter, setFilter] = useState('');
   const [isCadastroVisible, setIsCadastroVisible] = useState(false);
   const [servicos, setServicos] = useState(['Descoloração', 'Corte de cabelo', 'Sobrancelha']);
-
   const [isAscending, setIsAscending] = useState(true);
-
   const [nome, setNome] = useState('');
-  // const [telefone, setTelefone] = useState('');
   const [email, setEmail] = useState('');
-  // const [senha, setSenha] = useState('');
-  const [servico, setServico] = useState('');
+  const [senha, setSenha] = useState('');
   const [descricao, setDescricao] = useState('');
+  const [funcionarios, setFuncionarios] = useState([]);
+  const [selectedFuncionarioId, setSelectedFuncionarioId] = useState(null);
 
-  // const handleTogglePasswordVisibility = () => {
-  //   setShowPassword((prev) => !prev);
-  // };
+  useEffect(() => {
+    fetchFuncionarios();
+  }, []);
+
+  const fetchFuncionarios = async () => {
+    try {
+      const response = await api.get('/funcionarios/listar');
+      setFuncionarios(response.data);
+    } catch (error) {
+      console.error("Erro ao listar funcionários:", error);
+      toast.error("Erro ao listar funcionários.");
+    }
+  };
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const toggleCadastro = () => {
-    setIsCadastroVisible((prev) => {
-      const newState = !prev;
-      if (newState) {
-        setTimeout(() => {
-          setIsCadastroVisible(newState);
-        }, 10); 
-      }
-      return newState;
-    });
+    setIsCadastroVisible(true);
   };
+ 
   const handleRemoveService = (serviceToRemove) => {
     setServicos((prevServices) => prevServices.filter(service => service !== serviceToRemove));
   };
 
-  const funcionarios = [
-    'Humberto Souza Pereira Silva',
-    'Robson Cleiton Lopes',
-    'José Ribeiro Mendes',
-    'Fernando Teixeira',
-    'José Marques',
-    'Julia Alves',
-    'Kaique Freitas',
-    'Jorge Ramos',
-    'José Alberto Dias',
-  ];
-
   const handleSave = async () => {
     try {
-      const response = await api.post('/funcionarios', {
+      toast.dismiss(); 
+      const response = await api.post('/funcionarios/cadastrar', {
         nome,
         email,
+        senha,
       });
       toast.success("Funcionário cadastrado com sucesso!");
+      fetchFuncionarios();
+      handleCancel();
     } catch (error) {
       console.error("Erro ao cadastrar funcionário:", error);
       toast.error("Erro ao cadastrar funcionário. Verifique os dados preenchidos.");
     }
   };
+  
 
-  const handleCancel = () => {
-    setNome('');
-    setEmail('');
-    setIsCadastroVisible(false); 
+  const handleUpdate = async () => {
+    try {
+      const response = await api.put(`/funcionarios/atualizar/${selectedFuncionarioId}`, {
+        nome,
+        email,
+        senha,
+      });
+      toast.success("Funcionário atualizado com sucesso!");
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 2000);
+      fetchFuncionarios();
+      handleCancel();
+    } catch (error) {
+      console.error("Erro ao atualizar funcionário:", error);
+      toast.error("Erro ao atualizar funcionário. Verifique os dados preenchidos.");
+    }
   };
-
-  // const toggleOrder = () => {
-  //   setIsAscending((prev) => !prev);
-  // };
-
-  const [selectedFuncionarioId, setSelectedFuncionarioId] = useState(null);
 
   const handleDelete = async () => {
     if (selectedFuncionarioId) {
       try {
-        await api.delete(`/funcionarios/${selectedFuncionarioId}`);
-        setServicos((prev) => prev.filter(service => service.id !== selectedFuncionarioId));
+        await api.delete(`/funcionarios/deletar/${selectedFuncionarioId}`);
         toast.success("Funcionário excluído com sucesso!");
-        setSelectedFuncionarioId(null); 
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1000);
+        fetchFuncionarios();
+        setSelectedFuncionarioId(null);
       } catch (error) {
         console.error("Erro ao excluir funcionário:", error);
         toast.error("Erro ao excluir funcionário. Tente novamente.");
       }
     }
   };
-  
+
+  const handleCancel = () => {
+    setNome('');
+    setEmail('');
+    setSenha('');
+    setDescricao('');
+    setSelectedFuncionarioId(null);
+  };  
+
   return (
     <div className={styles.bodyProfissional}>
-         <ToastContainer />
+      <ToastContainer />
       <Box
         sx={{
           display: 'flex',
@@ -158,9 +173,16 @@ const ProfileProfissional = () => {
                   <IconButton onClick={() => setFilter('')} sx={{ color: '#f8f4f8' }}>
                     <FilterList />
                   </IconButton>
-                  <IconButton onClick={toggleCadastro} sx={{ color: '#f8f4f8' }}>
+                  <IconButton
+                    onClick={() => {
+                      handleCancel();  
+                      toggleCadastro();  
+                    }}
+                    sx={{ color: '#f8f4f8' }}
+                  >
                     <Add />
                   </IconButton>
+
                 </Box>
                 <Box
                   sx={{
@@ -174,18 +196,35 @@ const ProfileProfissional = () => {
                   }}
                   className={styles.scrollbar}
                 >
-                    <List>
+                  <List>
                     {funcionarios
-                      .filter((name) => name.toLowerCase().includes(filter.toLowerCase()))
-                      .sort((a, b) => isAscending ? a.localeCompare(b) : b.localeCompare(a))
-                      .map((name) => (
-                        <ListItem key={name} button>
+                      .filter((funcionario) => funcionario.nome.toLowerCase().includes(filter.toLowerCase()))
+                      .sort((a, b) => isAscending ? a.nome.localeCompare(b.nome) : b.nome.localeCompare(a.nome))
+                      .map((funcionario) => (
+                        <ListItem
+                          key={funcionario.id}
+                          button
+                          onClick={() => {
+                            setSelectedFuncionarioId(funcionario.id);
+                            setNome(funcionario.nome);
+                            setEmail(funcionario.email);
+                            setSenha(funcionario.senha);
+                            setIsCadastroVisible(true);
+                          }}
+                        >
                           <ListItemText
-                            primary={name}
+                            primary={funcionario.nome}
                             sx={{
-                              backgroundColor: 'rgba(248, 244, 248, 0.2)',
+                              backgroundColor: funcionario.id === selectedFuncionarioId ? 'rgba(248, 244, 248, 0.5)' : 'rgba(248, 244, 248, 0.2)',
                               borderRadius: '20px',
                               padding: '8px',
+                              cursor: 'pointer',
+                              color: funcionario.id === selectedFuncionarioId ? '#ffffff' : '#f8f4f8',
+                              fontWeight: funcionario.id === selectedFuncionarioId ? 'bold' : 'normal',
+                              transition: 'transform 0.2s ease-in-out, background-color 0.2s',
+                              '&:hover': {
+                                transform: 'scale(0.9)',
+                              },
                             }}
                           />
                         </ListItem>
@@ -216,7 +255,7 @@ const ProfileProfissional = () => {
                   }}
                 >
                   <Typography variant="h6" gutterBottom sx={{ color: '#f8f4f8', fontWeight: 'bold', ml: 2 }}>
-                    Cadastrar Funcionário
+                    {selectedFuncionarioId ? 'Atualizar Funcionário' : 'Cadastrar Funcionário'}
                   </Typography>
                   <Box
                     sx={{
@@ -241,19 +280,6 @@ const ProfileProfissional = () => {
                         fieldset: { borderColor: '#f8f4f8' },
                       }}
                     />
-                    {/* <TextField
-                      label="Telefone"
-                      fullWidth
-                      margin="dense"
-                      size="small"
-                      value={telefone}
-                      onChange={(e) => setTelefone(e.target.value)}
-                      sx={{
-                        input: { color: '#f8f4f8' },
-                        label: { color: '#f8f4f8' },
-                        fieldset: { borderColor: '#f8f4f8' },
-                      }}
-                    /> */}
                     <TextField
                       label="Email"
                       fullWidth
@@ -261,6 +287,31 @@ const ProfileProfissional = () => {
                       size="small"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      sx={{
+                        input: { color: '#f8f4f8' },
+                        label: { color: '#f8f4f8' },
+                        fieldset: { borderColor: '#f8f4f8' },
+                      }}
+                    />
+                    <TextField
+                      label="Senha"
+                      type={showPassword ? 'text' : 'password'}
+                      fullWidth
+                      margin="dense"
+                      size="small"
+                      value={senha}
+                      onChange={(e) => setSenha(e.target.value)}
+                      InputProps={{
+                        endAdornment: (
+                          <IconButton
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            edge="end"
+                            sx={{ color: '#f8f4f8' }}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        ),
+                      }}
                       sx={{
                         input: { color: '#f8f4f8' },
                         label: { color: '#f8f4f8' },
@@ -277,11 +328,15 @@ const ProfileProfissional = () => {
                             variant="contained"
                             size="small"
                             value={service}
-                            onChange={(e) => setServico(e.target.value)}
                             sx={{
                               backgroundColor: '#010726',
                               border: '1px solid #f8f4f8',
                               color: '#f8f4f8',
+                              transition: 'transform 0.2s ease-in-out, background-color 0.2s',
+                              '&:hover': {
+                                transform: 'scale(0.95)',
+                                backgroundColor: 'rgba(248, 244, 248, 0.3)',
+                              },
                             }}
                           >
                             {service}
@@ -289,25 +344,24 @@ const ProfileProfissional = () => {
                           <IconButton
                             size="small"
                             onClick={() => handleRemoveService(service)}
-                            sx={{ ml: 0.1 }} 
+                            sx={{ ml: 0.1, color: '#f8f4f8', '&:hover': { transform: 'scale(0.9)' } }}
                           >
-                            <Delete sx={{ color: '#f8f4f8' }} />
+                            <Delete />
                           </IconButton>
                         </Grid>
                       ))}
                       <Grid item>
-                        <IconButton size="small">
-                          <Add sx={{ color: '#f8f4f8' }} />
+                        <IconButton size="small" sx={{ color: '#f8f4f8', '&:hover': { transform: 'scale(0.9)' } }}>
+                          <Add />
                         </IconButton>
                       </Grid>
                     </Grid>
-
                     <TextField
                       label="Descrição adicional"
                       fullWidth
                       margin="dense"
                       multiline
-                      rows={9}
+                      rows={7}
                       size="small"
                       value={descricao}
                       onChange={(e) => setDescricao(e.target.value)}
@@ -324,22 +378,22 @@ const ProfileProfissional = () => {
                         Excluir Perfil
                       </Button>
                       <Grid item>
-                      <Button 
-                          variant="outlined" 
-                          color="primary" 
-                          size="small" 
-                          onClick={handleCancel} 
-                          sx={{ mr: 2 }} 
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          size="small"
+                          onClick={handleCancel}
+                          sx={{ mr: 2 }}
                         >
                           Cancelar
                         </Button>
-                        <Button 
-                          variant="contained" 
+                        <Button
+                          variant="contained"
                           color="primary"
                           size="small"
-                          onClick={handleSave}
+                          onClick={selectedFuncionarioId ? handleUpdate : handleSave}
                         >
-                          Salvar
+                          {selectedFuncionarioId ? 'Atualizar' : 'Salvar'}
                         </Button>
                       </Grid>
                     </Grid>
@@ -354,4 +408,4 @@ const ProfileProfissional = () => {
   );
 };
 
-export default ProfileProfissional;
+export default ProfileProfissional; 
