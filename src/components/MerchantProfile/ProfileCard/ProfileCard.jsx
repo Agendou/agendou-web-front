@@ -47,7 +47,7 @@ export default function ProfileCard() {
       <Grid
         container
         spacing={2}
-        style={{ padding: "10px"}}
+        style={{ padding: "10px", marginLeft: "-40px"}}
         justifyContent="center"
         alignItems="center"
       >
