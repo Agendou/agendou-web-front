@@ -4,6 +4,7 @@ import styles from './FormLogin.module.css';
 import logo from '../../assets/images/logoEscuraAgendou.png';
 import { ValidationLoginMessages } from './ValidationLoginMessages';
 import { toast } from "react-toastify";
+import api from '../../services/api';
 
 const FormLogin = ({ switchForm }) => {
     const [email, setEmail] = useState('');
@@ -12,7 +13,7 @@ const FormLogin = ({ switchForm }) => {
 
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const validationMessages = ValidationLoginMessages(email, senha);
@@ -22,7 +23,19 @@ const FormLogin = ({ switchForm }) => {
             return;
         }
 
-        return toast.success("Bem vindo(a) de volta!");
+        try {
+            const response = await api.get(`/empresas/login?email=${email}&senha=${senha}`);
+
+            localStorage.setItem('token', response.data.token);
+            toast.success("Seja bem vindo(a)!");
+
+            navigate('/dashboard');
+
+        } catch (error) {
+
+            toast.error("Erro ao fazer login: " + (error.response?.data || error.message));
+
+        }
     };
 
     const handleLogoClick = () => {
@@ -74,7 +87,7 @@ const FormLogin = ({ switchForm }) => {
                         <label htmlFor="lembrar" className={styles["label"]}>Lembrar</label>
                     </div>
 
-                    <a href="#" className={styles["link"]}>Esqueceu sua senha?</a>
+                    <button className={styles["link"]}>Esqueceu sua senha?</button>
                 </div>
 
                 <button type="submit" className={styles["button"]}>Entrar</button>
@@ -82,7 +95,7 @@ const FormLogin = ({ switchForm }) => {
 
             <div className={styles["linkContainer"]}>
                 <p>Não tem uma conta?</p>
-                <a href="#" className={styles["link"]} onClick={switchForm}>Registre-se</a>
+                <button className={styles["link"]} onClick={switchForm}>Registre-se</button>
             </div>
         </div>
     );

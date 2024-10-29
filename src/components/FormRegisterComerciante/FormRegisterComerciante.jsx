@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import styles from './FormRegisterComerciante.module.css';
 import logo from '../../assets/images/logoEscuraAgendou.png';
 import { ValidationComercianteMessages } from "./ValidationComercianteMessages";
+import { toast } from "react-toastify";
+import api from '../../services/api';
 
 const FormRegisterComerciante = ({ switchForm }) => {
     const [cnpj, setCnpj] = useState('');
@@ -15,10 +17,15 @@ const FormRegisterComerciante = ({ switchForm }) => {
 
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const formValues = { cnpj, telefone, nomeEmpresa, representanteLegal, email, senha, aceitarTermos };
+        if (!aceitarTermos) {
+            toast.error("Você deve aceitar os termos e condições para prosseguir.");
+            return;
+        }
+
+        const formValues = { cnpj, telefone, nomeEmpresa, representanteLegal, email, senha };
         const validationMessages = ValidationComercianteMessages(formValues);
 
         if (validationMessages) {
@@ -26,7 +33,18 @@ const FormRegisterComerciante = ({ switchForm }) => {
             return;
         }
 
-        alert("Cadastrado com sucesso!");
+        try {
+            const response = await api.post('/empresas/cadastrar', formValues, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            toast.success("Cadastrado com sucesso!");
+            console.log(response.data);
+
+        } catch (error) {
+            toast.error("Usuário não cadastrado! " + (error.response?.data || error.message));
+        }
     };
 
     const handleLogoClick = () => {
@@ -131,7 +149,7 @@ const FormRegisterComerciante = ({ switchForm }) => {
                         id="aceitar"
                     />
                     <label htmlFor="aceitar" className={styles["label"]}>
-                        Eu aceito os <a href="#" className={styles["linkTerms"]}>Termos e Condições</a>
+                        Eu aceito os <button className={styles["linkTerms"]}>Termos e Condições</button>
                     </label>
                 </div>
 
@@ -140,7 +158,7 @@ const FormRegisterComerciante = ({ switchForm }) => {
 
             <div className={styles["linkContainer"]}>
                 <p>Já tem uma conta?</p>
-                <a href="#" className={styles["link"]} onClick={switchForm}>Acesse aqui</a>
+                <button className={styles["link"]} onClick={switchForm}>Acesse aqui</button>
             </div>
         </div>
     );

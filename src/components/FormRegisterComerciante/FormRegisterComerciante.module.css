@@ -4,13 +4,11 @@
     align-items: flex-end;
     justify-content: center;
     border-radius: 8px;
-    padding: 2%;
+    padding: 1%;
     width: 100%;
     max-width: 400px;
-    margin: auto;
-    max-height: 80vh;
-    height: auto;
     position: relative;
+    height: 80vh;
 }
 
 .logo {
@@ -50,7 +48,6 @@
     opacity: 50%;
     border: none;
     border-radius: 8px;
-    margin-bottom: 3px;
     padding: 10px;
     width: 100%;
     max-width: 400px;
@@ -91,7 +88,7 @@
 .linkContainer {
     display: flex;
     width: 100%;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     max-width: 400px;
 }
 

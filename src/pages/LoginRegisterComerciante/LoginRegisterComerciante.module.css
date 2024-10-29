@@ -25,7 +25,6 @@
 
 .container {
     display: flex;
-    max-height: 90vh;
     justify-content: center;
     align-items: center;
     width: 100%;
