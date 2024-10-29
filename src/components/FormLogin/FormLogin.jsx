@@ -24,7 +24,7 @@ const FormLogin = ({ switchForm }) => {
         }
 
         try {
-            const response = await api.get(`/usuarios/login?email=${email}&senha=${senha}`);
+            const response = await api.get(`/empresas/login?email=${email}&senha=${senha}`);
 
             localStorage.setItem('token', response.data.token);
             toast.success("Seja bem vindo(a)!");

@@ -40,8 +40,8 @@ const FormRegisterComerciante = ({ switchForm }) => {
                 }
             });
             toast.success("Cadastrado com sucesso!");
-            window.location.reload();
             console.log(response.data);
+
         } catch (error) {
             toast.error("Usuário não cadastrado! " + (error.response?.data || error.message));
         }
