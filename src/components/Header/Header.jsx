@@ -13,9 +13,10 @@ import { useNavigate } from 'react-router-dom';
 const pages = ['Quem pode usar', 'Recursos', 'Sobre nós'];
 
 function ResponsiveAppBar() {
-  const navigate = useNavigate(); // Utilize useNavigate para navegação
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  
+  const navigate = useNavigate(); // Initialize useNavigate here
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -94,7 +95,9 @@ function ResponsiveAppBar() {
 
           <Box sx={{ display: 'flex', gap: 2, flexGrow: 0 }}>
             <Button
-              onClick={() => navigate('/login-register-user-admin')} // Usando navigate para redirecionar
+              onClick={() => {
+                navigate("/login-register-user-admin"); // Use navigate correctly here
+              }}
               sx={{ my: 2, color: 'white', display: 'block', fontFamily: 'Poppins, sans-serif', fontWeight: 'bold', border: 'solid 1px', borderRadius: '15px', padding: '10px'}}
             >
               Login

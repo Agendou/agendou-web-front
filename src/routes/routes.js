@@ -7,7 +7,7 @@ import ModalAvaliacao from "../components/Modal/ModalAvaliacao";
 import ModalServico from "../components/Modal/ModalServico";
 import ModalValidacao from "../components/Modal/ModalValidacao";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import MerchantProfile from "../pages/MerchantProfile/MerchantProfile";
 
 function Rotas() {
     return (
@@ -22,6 +22,7 @@ function Rotas() {
                 <Route path="/ModalAvaliacao" element={<ModalAvaliacao />} />
                 <Route path="/ModalServico" element={<ModalServico />} />
                 <Route path="/ModalValidacao" element={<ModalValidacao />} />
+                <Route path="/manual-appointment" element={<MerchantProfile />} />
             </Routes>
         </BrowserRouter>
     );
