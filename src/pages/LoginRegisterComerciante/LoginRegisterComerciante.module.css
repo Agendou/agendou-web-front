@@ -10,7 +10,7 @@
     margin: 0;
     height: 100vh;
     box-sizing: border-box;
-    background-color: #010726;
+    background-color: #f8f4f8;
 }
 
 .container h2 {
@@ -28,8 +28,7 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: 1440px;
-    height: 90vh;
+    height: 100vh;
     margin: 0;
     background-color: #f8f4f8;
     border-radius: 0;
@@ -48,7 +47,6 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    max-height: 90vh;
     border-bottom-right-radius: 100%;
     border-top-right-radius: 100%;
     z-index: 10;
@@ -58,9 +56,8 @@
     width: 100%;
     margin: 0;
     display: flex;
-    margin: auto;
+    min-height: 90vh;
     max-height: 90vh;
-    height: auto;
 }
 
 
