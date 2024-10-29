@@ -10,7 +10,7 @@ import {
   Box,
   TextField,
 } from '@mui/material';
-import { Add, FilterList, Delete, Visibility, VisibilityOff } from '@mui/icons-material'; 
+import { Add, FilterList, Delete, Visibility, VisibilityOff } from '@mui/icons-material';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import HeaderApp from '../../components/HeaderApp/HeaderApp';
 import styles from './ProfileProfissional.module.css';
@@ -50,23 +50,22 @@ const ProfileProfissional = () => {
   };
 
   const toggleCadastro = () => {
-    setIsCadastroVisible((prev) => !prev);
+    setIsCadastroVisible(true);
   };
-  
-
+ 
   const handleRemoveService = (serviceToRemove) => {
     setServicos((prevServices) => prevServices.filter(service => service !== serviceToRemove));
   };
 
   const handleSave = async () => {
     try {
+      toast.dismiss(); 
       const response = await api.post('/funcionarios/cadastrar', {
         nome,
         email,
         senha,
       });
       toast.success("Funcionário cadastrado com sucesso!");
-      window.location.reload();
       fetchFuncionarios();
       handleCancel();
     } catch (error) {
@@ -74,6 +73,7 @@ const ProfileProfissional = () => {
       toast.error("Erro ao cadastrar funcionário. Verifique os dados preenchidos.");
     }
   };
+  
 
   const handleUpdate = async () => {
     try {
@@ -83,6 +83,9 @@ const ProfileProfissional = () => {
         senha,
       });
       toast.success("Funcionário atualizado com sucesso!");
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 2000);
       fetchFuncionarios();
       handleCancel();
     } catch (error) {
@@ -96,8 +99,11 @@ const ProfileProfissional = () => {
       try {
         await api.delete(`/funcionarios/deletar/${selectedFuncionarioId}`);
         toast.success("Funcionário excluído com sucesso!");
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1000);
         fetchFuncionarios();
-        setSelectedFuncionarioId(null); 
+        setSelectedFuncionarioId(null);
       } catch (error) {
         console.error("Erro ao excluir funcionário:", error);
         toast.error("Erro ao excluir funcionário. Tente novamente.");
@@ -109,9 +115,9 @@ const ProfileProfissional = () => {
     setNome('');
     setEmail('');
     setSenha('');
-    setIsCadastroVisible(false); 
+    setDescricao('');
     setSelectedFuncionarioId(null);
-  };
+  };  
 
   return (
     <div className={styles.bodyProfissional}>
@@ -167,9 +173,16 @@ const ProfileProfissional = () => {
                   <IconButton onClick={() => setFilter('')} sx={{ color: '#f8f4f8' }}>
                     <FilterList />
                   </IconButton>
-                  <IconButton onClick={toggleCadastro} sx={{ color: '#f8f4f8' }}>
+                  <IconButton
+                    onClick={() => {
+                      handleCancel();  
+                      toggleCadastro();  
+                    }}
+                    sx={{ color: '#f8f4f8' }}
+                  >
                     <Add />
                   </IconButton>
+
                 </Box>
                 <Box
                   sx={{
@@ -188,9 +201,9 @@ const ProfileProfissional = () => {
                       .filter((funcionario) => funcionario.nome.toLowerCase().includes(filter.toLowerCase()))
                       .sort((a, b) => isAscending ? a.nome.localeCompare(b.nome) : b.nome.localeCompare(a.nome))
                       .map((funcionario) => (
-                        <ListItem 
-                          key={funcionario.id} 
-                          button 
+                        <ListItem
+                          key={funcionario.id}
+                          button
                           onClick={() => {
                             setSelectedFuncionarioId(funcionario.id);
                             setNome(funcionario.nome);
@@ -202,9 +215,16 @@ const ProfileProfissional = () => {
                           <ListItemText
                             primary={funcionario.nome}
                             sx={{
-                              backgroundColor: 'rgba(248, 244, 248, 0.2)',
+                              backgroundColor: funcionario.id === selectedFuncionarioId ? 'rgba(248, 244, 248, 0.5)' : 'rgba(248, 244, 248, 0.2)',
                               borderRadius: '20px',
                               padding: '8px',
+                              cursor: 'pointer',
+                              color: funcionario.id === selectedFuncionarioId ? '#ffffff' : '#f8f4f8',
+                              fontWeight: funcionario.id === selectedFuncionarioId ? 'bold' : 'normal',
+                              transition: 'transform 0.2s ease-in-out, background-color 0.2s',
+                              '&:hover': {
+                                transform: 'scale(0.9)',
+                              },
                             }}
                           />
                         </ListItem>
@@ -312,6 +332,11 @@ const ProfileProfissional = () => {
                               backgroundColor: '#010726',
                               border: '1px solid #f8f4f8',
                               color: '#f8f4f8',
+                              transition: 'transform 0.2s ease-in-out, background-color 0.2s',
+                              '&:hover': {
+                                transform: 'scale(0.95)',
+                                backgroundColor: 'rgba(248, 244, 248, 0.3)',
+                              },
                             }}
                           >
                             {service}
@@ -319,19 +344,18 @@ const ProfileProfissional = () => {
                           <IconButton
                             size="small"
                             onClick={() => handleRemoveService(service)}
-                            sx={{ ml: 0.1 }} 
+                            sx={{ ml: 0.1, color: '#f8f4f8', '&:hover': { transform: 'scale(0.9)' } }}
                           >
-                            <Delete sx={{ color: '#f8f4f8' }} />
+                            <Delete />
                           </IconButton>
                         </Grid>
                       ))}
                       <Grid item>
-                        <IconButton size="small">
-                          <Add sx={{ color: '#f8f4f8' }} />
+                        <IconButton size="small" sx={{ color: '#f8f4f8', '&:hover': { transform: 'scale(0.9)' } }}>
+                          <Add />
                         </IconButton>
                       </Grid>
                     </Grid>
-
                     <TextField
                       label="Descrição adicional"
                       fullWidth
@@ -354,17 +378,17 @@ const ProfileProfissional = () => {
                         Excluir Perfil
                       </Button>
                       <Grid item>
-                        <Button 
-                          variant="outlined" 
-                          color="primary" 
-                          size="small" 
-                          onClick={handleCancel} 
-                          sx={{ mr: 2 }} 
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          size="small"
+                          onClick={handleCancel}
+                          sx={{ mr: 2 }}
                         >
                           Cancelar
                         </Button>
-                        <Button 
-                          variant="contained" 
+                        <Button
+                          variant="contained"
                           color="primary"
                           size="small"
                           onClick={selectedFuncionarioId ? handleUpdate : handleSave}
