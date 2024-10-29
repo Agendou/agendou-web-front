@@ -13,9 +13,6 @@ import { useNavigate } from 'react-router-dom';
 const pages = ['Quem pode usar', 'Recursos', 'Sobre nós'];
 
 function ResponsiveAppBar() {
-
-  const navigate = useNavigate();
-
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -64,7 +61,6 @@ function ResponsiveAppBar() {
             </Menu>
           </Box>
 
-          {/* Título do App - Visível em telas médias e grandes */}
           <Typography
             variant="h5"
             noWrap
@@ -97,7 +93,7 @@ function ResponsiveAppBar() {
 
           <Box sx={{ display: 'flex', gap: 2, flexGrow: 0 }}>
             <Button
-              onClick={() => navigate('/login-register')}
+              onClick={() => navigate('/login-register-user-admin')} // Usando navigate para redirecionar
               sx={{ my: 2, color: 'white', display: 'block', fontFamily: 'Poppins, sans-serif', fontWeight: 'bold', border: 'solid 1px', borderRadius: '15px', padding: '10px'}}
             >
               Login
