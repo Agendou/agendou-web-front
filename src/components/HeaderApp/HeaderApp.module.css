@@ -5,16 +5,16 @@
   justify-content: space-between;
   background-color: #010726;
   color: #f8f4f8;
-  height: 8vh;
-  padding: 20px;
+  height: 6vh;
+  padding: 15px;
   position: fixed;
-  top: 0;
+  top: 1%;
   z-index: 1000;
   border-radius: 10px;
-  width: 80vw; 
+  width: calc(100% - 290px);
   left: 260px; 
   transition: left 0.3s ease, width 0.3s ease;
-  margin-top: 5px;
+  margin-top: 3px;
 }
 
 .headerTitle {
