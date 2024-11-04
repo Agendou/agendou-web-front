@@ -15,11 +15,11 @@ import {
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import Calendar from "../CalendarCard/CalendarCard";
 import TodayAppointments from "../TodayAppointments/TodayAppointments";
+import { DateTimePicker } from "@mui/x-date-pickers";
 
-export default function ProfileCard() {
+export default function ManualAppointments() {
   const [value, setValue] = useState(dayjs());
   const [formData, setFormData] = useState({
     nome: "",
@@ -30,7 +30,6 @@ export default function ProfileCard() {
     infoAdicional: "",
   });
 
-  // Estado para controlar o foco do campo de informações adicionais
   const [isFocused, setIsFocused] = useState(false);
 
   const handleInputChange = (field, value) => {
@@ -39,7 +38,6 @@ export default function ProfileCard() {
 
   const handleSubmit = () => {
     console.log("Dados do agendamento:", formData);
-    // Lógica para enviar os dados ao backend
   };
 
   return (
@@ -47,7 +45,7 @@ export default function ProfileCard() {
       <Grid
         container
         spacing={2}
-        style={{ padding: "10px", marginLeft: "-40px"}}
+        style={{ padding: "10px", marginLeft: "-40px" }}
         justifyContent="center"
         alignItems="center"
       >
@@ -102,11 +100,11 @@ export default function ProfileCard() {
 
               <FormControl fullWidth margin="normal">
                 <InputLabel
-                  style={{ color: "black" }}
+                  style={{ color: "white" }}
                   sx={{
-                    display: formData.servico ? "none" : "block", // Esconde a label se um serviço estiver selecionado
+                    display: formData.servico ? "none" : "block",
                   }}
-                  shrink={false} // Faz a label não encolher
+                  shrink={false}
                 >
                   Serviço
                 </InputLabel>
@@ -115,10 +113,38 @@ export default function ProfileCard() {
                   onChange={(e) => handleInputChange("servico", e.target.value)}
                   label="Serviço"
                   sx={{
-                    color: "black", // Exibe a opção selecionada em preto
-                    backgroundColor: "#fff",
+                    color: "white",
+                    backgroundColor: "transparent",
+                    borderColor: "white",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "white",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "white",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "white",
+                    },
                     "& .MuiSvgIcon-root": {
-                      color: "black", // Ícone da lista (seta) em branco
+                      color: "white",
+                    },
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        backgroundColor: "#010720",
+                        color: "white",
+                      },
+                    },
+                    MenuListProps: {
+                      sx: {
+                        "& .MuiMenuItem-root": {
+                          color: "white",
+                        },
+                        "& .MuiMenuItem-root:hover": {
+                          backgroundColor: "rgba(255, 255, 255, 0.1)",
+                        },
+                      },
                     },
                   }}
                 >
@@ -129,72 +155,12 @@ export default function ProfileCard() {
               </FormControl>
 
               <Box sx={{ display: "flex", gap: "1rem", marginTop: 2 }}>
-                <DatePicker
-                  label="Data do Agendamento"
+                <DateTimePicker
+                  label="Data do agendamento"
                   value={formData.data}
                   onChange={(date) => handleInputChange("data", date)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      InputLabelProps={{
-                        sx: {
-                          color: "white", // Cor da label
-                        },
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "& fieldset": {
-                            borderColor: "white", // Cor da borda
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "white", // Borda ao passar o mouse
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "white", // Borda ao focar
-                          },
-                          color: "white", // Cor do texto
-                          "& .MuiInputBase-input": {
-                            color: "white", // Cor do texto da input
-                          },
-                        },
-                      }}
-                    />
-                  )}
-                />
-
-                <TimePicker
-                  label="Hora do Agendamento"
-                  value={formData.hora}
-                  onChange={(time) => handleInputChange("hora", time)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      InputLabelProps={{
-                        sx: {
-                          color: "white", // Cor da label
-                        },
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "& fieldset": {
-                            borderColor: "white", // Cor da borda
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "white", // Borda ao passar o mouse
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "white", // Borda ao focar
-                          },
-                          color: "white", // Cor do texto
-                          "& .MuiInputBase-input": {
-                            color: "white", // Cor do texto da input
-                          },
-                        },
-                      }}
-                    />
-                  )}
+                  inputFormat="dd/MM/yyyy"
+                  renderInput={(params) => <TextField {...params} />}
                 />
               </Box>
 
@@ -206,7 +172,6 @@ export default function ProfileCard() {
                 }
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => {
-                  // Para mostrar o rótulo novamente se o campo estiver vazio
                   if (formData.infoAdicional === "") {
                     setIsFocused(false);
                   }
@@ -217,12 +182,23 @@ export default function ProfileCard() {
                 margin="normal"
                 InputProps={{
                   style: {
-                    color: "black",
-                    backgroundColor: "white",
+                    color: "white",
+                    backgroundColor: "#010726", 
                   },
                 }}
                 InputLabelProps={{
-                  style: { color: "black" },
+                  style: { color: "white" },
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white", 
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white", 
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white", 
+                  },
                 }}
               />
 

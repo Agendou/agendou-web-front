@@ -7,14 +7,13 @@ import ModalAvaliacao from "../components/Modal/ModalAvaliacao";
 import ModalServico from "../components/Modal/ModalServico";
 import ModalValidacao from "../components/Modal/ModalValidacao";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MerchantProfile from "../pages/MerchantProfile/MerchantProfile";
+import ManualAppointment from "../pages/MerchantProfile/ManualAppointment";
 
 function Rotas() {
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="/home" element={<Home />} />
-                <Route path="/" element={<Home />} />
                 <Route path="/dashboard" element={<Dashboard />} /> 
                 <Route path="/profile-profissional" element={<ProfileProfissional />} />
                 <Route path="/login-register-user-admin" element={<LoginRegisterComerciante />} />
@@ -22,7 +21,7 @@ function Rotas() {
                 <Route path="/ModalAvaliacao" element={<ModalAvaliacao />} />
                 <Route path="/ModalServico" element={<ModalServico />} />
                 <Route path="/ModalValidacao" element={<ModalValidacao />} />
-                <Route path="/manual-appointment" element={<MerchantProfile />} />
+                <Route path="/manual-appointment" element={<ManualAppointment />} />
             </Routes>
         </BrowserRouter>
     );
