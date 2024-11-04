@@ -18,9 +18,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Calendar from "../CalendarCard/CalendarCard";
 import TodayAppointments from "../TodayAppointments/TodayAppointments";
 import { DateTimePicker } from "@mui/x-date-pickers";
-import { styled } from "@mui/material/styles";
 
-export default function ProfileCard() {
+export default function ManualAppointments() {
   const [value, setValue] = useState(dayjs());
   const [formData, setFormData] = useState({
     nome: "",
