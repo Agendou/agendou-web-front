@@ -7,7 +7,7 @@ import {
 } from './ValidationRegisterComerciante';
 
 export const ValidationComercianteMessages = (formValues) => {
-    const { cnpj, telefone, nomeEmpresa, representanteLegal, email, senha } = formValues;
+    const { cnpj, telefone, nomeEmpresa, representante, email, senha } = formValues;
 
     if (!validarCnpj(cnpj)) {
         return "CNPJ inválido.";
@@ -21,7 +21,7 @@ export const ValidationComercianteMessages = (formValues) => {
         return "Por favor insira o nome da empresa.";
     }
 
-    if (!validarCampoTexto(representanteLegal)) {
+    if (!validarCampoTexto(representante)) {
         return "Por favor insira o nome do representante legal.";
     }
 

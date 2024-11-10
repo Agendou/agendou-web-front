@@ -74,7 +74,8 @@
 
 .menu-section ul {
   list-style: none;
-  padding: 0;
+  padding: 5px;
+  margin-top: 15px;
 }
 
 .menu-section ul li {

@@ -10,7 +10,7 @@ const FormRegisterComerciante = ({ switchForm }) => {
     const [cnpj, setCnpj] = useState('');
     const [telefone, setTelefone] = useState('');
     const [nomeEmpresa, setNomeEmpresa] = useState('');
-    const [representanteLegal, setRepresentanteLegal] = useState('');
+    const [representante, setRepresentante] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [aceitarTermos, setAceitarTermos] = useState(false);
@@ -25,7 +25,7 @@ const FormRegisterComerciante = ({ switchForm }) => {
             return;
         }
 
-        const formValues = { cnpj, telefone, nomeEmpresa, representanteLegal, email, senha };
+        const formValues = { cnpj, telefone, nomeEmpresa, representante, email, senha };
         const validationMessages = ValidationComercianteMessages(formValues);
 
         if (validationMessages) {
@@ -100,12 +100,12 @@ const FormRegisterComerciante = ({ switchForm }) => {
                 </div>
 
                 <div className={styles["inputContainer"]}>
-                    <label htmlFor="representanteLegal" className={styles["label"]}>Representante Legal</label>
+                    <label htmlFor="representante" className={styles["label"]}>Representante Legal</label>
                     <input
-                        value={representanteLegal}
-                        onChange={(e) => setRepresentanteLegal(e.target.value)}
+                        value={representante}
+                        onChange={(e) => setRepresentante(e.target.value)}
                         required
-                        id="representanteLegal"
+                        id="representante"
                         type="text"
                         className={`${styles["input"]} ${styles["input-large"]}`}
                         placeholder="Insira o nome do representante legal"
