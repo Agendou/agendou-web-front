@@ -10,7 +10,7 @@
     margin: 0;
     height: 100vh;
     box-sizing: border-box;
-    background-color: #010726;
+    background-color: #f8f4f8;
 }
 
 
@@ -26,13 +26,10 @@
 
 .container {
     display: flex;
-    max-height: 90vh;
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: 1440px;
     height: 100vh;
-    max-height: 90vh;
     margin: 0;
     background-color: #f8f4f8;
     border-radius: 0;
