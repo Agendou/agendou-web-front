@@ -65,7 +65,6 @@
     flex: 1;
     display: flex;
     justify-content: center;
-    margin: auto;
     align-items: center;
     transition: opacity 0.9s;
     overflow-y: auto;
