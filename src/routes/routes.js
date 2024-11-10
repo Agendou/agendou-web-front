@@ -7,7 +7,7 @@ import ModalAvaliacao from "../components/Modal/ModalAvaliacao";
 import ModalServico from "../components/Modal/ModalServico";
 import ModalValidacao from "../components/Modal/ModalValidacao";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ManualAppointment from "../pages/MerchantProfile/ManualAppointment";
+import ManualAppointment from "../pages/AgendamentoCliente/ManualAppointment";
 
 function Rotas() {
     return (
