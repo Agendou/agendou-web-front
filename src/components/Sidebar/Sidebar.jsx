@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './Sidebar.css'; 
+import './Sidebar.css';
 import logo from '../../assets/images/Logo Branca.png';
 import googleAnalyticsIcon from '../../assets/images/analitica-do-google.png';
 import employeesIcon from '../../assets/images/employees.png';
@@ -23,7 +23,7 @@ const Sidebar = ({ isVisible }) => {
   };
 
   return (
-    <div>
+    <div style={{ position: 'relative' }}>
       <button className="hamburger-menu" onClick={toggleSidebar}>
         &#9776;
       </button>

@@ -8,6 +8,7 @@ import ModalServico from "../components/Modal/ModalServico";
 import ModalValidacao from "../components/Modal/ModalValidacao";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ManualAppointment from "../pages/AgendamentoCliente/ManualAppointment";
+import ManualAppointmentAdmin from "../pages/AgendamentoComerciante/ManualAppointmentAdmin";
 
 function Rotas() {
     return (
@@ -23,6 +24,7 @@ function Rotas() {
                 <Route path="/ModalServico" element={<ModalServico />} />
                 <Route path="/ModalValidacao" element={<ModalValidacao />} />
                 <Route path="/manual-appointment" element={<ManualAppointment />} />
+                <Route path="/manual-appointment-admin" element={<ManualAppointmentAdmin />} />
             </Routes>
         </BrowserRouter>
     );
