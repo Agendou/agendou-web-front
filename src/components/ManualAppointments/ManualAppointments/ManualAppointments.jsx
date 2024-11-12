@@ -23,7 +23,6 @@ export default function ManualAppointments() {
   const [value, setValue] = useState(dayjs());
   const [formData, setFormData] = useState({
     Profissional: "",
-    telefone: "",
     servico: "",
     data: null,
     hora: null,
@@ -45,18 +44,19 @@ export default function ManualAppointments() {
       <Grid
         container
         spacing={2}
-        style={{ padding: "10px", marginLeft: "-40px" }}
+        style={{ padding: "10px" }}
         justifyContent="center"
-        alignItems="center"
+        alignItems="flex-start"
       >
-        <Grid item xs={10} md={8} style={{ margin: "0 auto" }}>
+        {/* Coluna para o formulário de cadastro */}
+        <Grid item xs={12} md={6}>
           <Card
             sx={{
               backgroundColor: "#010726",
               color: "#FFF",
               height: "auto",
-              width: "100%",
-              padding: "20px",
+              width: "95%",
+              padding: "25px",
             }}
           >
             <CardContent>
@@ -64,6 +64,36 @@ export default function ManualAppointments() {
                 Cadastro de Agendamento Manual
               </Typography>
 
+              <Box sx={{ display: "flex", gap: "1rem", marginTop: 2 }}>
+                <DateTimePicker
+                  label="Data do agendamento"
+                  value={formData.data}
+                  onChange={(date) => handleInputChange("data", date)}
+                  inputFormat="dd/MM/yyyy"
+                  renderInput={(params) => <TextField {...params} />}
+                  sx={{
+                    "& .MuiInputBase-input": {
+                      color: "white",
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "white",
+                    },
+                    "& .MuiSvgIcon-root": {
+                      color: "white",
+                    },
+                    "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
+                      {
+                        borderColor: "white",
+                      },
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                      {
+                        borderColor: "white",
+                      },
+                  }}
+                />
+              </Box>
+
+              {/* Campo Profissional */}
               <FormControl fullWidth margin="normal">
                 <InputLabel
                   style={{ color: "white" }}
@@ -122,23 +152,7 @@ export default function ManualAppointments() {
                 </Select>
               </FormControl>
 
-              <TextField
-                label="Telefone"
-                value={formData.telefone}
-                onChange={(e) => handleInputChange("telefone", e.target.value)}
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ style: { color: "white" } }}
-                InputProps={{
-                  style: { color: "white" },
-                  sx: {
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#FFF",
-                    },
-                  },
-                }}
-              />
-
+              {/* Campo Serviço */}
               <FormControl fullWidth margin="normal">
                 <InputLabel
                   style={{ color: "white" }}
@@ -195,35 +209,7 @@ export default function ManualAppointments() {
                 </Select>
               </FormControl>
 
-              <Box sx={{ display: "flex", gap: "1rem", marginTop: 2 }}>
-                <DateTimePicker
-                  label="Data do agendamento"
-                  value={formData.data}
-                  onChange={(date) => handleInputChange("data", date)}
-                  inputFormat="dd/MM/yyyy"
-                  renderInput={(params) => <TextField {...params} />}
-                  sx={{
-                    "& .MuiInputBase-input": {
-                      color: "white",
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "white",
-                    },
-                    "& .MuiSvgIcon-root": {
-                      color: "white",
-                    },
-                    "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
-                      {
-                        borderColor: "white",
-                      },
-                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                      {
-                        borderColor: "white",
-                      },
-                  }}
-                />
-              </Box>
-
+              {/* Campo Informações Adicionais */}
               <TextField
                 label={!isFocused ? "Informações Adicionais" : ""}
                 value={formData.infoAdicional}
@@ -287,21 +273,7 @@ export default function ManualAppointments() {
           </Card>
         </Grid>
 
-        <Grid item xs={10} md={3} style={{ margin: "0 auto" }}>
-          <Card
-            style={{
-              height: "325px",
-              color: "black",
-              backgroundColor: "#010726",
-              width: "125%",
-              marginLeft: "-40px",
-            }}
-          >
-            <CardContent>
-              <Calendar value={value} onChange={setValue} />
-            </CardContent>
-          </Card>
-
+        <Grid item xs={12} md={6}>
           <TodayAppointments />
         </Grid>
       </Grid>
