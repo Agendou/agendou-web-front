@@ -22,7 +22,7 @@ import { DateTimePicker } from "@mui/x-date-pickers";
 export default function ManualAppointments() {
   const [value, setValue] = useState(dayjs());
   const [formData, setFormData] = useState({
-    nome: "",
+    Profissional: "",
     telefone: "",
     servico: "",
     data: null,
@@ -64,22 +64,63 @@ export default function ManualAppointments() {
                 Cadastro de Agendamento Manual
               </Typography>
 
-              <TextField
-                label="Nome"
-                value={formData.nome}
-                onChange={(e) => handleInputChange("nome", e.target.value)}
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ style: { color: "white" } }}
-                InputProps={{
-                  style: { color: "white" },
-                  sx: {
+              <FormControl fullWidth margin="normal">
+                <InputLabel
+                  style={{ color: "white" }}
+                  sx={{
+                    display: formData.profissional ? "none" : "block",
+                  }}
+                  shrink={false}
+                >
+                  Profissional
+                </InputLabel>
+                <Select
+                  value={formData.profissional}
+                  onChange={(e) =>
+                    handleInputChange("profissional", e.target.value)
+                  }
+                  label="Profissional"
+                  sx={{
+                    color: "white",
+                    backgroundColor: "transparent",
+                    borderColor: "white",
                     "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#FFF",
+                      borderColor: "white",
                     },
-                  },
-                }}
-              />
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "white",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "white",
+                    },
+                    "& .MuiSvgIcon-root": {
+                      color: "white",
+                    },
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        backgroundColor: "#010720",
+                        color: "white",
+                      },
+                    },
+                    MenuListProps: {
+                      sx: {
+                        "& .MuiMenuItem-root": {
+                          color: "white",
+                        },
+                        "& .MuiMenuItem-root:hover": {
+                          backgroundColor: "rgba(255, 255, 255, 0.1)",
+                        },
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem value="luzes">Humberto</MenuItem>
+                  <MenuItem value="degrade">Henrique</MenuItem>
+                  <MenuItem value="corte">Pedro</MenuItem>
+                </Select>
+              </FormControl>
 
               <TextField
                 label="Telefone"
@@ -161,6 +202,25 @@ export default function ManualAppointments() {
                   onChange={(date) => handleInputChange("data", date)}
                   inputFormat="dd/MM/yyyy"
                   renderInput={(params) => <TextField {...params} />}
+                  sx={{
+                    "& .MuiInputBase-input": {
+                      color: "white",
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "white",
+                    },
+                    "& .MuiSvgIcon-root": {
+                      color: "white",
+                    },
+                    "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
+                      {
+                        borderColor: "white",
+                      },
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                      {
+                        borderColor: "white",
+                      },
+                  }}
                 />
               </Box>
 
@@ -183,7 +243,7 @@ export default function ManualAppointments() {
                 InputProps={{
                   style: {
                     color: "white",
-                    backgroundColor: "#010726", 
+                    backgroundColor: "#010726",
                   },
                 }}
                 InputLabelProps={{
@@ -191,13 +251,13 @@ export default function ManualAppointments() {
                 }}
                 sx={{
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "white", 
+                    borderColor: "white",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "white", 
+                    borderColor: "white",
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "white", 
+                    borderColor: "white",
                   },
                 }}
               />
@@ -219,7 +279,7 @@ export default function ManualAppointments() {
                     color="primary"
                     onClick={handleSubmit}
                   >
-                    Salvar
+                    Agendar
                   </Button>
                 </Grid>
               </Grid>
