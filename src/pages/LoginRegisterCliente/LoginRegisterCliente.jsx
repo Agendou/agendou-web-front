@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import FormLogin from '../../components/FormLogin/FormLogin';
+import FormLoginCliente from '../../components/FormLoginCliente/FormLoginCliente';
 import AuthPanel from '../../components/AuthPanel/AuthPanel';
 import styles from './LoginRegisterCliente.module.css';
 import FormRegisterCliente from "../../components/FormRegisterCliente/FormRegisterCliente";
@@ -17,7 +17,7 @@ const LoginRegisterCliente = () => {
                 {isLogin ? (
                     <>
                         <div className={styles["leftPanel"]}>
-                            <FormLogin switchForm={switchForm} />
+                            <FormLoginCliente switchForm={switchForm} />
                         </div>
                         <div className={styles["rightPanel"]}>
                             <AuthPanel
