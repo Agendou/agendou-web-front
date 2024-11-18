@@ -7,8 +7,15 @@ import Badge from '@mui/material/Badge';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { Box, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function ClientHeader() {
+  const navigate = useNavigate();
+
+  const handleNavigation = () => {
+    navigate('/profile');
+  };
+
   return (
     <AppBar position="static" sx={{ backgroundColor: '#0A0F1D' }}>
       <Toolbar>
@@ -17,7 +24,7 @@ function ClientHeader() {
         </Typography>
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Button sx={{ color: 'white', marginRight: 2 }}>
+          <Button sx={{ color: 'white', marginRight: 2 }} onClick={handleNavigation}>
             Ver meu perfil
           </Button>
           
