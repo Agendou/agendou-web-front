@@ -26,6 +26,14 @@ const FormLogin = ({ switchForm }) => {
         try {
             const response = await api.post('/usuarios/login', { email, senha });
 
+            // const response = await api.post('/usuarios/login', { email, senha }, {
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'Authorization': `Bearer ${localStorage.getItem('token')}`
+            //     }
+            // });
+
+            localStorage.setItem('teste', response.data.senha);
             localStorage.setItem('token', response.data.token);
             toast.success("Seja bem vindo(a)!");
 
