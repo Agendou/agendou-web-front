@@ -68,7 +68,7 @@ const Sidebar = ({ isVisible }) => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/manual-appointment">
+                  <Link to="/manual-appointment-admin">
                     <img src={addIcon} alt="Agenda" className="menu-icon" /> Agenda
                   </Link>
                 </li>
@@ -79,7 +79,7 @@ const Sidebar = ({ isVisible }) => {
               <h3>Conta</h3>
               <ul>
                 <li>
-                  <Link to="/profile">
+                  <Link to="/merchant-profile">
                     <img src={userIcon} alt="Perfil" className="menu-icon" /> Perfil
                   </Link>
                 </li>

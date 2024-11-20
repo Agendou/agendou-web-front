@@ -13,7 +13,7 @@ function ClientHeader() {
   const navigate = useNavigate();
 
   const handleNavigation = () => {
-    navigate('/profile');
+    navigate('/client-profile');
   };
 
   return (

@@ -48,7 +48,6 @@ export default function ManualAppointments() {
         justifyContent="center"
         alignItems="flex-start"
       >
-        {/* Coluna para o formulário de cadastro */}
         <Grid item xs={12} md={6}>
           <Card
             sx={{
@@ -93,7 +92,6 @@ export default function ManualAppointments() {
                 />
               </Box>
 
-              {/* Campo Profissional */}
               <FormControl fullWidth margin="normal">
                 <InputLabel
                   style={{ color: "white" }}
@@ -152,7 +150,6 @@ export default function ManualAppointments() {
                 </Select>
               </FormControl>
 
-              {/* Campo Serviço */}
               <FormControl fullWidth margin="normal">
                 <InputLabel
                   style={{ color: "white" }}
@@ -209,7 +206,6 @@ export default function ManualAppointments() {
                 </Select>
               </FormControl>
 
-              {/* Campo Informações Adicionais */}
               <TextField
                 label={!isFocused ? "Informações Adicionais" : ""}
                 value={formData.infoAdicional}
@@ -271,10 +267,6 @@ export default function ManualAppointments() {
               </Grid>
             </CardContent>
           </Card>
-        </Grid>
-
-        <Grid item xs={12} md={6}>
-          <TodayAppointments />
         </Grid>
       </Grid>
     </LocalizationProvider>
