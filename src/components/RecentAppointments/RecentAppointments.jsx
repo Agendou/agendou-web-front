@@ -9,53 +9,37 @@ const RecentAppointments = () => {
     { nome: 'Robson Cleiton Lopes', data: '01/10/24', hora: '10h30' },
     { nome: 'José Ribeiro Mendes', data: '30/09/24', hora: '11h45' },
     { nome: 'Fernando Teixeira', data: '26/09/24', hora: '19h' },
+    { nome: 'Maria Eduarda', data: '25/09/24', hora: '15h' },
+    { nome: 'Ana Carolina', data: '24/09/24', hora: '14h' },
+    { nome: 'Lucas Silva', data: '23/09/24', hora: '16h30' },
+    { nome: 'João Paulo', data: '22/09/24', hora: '13h' },
+    { nome: 'Júlia Santos', data: '21/09/24', hora: '17h' },
+    { nome: 'Pedro Henrique', data: '20/09/24', hora: '10h' },
   ];
 
   return (
     <Box
       sx={{
-        width: 350,
+        width: '100%',
         padding: 2,
-        backgroundColor: '#0D1B2A',
+        backgroundColor: '#010726',
         borderRadius: '12px',
         color: 'white',
         display: 'flex',
         flexDirection: 'column',
         gap: 2,
-        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)',
       }}
     >
       <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
         Agendamentos Recentes
       </Typography>
 
-      {/* Campo de busca */}
-      <TextField
-        placeholder="Buscar"
-        variant="outlined"
-        size="small"
-        sx={{
-          backgroundColor: '#162436',
-          borderRadius: '8px',
-          input: { color: 'white' },
-          fieldset: { border: 'none' },
-        }}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SearchIcon sx={{ color: 'white' }} />
-            </InputAdornment>
-          ),
-        }}
-      />
-
-      {/* Lista de agendamentos */}
-      <List sx={{ overflowY: 'auto', maxHeight: 200, padding: 0 }}>
+      <List sx={{ overflowY: 'auto', maxHeight: 390, padding: 0 }}>
         {agendamentos.map((agendamento, index) => (
           <ListItem
             key={index}
             sx={{
-              backgroundColor: '#1E3A5C',
+              backgroundColor: '#010720',
               borderRadius: '8px',
               marginBottom: 1,
               padding: '8px 16px',

@@ -24,9 +24,8 @@ const ClientInfo = () => {
         backgroundColor: "#010726",
         borderRadius: "16px",
         color: "#fff",
-        maxWidth: "500px",
+        minWidth: "100%",
         margin: "auto",
-        marginLeft: "270px"
       }}
       elevation={3}
     >
@@ -117,7 +116,7 @@ const ClientInfo = () => {
               },
             },
           }}
-          defaultValue="humberto@gmail.com"
+          defaultValue="henrique@gmail.com"
         />
 
         <TextField

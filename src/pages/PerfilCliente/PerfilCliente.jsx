@@ -17,30 +17,29 @@ const PerfilComerciante = () => {
             <Box
                 sx={{
                     display: "flex",
-                    flexDirection: "column",
                     flexGrow: 1,
-                    padding: (theme) => theme.spacing(3),
-                    gap: (theme) => theme.spacing(3),
+                    justifyContent: "center",
+                    alignItems: "center",
                 }}
             >
                 <Grid
                     container
-                    spacing={4}
+                    spacing={9}
                     sx={{
-                        maxWidth: "1200px",
-                        margin: "0 auto",
-                        alignItems: "stretch",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        width: "100%",
                     }}
                 >
                     <Grid
                         item
                         xs={12}
-                        md={7}
+                        md={6}
                         sx={{
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
-                            padding: (theme) => theme.spacing(2),
+                            width: "100%",
                         }}
                     >
                         <ClientInfo />
@@ -49,15 +48,13 @@ const PerfilComerciante = () => {
                     <Grid
                         item
                         xs={12}
-                        md={5}
+                        md={6}
                         sx={{
                             display: "flex",
                             flexDirection: "column",
-                            gap: (theme) => theme.spacing(2),
-                            padding: (theme) => theme.spacing(2),
-                            backgroundColor: (theme) => theme.palette.background.paper,
-                            borderRadius: (theme) => theme.shape.borderRadius,
-                            boxShadow: (theme) => theme.shadows[1],
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: "100%",
                         }}
                     >
                         <RecentAppointments />
