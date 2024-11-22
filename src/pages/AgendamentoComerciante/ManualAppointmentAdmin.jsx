@@ -2,7 +2,7 @@ import React from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import HeaderApp from "../../components/HeaderApp/HeaderApp";
 import ScheduleDayList from "../../components/ScheduleDayList/ScheduleDayList";
-import ManualAppointmentForm from "../../components/ManualAppointmentForm.jsx/ManualAppointmentForm";
+import ManualAppointmentForm from "../../components/ManualAppointmentForm/ManualAppointmentForm";
 import CustomCalendar from "../../components/CustomCalendar/CustomCalendar";
 import { Box, Grid } from '@mui/material';
 
@@ -34,20 +34,21 @@ const ManualAppointmentAdmin = () => {
                 <HeaderApp />
                 <Grid
                     container
-                    spacing={2}
+                    spacing={1}
                     sx={{
-                        width: '100%',
+                        width: '75%',
                         maxWidth: '1440px',
                         justifyContent: 'center',
                         height: '90vh',
                         alignItems: 'center',
+                        margin: 0,
                     }}
                 >
-                    <Grid item xs={12} md={7} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 1 }}>
+                    <Grid item xs={12} md={8} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: 1 }}>
                         <ManualAppointmentForm />
                     </Grid>
 
-                    <Grid item xs={12} md={5} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', flexDirection: 'column', gap: 2 }}>
+                    <Grid item xs={12} md={4} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', flexDirection: 'column', gap: 2 }}>
                         <CustomCalendar />
                         <ScheduleDayList />
                     </Grid>
