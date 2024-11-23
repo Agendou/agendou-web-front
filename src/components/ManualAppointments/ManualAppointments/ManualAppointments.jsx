@@ -18,15 +18,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Calendar from "../CalendarCard/CalendarCard";
 import TodayAppointments from "../TodayAppointments/TodayAppointments";
 import { DateTimePicker } from "@mui/x-date-pickers";
+import api from "../../../services/api";
+import { toast } from "react-toastify";
 
 export default function ManualAppointments() {
-  const [value, setValue] = useState(dayjs());
   const [formData, setFormData] = useState({
-    Profissional: "",
-    servico: "",
-    data: null,
-    hora: null,
-    infoAdicional: "",
+    profissional: "",
+    dataHoraCorte: dayjs(),
   });
 
   const [isFocused, setIsFocused] = useState(false);
@@ -35,8 +33,44 @@ export default function ManualAppointments() {
     setFormData({ ...formData, [field]: value });
   };
 
-  const handleSubmit = () => {
-    console.log("Dados do agendamento:", formData);
+  const handleSubmit = async () => {
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Usuário não autenticado. Faça login novamente.");
+      return;
+    }
+
+    const agendamento = {
+      profissional: formData.profissional,
+      dataHoraCorte: formData.dataHoraCorte.format("YYYY-MM-DDTHH:mm:ss"),
+    };
+
+    try {
+      const response = await api.post('/agendamentos', agendamento, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 201) {
+        console.log("Agendamento realizado com sucesso:", response.data);
+        toast.success("Agendamento realizado com sucesso!");
+
+        setFormData({
+          profissional: "",
+          dataHoraCorte: dayjs(),
+        });
+
+      } else {
+        console.error("Erro ao realizar o agendamento:", response.statusText);
+        toast.error("Erro ao realizar o agendamento. Tente novamente.");
+      }
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      toast.error("Erro na conexão com o servidor. Tente novamente.");
+    }
   };
 
   return (
@@ -65,10 +99,9 @@ export default function ManualAppointments() {
 
               <Box sx={{ display: "flex", gap: "1rem", marginTop: 2 }}>
                 <DateTimePicker
-                  label="Data do agendamento"
-                  value={formData.data}
-                  onChange={(date) => handleInputChange("data", date)}
-                  inputFormat="dd/MM/yyyy"
+                  label="Data e Hora do Agendamento"
+                  value={formData.dataHoraCorte}
+                  onChange={(date) => handleInputChange("dataHoraCorte", date)}
                   renderInput={(params) => <TextField {...params} />}
                   sx={{
                     "& .MuiInputBase-input": {
@@ -81,13 +114,13 @@ export default function ManualAppointments() {
                       color: "white",
                     },
                     "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
-                      {
-                        borderColor: "white",
-                      },
+                    {
+                      borderColor: "white",
+                    },
                     "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                      {
-                        borderColor: "white",
-                      },
+                    {
+                      borderColor: "white",
+                    },
                   }}
                 />
               </Box>
@@ -144,9 +177,9 @@ export default function ManualAppointments() {
                     },
                   }}
                 >
-                  <MenuItem value="luzes">Humberto</MenuItem>
-                  <MenuItem value="degrade">Henrique</MenuItem>
-                  <MenuItem value="corte">Pedro</MenuItem>
+                  <MenuItem value="Humberto">Humberto</MenuItem>
+                  <MenuItem value="Henrique">Henrique</MenuItem>
+                  <MenuItem value="Pedro">Pedro</MenuItem>
                 </Select>
               </FormControl>
 

@@ -1,97 +1,315 @@
-import React from 'react';
-import { Box, Typography, TextField, Button, Paper, Stack, Chip, IconButton } from '@mui/material';
-import { CalendarToday, AccessTime, Add } from '@mui/icons-material';
+import React, { useState } from "react";
+import dayjs from "dayjs";
+import {
+    CardContent,
+    Typography,
+    TextField,
+    Button,
+    Grid,
+    Card,
+    Box,
+    MenuItem,
+    Select,
+    FormControl,
+    InputLabel,
+} from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker } from "@mui/x-date-pickers";
+import api from "../../services/api";
 
 const ManualAppointmentForm = () => {
+    const [value, setValue] = useState(dayjs());
+    const [formData, setFormData] = useState({
+        profissional: "",
+        servico: "",
+        data: null,
+        hora: null,
+        infoAdicional: "",
+    });
+
+    const [isFocused, setIsFocused] = useState(false);
+
+    const handleInputChange = (field, value) => {
+        setFormData({ ...formData, [field]: value });
+    };
+
+    const handleSubmit = async () => {
+
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            alert("Usuário não autenticado. Faça login novamente.");
+            return;
+        }
+
+        const agendamento = {
+            profissional: formData.profissional,
+            servico: formData.servico,
+            data: formData.data ? formData.data.format("YYYY-MM-DD") : null,
+            hora: formData.data ? formData.data.format("HH:mm") : null,
+            infoAdicional: formData.infoAdicional,
+        };
+
+        try {
+            const response = await api.post('/agendamentos/agendar', agendamento, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.status === 200) {
+                console.log("Agendamento realizado com sucesso:", response.data);
+                alert("Agendamento realizado com sucesso!");
+                setFormData({
+                    profissional: "",
+                    servico: "",
+                    data: null,
+                    hora: null,
+                    infoAdicional: "",
+                });
+            } else {
+                console.error("Erro ao realizar o agendamento:", response.statusText);
+                alert("Erro ao realizar o agendamento. Tente novamente.");
+            }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+            alert("Erro na conexão com o servidor. Tente novamente.");
+        }
+    };
+
     return (
-        <Paper
-            sx={{
-                padding: { xs: '20px', md: '5%' },
-                backgroundColor: '#010726',
-                color: '#ffffff',
-                height: '80vh',
-                width: '90%',
-                overflowY: 'auto',
-                boxSizing: 'border-box',
-                mt: 1,
-            }}
-        >
-            <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
-                <Box>
-                    <Typography variant="h6" component="div">
-                        José do Carmo Pereira
-                    </Typography>
-                    <Typography variant="body2">jose@gmail.com</Typography>
-                    <Typography variant="body2">(11) 96060-0000</Typography>
-                </Box>
-                <IconButton size="small" color="inherit" sx={{ ml: 'auto' }}>
-                    <Add />
-                </IconButton>
-            </Box>
-
-            <Stack spacing={2} mb={2}>
-                <Typography variant="h6">Data e horário</Typography>
-                <Box display="flex" gap={2} flexDirection={{ xs: 'column', md: 'row' }}>
-                    <TextField
-                        label="Horário"
-                        type="time"
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        InputProps={{
-                            startAdornment: <AccessTime sx={{ color: '#ffffff' }} />
-                        }}
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Grid
+                container
+                spacing={2}
+                style={{ padding: "10px" }}
+                justifyContent="center"
+                alignItems="flex-start"
+            >
+                <Grid item xs={12} md={6}>
+                    <Card
                         sx={{
-                            bgcolor: '#ffffff',
-                            borderRadius: 1,
+                            backgroundColor: "#010726",
+                            color: "#FFF",
+                            height: "auto",
+                            width: "95%",
+                            padding: "25px",
                         }}
-                    />
-                    <TextField
-                        label="Data"
-                        type="date"
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        InputProps={{
-                            startAdornment: <CalendarToday sx={{ color: '#ffffff' }} />
-                        }}
-                        sx={{
-                            bgcolor: '#ffffff',
-                            borderRadius: 1,
-                        }}
-                    />
-                </Box>
-            </Stack>
+                    >
+                        <CardContent>
+                            <Typography variant="h5" gutterBottom>
+                                Cadastro de Agendamento Manual
+                            </Typography>
 
-            <Stack spacing={2} mb={2}>
-                <Typography variant="h6">Serviços</Typography>
-                <Box display="flex" gap={1} flexWrap="wrap">
-                    <Chip label="Descoloração" color="primary" />
-                    <Chip label="Corte de cabelo" color="primary" />
-                    <Chip label="Sobrancelha" color="primary" />
-                    <IconButton color="inherit">
-                        <Add />
-                    </IconButton>
-                </Box>
-            </Stack>
+                            <Box sx={{ display: "flex", gap: "1rem", marginTop: 2 }}>
+                                <DateTimePicker
+                                    label="Data do agendamento"
+                                    value={formData.data}
+                                    onChange={(date) => handleInputChange("data", date)}
+                                    inputFormat="dd/MM/yyyy"
+                                    renderInput={(params) => <TextField {...params} />}
+                                    sx={{
+                                        "& .MuiInputBase-input": {
+                                            color: "white",
+                                        },
+                                        "& .MuiInputLabel-root": {
+                                            color: "white",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "white",
+                                        },
+                                        "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
+                                        {
+                                            borderColor: "white",
+                                        },
+                                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                        {
+                                            borderColor: "white",
+                                        },
+                                    }}
+                                />
+                            </Box>
 
-            <TextField
-                label="Informação Adicional"
-                multiline
-                rows={4}
-                variant="outlined"
-                fullWidth
-                sx={{
-                    backgroundColor: '#ffffff',
-                    borderRadius: 1,
-                    mb: 2,
-                }}
-            />
+                            <FormControl fullWidth margin="normal">
+                                <InputLabel
+                                    style={{ color: "white" }}
+                                    sx={{
+                                        display: formData.profissional ? "none" : "block",
+                                    }}
+                                    shrink={false}
+                                >
+                                    Profissional
+                                </InputLabel>
+                                <Select
+                                    value={formData.profissional}
+                                    onChange={(e) =>
+                                        handleInputChange("profissional", e.target.value)
+                                    }
+                                    label="Profissional"
+                                    sx={{
+                                        color: "white",
+                                        backgroundColor: "transparent",
+                                        borderColor: "white",
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "white",
+                                        },
+                                    }}
+                                    MenuProps={{
+                                        PaperProps: {
+                                            style: {
+                                                backgroundColor: "#010720",
+                                                color: "white",
+                                            },
+                                        },
+                                        MenuListProps: {
+                                            sx: {
+                                                "& .MuiMenuItem-root": {
+                                                    color: "white",
+                                                },
+                                                "& .MuiMenuItem-root:hover": {
+                                                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                                },
+                                            },
+                                        },
+                                    }}
+                                >
+                                    <MenuItem value="luzes">Humberto</MenuItem>
+                                    <MenuItem value="degrade">Henrique</MenuItem>
+                                    <MenuItem value="corte">Pedro</MenuItem>
+                                </Select>
+                            </FormControl>
 
-            <Box display="flex" justifyContent="space-between">
-                <Button variant="outlined" color="secondary">Cancelar</Button>
-                <Button variant="contained" color="primary">Salvar</Button>
-            </Box>
-        </Paper>
+                            <FormControl fullWidth margin="normal">
+                                <InputLabel
+                                    style={{ color: "white" }}
+                                    sx={{
+                                        display: formData.servico ? "none" : "block",
+                                    }}
+                                    shrink={false}
+                                >
+                                    Serviço
+                                </InputLabel>
+                                <Select
+                                    value={formData.servico}
+                                    onChange={(e) => handleInputChange("servico", e.target.value)}
+                                    label="Serviço"
+                                    sx={{
+                                        color: "white",
+                                        backgroundColor: "transparent",
+                                        borderColor: "white",
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "white",
+                                        },
+                                    }}
+                                    MenuProps={{
+                                        PaperProps: {
+                                            style: {
+                                                backgroundColor: "#010720",
+                                                color: "white",
+                                            },
+                                        },
+                                        MenuListProps: {
+                                            sx: {
+                                                "& .MuiMenuItem-root": {
+                                                    color: "white",
+                                                },
+                                                "& .MuiMenuItem-root:hover": {
+                                                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                                },
+                                            },
+                                        },
+                                    }}
+                                >
+                                    <MenuItem value="luzes">Luzes</MenuItem>
+                                    <MenuItem value="degrade">Degradê</MenuItem>
+                                    <MenuItem value="corte">Social</MenuItem>
+                                </Select>
+                            </FormControl>
+
+                            <TextField
+                                label={!isFocused ? "Informações Adicionais" : ""}
+                                value={formData.infoAdicional}
+                                onChange={(e) =>
+                                    handleInputChange("infoAdicional", e.target.value)
+                                }
+                                onFocus={() => setIsFocused(true)}
+                                onBlur={() => {
+                                    if (formData.infoAdicional === "") {
+                                        setIsFocused(false);
+                                    }
+                                }}
+                                multiline
+                                rows={4}
+                                fullWidth
+                                margin="normal"
+                                InputProps={{
+                                    style: {
+                                        color: "white",
+                                        backgroundColor: "#010726",
+                                    },
+                                }}
+                                InputLabelProps={{
+                                    style: { color: "white" },
+                                }}
+                                sx={{
+                                    "& .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "white",
+                                    },
+                                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "white",
+                                    },
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "white",
+                                    },
+                                }}
+                            />
+
+                            <Grid
+                                container
+                                spacing={2}
+                                justifyContent="flex-end"
+                                sx={{ marginTop: 2 }}
+                            >
+                                <Grid item>
+                                    <Button variant="outlined" onClick={() => setFormData({})}>
+                                        Cancelar
+                                    </Button>
+                                </Grid>
+                                <Grid item>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={handleSubmit}
+                                    >
+                                        Agendar
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </Grid>
+        </LocalizationProvider>
     );
-};
+}
 
 export default ManualAppointmentForm;
