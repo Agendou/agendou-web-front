@@ -17,15 +17,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import api from "../../services/api";
+import { toast } from "react-toastify";
 
 const ManualAppointmentForm = () => {
-    const [value, setValue] = useState(dayjs());
     const [formData, setFormData] = useState({
         profissional: "",
-        servico: "",
-        data: null,
-        hora: null,
-        infoAdicional: "",
+        dataHoraCorte: dayjs(),
     });
 
     const [isFocused, setIsFocused] = useState(false);
@@ -45,36 +42,32 @@ const ManualAppointmentForm = () => {
 
         const agendamento = {
             profissional: formData.profissional,
-            servico: formData.servico,
-            data: formData.data ? formData.data.format("YYYY-MM-DD") : null,
-            hora: formData.data ? formData.data.format("HH:mm") : null,
-            infoAdicional: formData.infoAdicional,
+            dataHoraCorte: formData.dataHoraCorte.format("YYYY-MM-DDTHH:mm:ss"),
         };
 
         try {
-            const response = await api.post('/agendamentos/agendar', agendamento, {
+            const response = await api.post('/agendamentos', agendamento, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
 
-            if (response.status === 200) {
+            if (response.status === 201) {
                 console.log("Agendamento realizado com sucesso:", response.data);
-                alert("Agendamento realizado com sucesso!");
+                toast.success("Agendamento realizado com sucesso!")
+
                 setFormData({
                     profissional: "",
-                    servico: "",
-                    data: null,
-                    hora: null,
-                    infoAdicional: "",
+                    dataHoraCorte: dayjs(),
                 });
+
             } else {
                 console.error("Erro ao realizar o agendamento:", response.statusText);
-                alert("Erro ao realizar o agendamento. Tente novamente.");
+                toast.error("Erro ao realizar o agendamento. Tente novamente.");
             }
         } catch (error) {
             console.error("Erro na requisição:", error);
-            alert("Erro na conexão com o servidor. Tente novamente.");
+            toast.error("Erro na conexão com o servidor. Tente novamente.");
         }
     };
 
