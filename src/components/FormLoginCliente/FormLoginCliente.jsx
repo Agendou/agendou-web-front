@@ -33,8 +33,12 @@ const FormLogin = ({ switchForm }) => {
             //     }
             // });
 
-            localStorage.setItem('teste', response.data.senha);
-            localStorage.setItem('token', response.data.token);
+            const { token, usuario } = response.data;
+            const userId = usuario.id;
+
+            localStorage.setItem('token', token);
+            localStorage.setItem('userId', userId);
+
             toast.success("Seja bem vindo(a)!");
 
             navigate('/dashboard');

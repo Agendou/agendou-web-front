@@ -9,9 +9,58 @@ import {
   Paper,
 } from "@mui/material";
 import { Visibility, VisibilityOff, Lock, Edit } from "@mui/icons-material";
+import { toast } from "react-toastify";
+import api from "../../services/api";
 
 const ClientInfo = () => {
   const [showPassword, setShowPassword] = React.useState(false);
+
+  const [formData, setFormData] = React.useState({
+    nome: "Nome",
+    telefone: "99 99999-9999",
+    email: "seu_email@mail.com",
+    senha: "",
+  });
+
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const handleSubmit = async () => {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
+    if (!token) {
+      toast.error("Você precisa estar logado para acessar essa página");
+      return;
+    }
+
+    const perfilAtualizado = {
+      nome: formData.nome,
+      telefone: formData.telefone,
+      email: formData.email,
+      senha: formData.senha,
+    };
+
+    setIsLoading(true);
+
+    try {
+      const response = await api.put(`/usuarios/atualizar/${userId}`, perfilAtualizado, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        toast.success("Perfil atualizado com sucesso!");
+      } else {
+        toast.error("Erro ao atualizar perfil");
+      }
+
+    } catch (error) {
+      console.log("Erro na requisição" + error);
+      toast.error("Erro de conexão com o servidor. Tente novamente.");
+    }
+
+  }
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -49,6 +98,8 @@ const ClientInfo = () => {
         <TextField
           label="Nome"
           variant="outlined"
+          value={formData.nome}
+          onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
           fullWidth
           InputLabelProps={{ style: { color: "#ccc" } }}
           sx={{
@@ -73,6 +124,10 @@ const ClientInfo = () => {
         <TextField
           label="Telefone"
           variant="outlined"
+          value={formData.telefone}
+          onChange={(e) =>
+            setFormData({ ...formData, telefone: e.target.value })
+          }
           fullWidth
           InputLabelProps={{ style: { color: "#ccc" } }}
           sx={{
@@ -94,10 +149,11 @@ const ClientInfo = () => {
           defaultValue="(11) 93025-9645"
         />
 
-        {/* Email */}
         <TextField
           label="Email"
           variant="outlined"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           fullWidth
           InputLabelProps={{ style: { color: "#ccc" } }}
           sx={{
@@ -122,6 +178,8 @@ const ClientInfo = () => {
         <TextField
           label="Senha"
           variant="outlined"
+          value={formData.senha}
+          onChange={(e) => setFormData({ ...formData, senha: e.target.value })}
           type={showPassword ? "text" : "password"}
           fullWidth
           InputLabelProps={{ style: { color: "#ccc" } }}
@@ -177,6 +235,8 @@ const ClientInfo = () => {
           </Button>
           <Button
             variant="contained"
+            onClick={handleSubmit}
+            disable={isLoading}
             sx={{
               backgroundColor: "#0066CC",
               "&:hover": {
@@ -184,7 +244,7 @@ const ClientInfo = () => {
               },
             }}
           >
-            Salvar alterações
+            {isLoading ? "Salvando..." : "Salvar alterações"}
           </Button>
         </Box>
       </Box>
