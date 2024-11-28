@@ -47,7 +47,7 @@ const Sidebar = ({ isVisible }) => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/painel">
+                  <Link to="/profile-profissional">
                     <img src={employeesIcon} alt="Painel de Funcionários" className="menu-icon" /> Painel de Funcionários
                   </Link>
                 </li>
