@@ -75,7 +75,7 @@ const ManualAppointmentForm = () => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Grid
                 container
-                spacing={2}
+                spacing={1}
                 style={{ padding: "10px" }}
                 justifyContent="center"
                 alignItems="flex-start"
@@ -86,14 +86,15 @@ const ManualAppointmentForm = () => {
                             backgroundColor: "#010726",
                             color: "#FFF",
                             height: "auto",
-                            width: "95%",
+                            width: "100%",
                             padding: "25px",
+                            borderRadius: "10px",
                         }}
                     >
-                        <CardContent>
                             <Typography variant="h5" gutterBottom>
-                                Cadastro de Agendamento Manual
+                                Agendamento 
                             </Typography>
+                        <CardContent>
 
                             <Box sx={{ display: "flex", gap: "1rem", marginTop: 2 }}>
                                 <DateTimePicker

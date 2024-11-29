@@ -41,7 +41,8 @@ const AddServiceForm = () => {
   return (
     <Box
       sx={{
-        maxWidth: "600px",
+        width: "100%",
+        height: "100%",
         margin: "auto",
         p: 4,
         backgroundColor: "#010726",
@@ -59,6 +60,7 @@ const AddServiceForm = () => {
           display: "flex",
           flexDirection: "column",
           gap: 2,
+          mt: 3,
         }}
       >
         {/* Nome do Serviço */}
@@ -119,7 +121,7 @@ const AddServiceForm = () => {
           label="Descrição"
           variant="outlined"
           multiline
-          rows={3}
+          rows={9}
           fullWidth
           InputLabelProps={{ style: { color: "#ccc" } }}
           sx={{
@@ -148,6 +150,9 @@ const AddServiceForm = () => {
           variant="contained"
           sx={{
             backgroundColor: "#0066CC",
+            width: "40%",
+            alignSelf: "flex-end",
+            mt: 2,
             "&:hover": {
               backgroundColor: "#005BB5",
             },

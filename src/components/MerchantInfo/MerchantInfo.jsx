@@ -24,7 +24,7 @@ const MerchantInfo = () => {
         backgroundColor: "#010726",
         borderRadius: "16px",
         color: "#fff",
-        maxWidth: "500px",
+        width: "100%",
         margin: "auto",
         marginLeft: "270px"
       }}

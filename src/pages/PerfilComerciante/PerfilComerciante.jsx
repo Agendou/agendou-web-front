@@ -2,19 +2,22 @@ import { Box, Grid } from "@mui/material";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import MerchantInfo from "../../components/MerchantInfo/MerchantInfo";
 import AddService from "../../components/AddService/AddService";
+import HeaderApp from '../../components/HeaderApp/HeaderApp';
 
 const PerfilComerciante = () => {
     return (
         <Box
-            sx={{
-                display: "flex",
-                width: "100%",
-                height: "100vh",
-            }}
+        sx={{
+            display: "flex",
+            width: "100%",
+            height: "100vh",
+            backgroundColor: "#f8f4f8"
+        }}
         >
             {/* Sidebar */}
             <Sidebar isVisible={true} />
 
+        <HeaderApp title="Perfil" />
             {/* Conteúdo Principal */}
             <Box
                 sx={{
@@ -23,6 +26,8 @@ const PerfilComerciante = () => {
                     flexGrow: 1,
                     width: "100%",
                     padding: 3,
+                    marginTop: 7,
+                    display: "flex",
                 }}
             >
                 <Grid
