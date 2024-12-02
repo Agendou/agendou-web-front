@@ -17,12 +17,13 @@ import styles from './ProfileProfissional.module.css';
 import api from '../../api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ModalServico from '../../components/Modal/ModalServico';
 
 const ProfileProfissional = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [filter, setFilter] = useState('');
   const [isCadastroVisible, setIsCadastroVisible] = useState(false);
-  const [servicos, setServicos] = useState(['Descoloração', 'Corte de cabelo', 'Sobrancelha']);
+  const [servicos, setServicos] = useState([]);
   const [isAscending, setIsAscending] = useState(true);
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
@@ -52,18 +53,24 @@ const ProfileProfissional = () => {
   const toggleCadastro = () => {
     setIsCadastroVisible(true);
   };
- 
+
   const handleRemoveService = (serviceToRemove) => {
-    setServicos((prevServices) => prevServices.filter(service => service !== serviceToRemove));
+    setServicos((prevServices) => prevServices.filter(service => service.id !== serviceToRemove.id));
+  };
+
+  const handleAddService = (service) => {
+    setServicos((prevServices) => [...prevServices, service]);
   };
 
   const handleSave = async () => {
     try {
-      toast.dismiss(); 
+      toast.dismiss();
       const response = await api.post('/funcionarios/cadastrar', {
         nome,
         email,
         senha,
+        servicos: servicos.map(service => service.id),
+        descricao,
       });
       toast.success("Funcionário cadastrado com sucesso!");
       fetchFuncionarios();
@@ -73,7 +80,7 @@ const ProfileProfissional = () => {
       toast.error("Erro ao cadastrar funcionário. Verifique os dados preenchidos.");
     }
   };
-  
+
 
   const handleUpdate = async () => {
     try {
@@ -81,11 +88,10 @@ const ProfileProfissional = () => {
         nome,
         email,
         senha,
+        servicos: servicos.map(service => service.id),
+        descricao,
       });
       toast.success("Funcionário atualizado com sucesso!");
-      // setTimeout(() => {
-      //   window.location.reload();
-      // }, 2000);
       fetchFuncionarios();
       handleCancel();
     } catch (error) {
@@ -99,9 +105,6 @@ const ProfileProfissional = () => {
       try {
         await api.delete(`/funcionarios/deletar/${selectedFuncionarioId}`);
         toast.success("Funcionário excluído com sucesso!");
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1000);
         fetchFuncionarios();
         setSelectedFuncionarioId(null);
       } catch (error) {
@@ -115,9 +118,10 @@ const ProfileProfissional = () => {
     setNome('');
     setEmail('');
     setSenha('');
+    setServicos([]);
     setDescricao('');
     setSelectedFuncionarioId(null);
-  };  
+  };
 
   return (
     <div className={styles.bodyProfissional}>
@@ -175,8 +179,8 @@ const ProfileProfissional = () => {
                   </IconButton>
                   <IconButton
                     onClick={() => {
-                      handleCancel();  
-                      toggleCadastro();  
+                      handleCancel();
+                      toggleCadastro();
                     }}
                     sx={{ color: '#f8f4f8' }}
                   >
@@ -209,6 +213,7 @@ const ProfileProfissional = () => {
                             setNome(funcionario.nome);
                             setEmail(funcionario.email);
                             setSenha(funcionario.senha);
+                            setServicos(funcionario.servicos);
                             setIsCadastroVisible(true);
                           }}
                         >
@@ -323,11 +328,11 @@ const ProfileProfissional = () => {
                     </Typography>
                     <Grid container spacing={1}>
                       {servicos.map((service) => (
-                        <Grid item key={service} sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Grid item key={service.id} sx={{ display: 'flex', alignItems: 'center' }}>
                           <Button
                             variant="contained"
                             size="small"
-                            value={service}
+                            value={service.nome}
                             sx={{
                               backgroundColor: '#010726',
                               border: '1px solid #f8f4f8',
@@ -339,7 +344,7 @@ const ProfileProfissional = () => {
                               },
                             }}
                           >
-                            {service}
+                            {service.nome}
                           </Button>
                           <IconButton
                             size="small"
@@ -351,9 +356,7 @@ const ProfileProfissional = () => {
                         </Grid>
                       ))}
                       <Grid item>
-                        <IconButton size="small" sx={{ color: '#f8f4f8', '&:hover': { transform: 'scale(0.9)' } }}>
-                          <Add />
-                        </IconButton>
+                        <ModalServico onAddService={handleAddService} />
                       </Grid>
                     </Grid>
                     <TextField
