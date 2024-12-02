@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from './FormLogin.module.css';
+import styles from '../FormLogin/FormLogin.module.css';
 import logo from '../../assets/images/logoEscuraAgendou.png';
-import { ValidationLoginMessages } from './ValidationLoginMessages';
+import { ValidationLoginMessages } from '../FormLogin/ValidationLoginMessages';
 import { toast } from "react-toastify";
 import api from '../../services/api';
 
@@ -24,9 +24,21 @@ const FormLogin = ({ switchForm }) => {
         }
 
         try {
-            const response = await api.post('/empresas/login', { email, senha });
+            const response = await api.post('/usuarios/login', { email, senha });
 
-            localStorage.setItem('token', response.data.token);
+            // const response = await api.post('/usuarios/login', { email, senha }, {
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'Authorization': `Bearer ${localStorage.getItem('token')}`
+            //     }
+            // });
+
+            const { token, usuario } = response.data;
+            const userId = usuario.id;
+
+            localStorage.setItem('token', token);
+            localStorage.setItem('userId', userId);
+
             toast.success("Seja bem vindo(a)!");
 
             navigate('/dashboard');

@@ -18,16 +18,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Calendar from "../CalendarCard/CalendarCard";
 import TodayAppointments from "../TodayAppointments/TodayAppointments";
 import { DateTimePicker } from "@mui/x-date-pickers";
+import api from "../../../services/api";
+import { toast } from "react-toastify";
 
 export default function ManualAppointments() {
-  const [value, setValue] = useState(dayjs());
   const [formData, setFormData] = useState({
-    nome: "",
-    telefone: "",
-    servico: "",
-    data: null,
-    hora: null,
-    infoAdicional: "",
+    profissional: "",
+    dataHoraCorte: dayjs(),
   });
 
   const [isFocused, setIsFocused] = useState(false);
@@ -36,8 +33,44 @@ export default function ManualAppointments() {
     setFormData({ ...formData, [field]: value });
   };
 
-  const handleSubmit = () => {
-    console.log("Dados do agendamento:", formData);
+  const handleSubmit = async () => {
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Usuário não autenticado. Faça login novamente.");
+      return;
+    }
+
+    const agendamento = {
+      profissional: formData.profissional,
+      dataHoraCorte: formData.dataHoraCorte.format("YYYY-MM-DDTHH:mm:ss"),
+    };
+
+    try {
+      const response = await api.post('/agendamentos', agendamento, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 201) {
+        console.log("Agendamento realizado com sucesso:", response.data);
+        toast.success("Agendamento realizado com sucesso!");
+
+        setFormData({
+          profissional: "",
+          dataHoraCorte: dayjs(),
+        });
+
+      } else {
+        console.error("Erro ao realizar o agendamento:", response.statusText);
+        toast.error("Erro ao realizar o agendamento. Tente novamente.");
+      }
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      toast.error("Erro na conexão com o servidor. Tente novamente.");
+    }
   };
 
   return (
@@ -45,18 +78,18 @@ export default function ManualAppointments() {
       <Grid
         container
         spacing={2}
-        style={{ padding: "10px", marginLeft: "-40px" }}
+        style={{ padding: "10px" }}
         justifyContent="center"
-        alignItems="center"
+        alignItems="flex-start"
       >
-        <Grid item xs={10} md={8} style={{ margin: "0 auto" }}>
+        <Grid item xs={12} md={6}>
           <Card
             sx={{
               backgroundColor: "#010726",
               color: "#FFF",
               height: "auto",
-              width: "100%",
-              padding: "20px",
+              width: "95%",
+              padding: "25px",
             }}
           >
             <CardContent>
@@ -64,39 +97,91 @@ export default function ManualAppointments() {
                 Cadastro de Agendamento Manual
               </Typography>
 
-              <TextField
-                label="Nome"
-                value={formData.nome}
-                onChange={(e) => handleInputChange("nome", e.target.value)}
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ style: { color: "white" } }}
-                InputProps={{
-                  style: { color: "white" },
-                  sx: {
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#FFF",
+              <Box sx={{ display: "flex", gap: "1rem", marginTop: 2 }}>
+                <DateTimePicker
+                  label="Data e Hora do Agendamento"
+                  value={formData.dataHoraCorte}
+                  onChange={(date) => handleInputChange("dataHoraCorte", date)}
+                  renderInput={(params) => <TextField {...params} />}
+                  sx={{
+                    "& .MuiInputBase-input": {
+                      color: "white",
                     },
-                  },
-                }}
-              />
+                    "& .MuiInputLabel-root": {
+                      color: "white",
+                    },
+                    "& .MuiSvgIcon-root": {
+                      color: "white",
+                    },
+                    "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
+                    {
+                      borderColor: "white",
+                    },
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                    {
+                      borderColor: "white",
+                    },
+                  }}
+                />
+              </Box>
 
-              <TextField
-                label="Telefone"
-                value={formData.telefone}
-                onChange={(e) => handleInputChange("telefone", e.target.value)}
-                fullWidth
-                margin="normal"
-                InputLabelProps={{ style: { color: "white" } }}
-                InputProps={{
-                  style: { color: "white" },
-                  sx: {
+              <FormControl fullWidth margin="normal">
+                <InputLabel
+                  style={{ color: "white" }}
+                  sx={{
+                    display: formData.profissional ? "none" : "block",
+                  }}
+                  shrink={false}
+                >
+                  Profissional
+                </InputLabel>
+                <Select
+                  value={formData.profissional}
+                  onChange={(e) =>
+                    handleInputChange("profissional", e.target.value)
+                  }
+                  label="Profissional"
+                  sx={{
+                    color: "white",
+                    backgroundColor: "transparent",
+                    borderColor: "white",
                     "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#FFF",
+                      borderColor: "white",
                     },
-                  },
-                }}
-              />
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "white",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "white",
+                    },
+                    "& .MuiSvgIcon-root": {
+                      color: "white",
+                    },
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        backgroundColor: "#010720",
+                        color: "white",
+                      },
+                    },
+                    MenuListProps: {
+                      sx: {
+                        "& .MuiMenuItem-root": {
+                          color: "white",
+                        },
+                        "& .MuiMenuItem-root:hover": {
+                          backgroundColor: "rgba(255, 255, 255, 0.1)",
+                        },
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem value="Humberto">Humberto</MenuItem>
+                  <MenuItem value="Henrique">Henrique</MenuItem>
+                  <MenuItem value="Pedro">Pedro</MenuItem>
+                </Select>
+              </FormControl>
 
               <FormControl fullWidth margin="normal">
                 <InputLabel
@@ -154,16 +239,6 @@ export default function ManualAppointments() {
                 </Select>
               </FormControl>
 
-              <Box sx={{ display: "flex", gap: "1rem", marginTop: 2 }}>
-                <DateTimePicker
-                  label="Data do agendamento"
-                  value={formData.data}
-                  onChange={(date) => handleInputChange("data", date)}
-                  inputFormat="dd/MM/yyyy"
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </Box>
-
               <TextField
                 label={!isFocused ? "Informações Adicionais" : ""}
                 value={formData.infoAdicional}
@@ -183,7 +258,7 @@ export default function ManualAppointments() {
                 InputProps={{
                   style: {
                     color: "white",
-                    backgroundColor: "#010726", 
+                    backgroundColor: "#010726",
                   },
                 }}
                 InputLabelProps={{
@@ -191,13 +266,13 @@ export default function ManualAppointments() {
                 }}
                 sx={{
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "white", 
+                    borderColor: "white",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "white", 
+                    borderColor: "white",
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "white", 
+                    borderColor: "white",
                   },
                 }}
               />
@@ -219,30 +294,12 @@ export default function ManualAppointments() {
                     color="primary"
                     onClick={handleSubmit}
                   >
-                    Salvar
+                    Agendar
                   </Button>
                 </Grid>
               </Grid>
             </CardContent>
           </Card>
-        </Grid>
-
-        <Grid item xs={10} md={3} style={{ margin: "0 auto" }}>
-          <Card
-            style={{
-              height: "325px",
-              color: "black",
-              backgroundColor: "#010726",
-              width: "125%",
-              marginLeft: "-40px",
-            }}
-          >
-            <CardContent>
-              <Calendar value={value} onChange={setValue} />
-            </CardContent>
-          </Card>
-
-          <TodayAppointments />
         </Grid>
       </Grid>
     </LocalizationProvider>

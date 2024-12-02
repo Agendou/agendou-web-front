@@ -1,15 +1,26 @@
 import React from "react";
 import { Typography, Card, CardContent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
 
+const getStatusStyle = (status) => {
+  switch (status) {
+    case "Concluído":
+      return { backgroundColor: "green", color: "white", padding: "0.2rem 0.5rem", borderRadius: "12px" };
+    case "Cancelado":
+      return { backgroundColor: "red", color: "white", padding: "0.2rem 0.5rem", borderRadius: "12px" };
+    case "Remarcado":
+      return { backgroundColor: "yellow", color: "black", padding: "0.2rem 0.5rem", borderRadius: "12px" };
+    default:
+      return {};
+  }
+};
+
 export default function TodayAppointments() {
   return (
     <Card
       style={{
-        marginTop: "20px",
         color: "black",
         backgroundColor: "#010726",
-        width: "125%",
-        marginLeft: "-40px",
+        width: "100%",
       }}
     >
       <CardContent>
@@ -21,28 +32,65 @@ export default function TodayAppointments() {
             marginBottom: "1rem",
           }}
         >
-          Agenda do Dia
+          Últimos agendamentos
         </Typography>
-        <TableContainer component={Paper}>
+
+        <TableContainer component={Paper} style={{ backgroundColor: "#010726" }}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell style={{ textAlign: "center" }}>Horário</TableCell>
-                <TableCell style={{ textAlign: "center" }}>Status</TableCell>
+                <TableCell style={{ textAlign: "center", color: "#FFF" }}>Profissional</TableCell>
+                <TableCell style={{ textAlign: "center", color: "#FFF" }}>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               <TableRow>
-                <TableCell style={{ textAlign: "center" }}>06:00</TableCell>
-                <TableCell style={{ textAlign: "center" }}>Agendado</TableCell>
+                <TableCell style={{ textAlign: "center", color: "#FFF" }}>Humberto</TableCell>
+                <TableCell style={{ textAlign: "center" }}>
+                  <span style={getStatusStyle("Concluído")}>Concluído</span>
+                </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell style={{ textAlign: "center" }}>06:15</TableCell>
-                <TableCell style={{ textAlign: "center" }}>Cancelado</TableCell>
+                <TableCell style={{ textAlign: "center", color: "#FFF" }}>Humberto</TableCell>
+                <TableCell style={{ textAlign: "center" }}>
+                  <span style={getStatusStyle("Remarcado")}>Remarcado</span>
+                </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell style={{ textAlign: "center" }}>06:30</TableCell>
-                <TableCell style={{ textAlign: "center" }}>Concluído</TableCell>
+                <TableCell style={{ textAlign: "center", color: "#FFF" }}>Humberto</TableCell>
+                <TableCell style={{ textAlign: "center" }}>
+                  <span style={getStatusStyle("Concluído")}>Concluído</span>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell style={{ textAlign: "center", color: "#FFF" }}>Humberto</TableCell>
+                <TableCell style={{ textAlign: "center" }}>
+                  <span style={getStatusStyle("Cancelado")}>Cancelado</span>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell style={{ textAlign: "center", color: "#FFF" }}>Humberto</TableCell>
+                <TableCell style={{ textAlign: "center" }}>
+                  <span style={getStatusStyle("Cancelado")}>Cancelado</span>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell style={{ textAlign: "center", color: "#FFF" }}>Humberto</TableCell>
+                <TableCell style={{ textAlign: "center" }}>
+                  <span style={getStatusStyle("Concluído")}>Concluído</span>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell style={{ textAlign: "center", color: "#FFF" }}>Humberto</TableCell>
+                <TableCell style={{ textAlign: "center" }}>
+                  <span style={getStatusStyle("Cancelado")}>Cancelado</span>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell style={{ textAlign: "center", color: "#FFF" }}>Humberto</TableCell>
+                <TableCell style={{ textAlign: "center" }}>
+                  <span style={getStatusStyle("Concluído")}>Concluído</span>
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>

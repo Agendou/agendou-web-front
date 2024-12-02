@@ -10,6 +10,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ManualAppointment from "../pages/AgendamentoCliente/ManualAppointment";
 import ManualAppointmentAdmin from "../pages/AgendamentoComerciante/ManualAppointmentAdmin";
 import DashboardIndividual from "../pages/DashboardIndividual/DashboardIndividual";
+import PerfilComerciante from "../pages/PerfilComerciante/PerfilComerciante";
+import PerfilCliente from "../pages/PerfilCliente/PerfilCliente";
 
 function Rotas() {
     return (
@@ -27,6 +29,8 @@ function Rotas() {
                 <Route path="/manual-appointment" element={<ManualAppointment />} />
                 <Route path="/manual-appointment-admin" element={<ManualAppointmentAdmin />} />
                 <Route path="/dashboard-individual" element={<DashboardIndividual />} />
+                <Route path="/merchant-profile" element={<PerfilComerciante />} />
+                <Route path="/client-profile" element={<PerfilCliente />} />
             </Routes>
         </BrowserRouter>
     );
