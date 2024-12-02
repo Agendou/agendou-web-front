@@ -25,9 +25,10 @@ import { useEffect } from "react";
 export default function ManualAppointments() {
   const [formData, setFormData] = useState({
     profissional: "",
-    servico: null,
+    servico: [],
     dataHoraCorte: dayjs(),
   });
+
 
   const [profissionais, setProfissionais] = useState([]);
   const [servicos, setServicos] = useState([]);
@@ -70,11 +71,16 @@ export default function ManualAppointments() {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleInputChange = (field, value) => {
+    console.log("Antes da atualização:", formData);
     console.log(`Campo: ${field}, Valor: ${value}`);
-    setFormData((prevState) => ({
-      ...prevState,
-      [field]: value,
-    }));
+    setFormData((prevState) => {
+      const updatedState = {
+        ...prevState,
+        [field]: value,
+      };
+      console.log("Depois da atualização:", updatedState);
+      return updatedState;
+    });
   };
 
   const handleSubmit = async () => {
@@ -96,12 +102,11 @@ export default function ManualAppointments() {
       fkFuncionario: formData.profissional,
       fkUsuario: userId,
       fkServicos: formData.servico,
-      fkAvaliacao: formData.avaliacao,
       data: formData.dataHoraCorte.format("YYYY-MM-DDTHH:mm:ss"),
     };
 
     try {
-      const response = await api.post('/agendamentos', agendamento, {
+      const response = await api.post("/agendamentos/cadastrar", agendamento, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -113,7 +118,7 @@ export default function ManualAppointments() {
 
         setFormData({
           profissional: "",
-          servico: "",
+          servico: [],
           dataHoraCorte: dayjs(),
         });
 
@@ -126,6 +131,9 @@ export default function ManualAppointments() {
       toast.error("Erro na conexão com o servidor. Tente novamente.");
     }
   };
+
+  console.log("Serviços carregados:", servicos);
+  console.log("Profissionais carregados:", profissionais);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -185,7 +193,7 @@ export default function ManualAppointments() {
                   sx={{
                     display: formData.profissional ? "none" : "block",
                   }}
-                  shrink={false}
+                  shrink={formData.profissional.length > 0}
                 >
                   Profissional
                 </InputLabel>
@@ -243,18 +251,16 @@ export default function ManualAppointments() {
               <FormControl fullWidth margin="normal">
                 <InputLabel
                   style={{ color: "white" }}
-                  sx={{
-                    display: formData.servico ? "none" : "block",
-                  }}
-                  shrink={false}
+                  shrink={formData.servico.length > 0}
                 >
                   Serviço
                 </InputLabel>
                 <Select
+                  multiple
                   value={formData.servico}
-                  onChange={(e) =>
-                    handleInputChange("servico", e.target.value)
-                  }
+                  onChange={(e) => {
+                    handleInputChange("servico", e.target.value);
+                  }}
                   label="Serviço"
                   sx={{
                     color: "white",
@@ -291,6 +297,12 @@ export default function ManualAppointments() {
                       },
                     },
                   }}
+                  renderValue={(selected) =>
+                    servicos
+                      .filter((servico) => selected.includes(servico.id))
+                      .map((servico) => servico.nome)
+                      .join(", ")
+                  }
                 >
                   {servicos.map((servico) => (
                     <MenuItem key={servico.id} value={servico.id}>
