@@ -11,18 +11,54 @@ import {
 import { Visibility, VisibilityOff, Lock, Edit } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import api from "../../services/api";
+import { useEffect } from 'react';
 
 const ClientInfo = () => {
   const [showPassword, setShowPassword] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const [formData, setFormData] = React.useState({
-    nome: "Nome",
-    telefone: "99 99999-9999",
-    email: "seu_email@mail.com",
+    nome: "",
+    telefone: "",
+    email: "",
     senha: "",
   });
 
-  const [isLoading, setIsLoading] = React.useState(false);
+  const getClientData = async () => {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
+    if (!token) {
+      toast.error("Você precisa estar logado para acessar essa página");
+      return;
+    }
+
+    try {
+      const response = await api.get(`/usuarios/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        setFormData({
+          nome: response.data.nome || "",
+          telefone: response.data.telefone || "",
+          email: response.data.email || "",
+          senha: "",
+        });
+      } else {
+        toast.error("Erro ao buscar informações do cliente");
+      }
+    } catch (error) {
+      console.error("Erro ao buscar informações: ", error);
+      toast.error("Erro ao carregar os dados. Tente novamente.");
+    }
+  };
+
+  useEffect(() => {
+    getClientData();
+  }, []);
 
   const handleSubmit = async () => {
     const token = localStorage.getItem("token");

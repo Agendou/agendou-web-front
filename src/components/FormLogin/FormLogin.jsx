@@ -26,7 +26,12 @@ const FormLogin = ({ switchForm }) => {
         try {
             const response = await api.post('/empresas/login', { email, senha });
 
-            localStorage.setItem('token', response.data.token);
+            const { token, usuario } = response.data;
+            const userIdEmpresa = usuario.id;
+
+            localStorage.setItem('token', token);
+            localStorage.setItem('userIdEmpresa', userIdEmpresa);
+
             toast.success("Seja bem vindo(a)!");
 
             navigate('/dashboard');

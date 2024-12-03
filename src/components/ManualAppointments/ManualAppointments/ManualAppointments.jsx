@@ -20,35 +20,93 @@ import TodayAppointments from "../TodayAppointments/TodayAppointments";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import api from "../../../services/api";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
 
 export default function ManualAppointments() {
   const [formData, setFormData] = useState({
     profissional: "",
+    servico: [],
     dataHoraCorte: dayjs(),
   });
+
+
+  const [profissionais, setProfissionais] = useState([]);
+  const [servicos, setServicos] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          toast.error("Usuário não autenticado.");
+          return;
+        }
+
+        //get em /funcionarios/listar
+        const profissionaisResponse = await api.get("/funcionarios/listar", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setProfissionais(profissionaisResponse.data);
+
+        //get em /servicos
+        const servicosResponse = await api.get("/servicos/listar", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setServicos(servicosResponse.data);
+
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+        toast.error("Erro ao carregar profissionais e serviços.");
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const [isFocused, setIsFocused] = useState(false);
 
   const handleInputChange = (field, value) => {
-    setFormData({ ...formData, [field]: value });
+    console.log("Antes da atualização:", formData);
+    console.log(`Campo: ${field}, Valor: ${value}`);
+    setFormData((prevState) => {
+      const updatedState = {
+        ...prevState,
+        [field]: value,
+      };
+      console.log("Depois da atualização:", updatedState);
+      return updatedState;
+    });
   };
 
   const handleSubmit = async () => {
 
     const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
     if (!token) {
       alert("Usuário não autenticado. Faça login novamente.");
       return;
     }
 
+    if (!formData.profissional || !formData.servico) {
+      toast.error("Preencha todos os campos obrigatórios!");
+      return;
+    }
+
     const agendamento = {
-      profissional: formData.profissional,
-      dataHoraCorte: formData.dataHoraCorte.format("YYYY-MM-DDTHH:mm:ss"),
+      fkFuncionario: formData.profissional,
+      fkUsuario: userId,
+      fkServicos: formData.servico,
+      data: formData.dataHoraCorte.format("YYYY-MM-DDTHH:mm:ss"),
     };
 
     try {
-      const response = await api.post('/agendamentos', agendamento, {
+      const response = await api.post("/agendamentos/cadastrar", agendamento, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -60,6 +118,7 @@ export default function ManualAppointments() {
 
         setFormData({
           profissional: "",
+          servico: [],
           dataHoraCorte: dayjs(),
         });
 
@@ -72,6 +131,9 @@ export default function ManualAppointments() {
       toast.error("Erro na conexão com o servidor. Tente novamente.");
     }
   };
+
+  console.log("Serviços carregados:", servicos);
+  console.log("Profissionais carregados:", profissionais);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -131,7 +193,7 @@ export default function ManualAppointments() {
                   sx={{
                     display: formData.profissional ? "none" : "block",
                   }}
-                  shrink={false}
+                  shrink={formData.profissional.length > 0}
                 >
                   Profissional
                 </InputLabel>
@@ -177,25 +239,28 @@ export default function ManualAppointments() {
                     },
                   }}
                 >
-                  <MenuItem value="Humberto">Humberto</MenuItem>
-                  <MenuItem value="Henrique">Henrique</MenuItem>
-                  <MenuItem value="Pedro">Pedro</MenuItem>
+                  {profissionais.map((funcionario) => (
+                    <MenuItem key={funcionario.id} value={funcionario.id}>
+                      {funcionario.nome}
+                    </MenuItem>
+                  ))}
+
                 </Select>
               </FormControl>
 
               <FormControl fullWidth margin="normal">
                 <InputLabel
                   style={{ color: "white" }}
-                  sx={{
-                    display: formData.servico ? "none" : "block",
-                  }}
-                  shrink={false}
+                  shrink={formData.servico.length > 0}
                 >
                   Serviço
                 </InputLabel>
                 <Select
+                  multiple
                   value={formData.servico}
-                  onChange={(e) => handleInputChange("servico", e.target.value)}
+                  onChange={(e) => {
+                    handleInputChange("servico", e.target.value);
+                  }}
                   label="Serviço"
                   sx={{
                     color: "white",
@@ -232,10 +297,19 @@ export default function ManualAppointments() {
                       },
                     },
                   }}
+                  renderValue={(selected) =>
+                    servicos
+                      .filter((servico) => selected.includes(servico.id))
+                      .map((servico) => servico.nome)
+                      .join(", ")
+                  }
                 >
-                  <MenuItem value="luzes">Luzes</MenuItem>
-                  <MenuItem value="degrade">Degradê</MenuItem>
-                  <MenuItem value="corte">Social</MenuItem>
+                  {servicos.map((servico) => (
+                    <MenuItem key={servico.id} value={servico.id}>
+                      {servico.nome}
+                    </MenuItem>
+                  ))}
+
                 </Select>
               </FormControl>
 

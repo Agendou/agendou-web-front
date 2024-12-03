@@ -16,37 +16,105 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers";
-import api from "../../services/api";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
+import api from "../../services/api";
 
-const ManualAppointmentForm = () => {
+export default function ManualAppointments() {
     const [formData, setFormData] = useState({
         profissional: "",
+        servico: [],
+        cliente: "",
         dataHoraCorte: dayjs(),
     });
+
+
+    const [profissionais, setProfissionais] = useState([]);
+    const [servicos, setServicos] = useState([]);
+    const [clientes, setClientes] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const token = localStorage.getItem("token");
+
+                if (!token) {
+                    toast.error("Usuário não autenticado.");
+                    return;
+                }
+
+                //get em /funcionarios/listar
+                const profissionaisResponse = await api.get("/funcionarios/listar", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setProfissionais(profissionaisResponse.data);
+
+                //get em /servicos
+                const servicosResponse = await api.get("/servicos/listar", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setServicos(servicosResponse.data);
+
+                //get em /usuarios (clientes)
+                const clientesResponse = await api.get("/usuarios/listar", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setClientes(clientesResponse.data);
+
+            } catch (error) {
+                console.error("Erro ao buscar dados:", error);
+                toast.error("Erro ao carregar profissionais e serviços.");
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const [isFocused, setIsFocused] = useState(false);
 
     const handleInputChange = (field, value) => {
-        setFormData({ ...formData, [field]: value });
+        console.log("Antes da atualização:", formData);
+        console.log(`Campo: ${field}, Valor: ${value}`);
+        setFormData((prevState) => {
+            const updatedState = {
+                ...prevState,
+                [field]: value,
+            };
+            console.log("Depois da atualização:", updatedState);
+            return updatedState;
+        });
     };
 
     const handleSubmit = async () => {
 
         const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
 
         if (!token) {
             alert("Usuário não autenticado. Faça login novamente.");
             return;
         }
 
+        if (!formData.profissional || !formData.servico || !formData.cliente) {
+            toast.error("Preencha todos os campos obrigatórios!");
+            return;
+        }
+
         const agendamento = {
-            profissional: formData.profissional,
-            dataHoraCorte: formData.dataHoraCorte.format("YYYY-MM-DDTHH:mm:ss"),
+            fkFuncionario: formData.profissional,
+            fkUsuario: formData.cliente,
+            fkServicos: formData.servico,
+            data: formData.dataHoraCorte.format("YYYY-MM-DDTHH:mm:ss"),
         };
 
         try {
-            const response = await api.post('/agendamentos', agendamento, {
+            const response = await api.post("/agendamentos/cadastrar", agendamento, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -54,10 +122,12 @@ const ManualAppointmentForm = () => {
 
             if (response.status === 201) {
                 console.log("Agendamento realizado com sucesso:", response.data);
-                toast.success("Agendamento realizado com sucesso!")
+                toast.success("Agendamento realizado com sucesso!");
 
                 setFormData({
                     profissional: "",
+                    servico: [],
+                    cliente: "",
                     dataHoraCorte: dayjs(),
                 });
 
@@ -70,6 +140,9 @@ const ManualAppointmentForm = () => {
             toast.error("Erro na conexão com o servidor. Tente novamente.");
         }
     };
+
+    console.log("Serviços carregados:", servicos);
+    console.log("Profissionais carregados:", profissionais);
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -97,10 +170,9 @@ const ManualAppointmentForm = () => {
 
                             <Box sx={{ display: "flex", gap: "1rem", marginTop: 2 }}>
                                 <DateTimePicker
-                                    label="Data do agendamento"
-                                    value={formData.data}
-                                    onChange={(date) => handleInputChange("data", date)}
-                                    inputFormat="dd/MM/yyyy"
+                                    label="Data e Hora do Agendamento"
+                                    value={formData.dataHoraCorte}
+                                    onChange={(date) => handleInputChange("dataHoraCorte", date)}
                                     renderInput={(params) => <TextField {...params} />}
                                     sx={{
                                         "& .MuiInputBase-input": {
@@ -128,9 +200,70 @@ const ManualAppointmentForm = () => {
                                 <InputLabel
                                     style={{ color: "white" }}
                                     sx={{
+                                        display: formData.cliente ? "none" : "block",
+                                    }}
+                                    shrink={formData.cliente.length > 0}
+                                >
+                                    Clientes
+                                </InputLabel>
+                                <Select
+                                    value={formData.cliente}
+                                    onChange={(e) =>
+                                        handleInputChange("cliente", e.target.value)
+                                    }
+                                    label="Cliente"
+                                    sx={{
+                                        color: "white",
+                                        backgroundColor: "transparent",
+                                        borderColor: "white",
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "white",
+                                        },
+                                    }}
+                                    MenuProps={{
+                                        PaperProps: {
+                                            style: {
+                                                backgroundColor: "#010720",
+                                                color: "white",
+                                            },
+                                        },
+                                        MenuListProps: {
+                                            sx: {
+                                                "& .MuiMenuItem-root": {
+                                                    color: "white",
+                                                },
+                                                "& .MuiMenuItem-root:hover": {
+                                                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                                },
+                                            },
+                                        },
+                                    }}
+                                >
+                                    {clientes.map((usuario) => (
+                                        <MenuItem key={usuario.id} value={usuario.id}>
+                                            {usuario.nome}
+                                        </MenuItem>
+                                    ))}
+
+                                </Select>
+                            </FormControl>
+
+                            <FormControl fullWidth margin="normal">
+                                <InputLabel
+                                    style={{ color: "white" }}
+                                    sx={{
                                         display: formData.profissional ? "none" : "block",
                                     }}
-                                    shrink={false}
+                                    shrink={formData.profissional.length > 0}
                                 >
                                     Profissional
                                 </InputLabel>
@@ -176,25 +309,28 @@ const ManualAppointmentForm = () => {
                                         },
                                     }}
                                 >
-                                    <MenuItem value="luzes">Humberto</MenuItem>
-                                    <MenuItem value="degrade">Henrique</MenuItem>
-                                    <MenuItem value="corte">Pedro</MenuItem>
+                                    {profissionais.map((funcionario) => (
+                                        <MenuItem key={funcionario.id} value={funcionario.id}>
+                                            {funcionario.nome}
+                                        </MenuItem>
+                                    ))}
+
                                 </Select>
                             </FormControl>
 
                             <FormControl fullWidth margin="normal">
                                 <InputLabel
                                     style={{ color: "white" }}
-                                    sx={{
-                                        display: formData.servico ? "none" : "block",
-                                    }}
-                                    shrink={false}
+                                    shrink={formData.servico.length > 0}
                                 >
                                     Serviço
                                 </InputLabel>
                                 <Select
+                                    multiple
                                     value={formData.servico}
-                                    onChange={(e) => handleInputChange("servico", e.target.value)}
+                                    onChange={(e) => {
+                                        handleInputChange("servico", e.target.value);
+                                    }}
                                     label="Serviço"
                                     sx={{
                                         color: "white",
@@ -231,10 +367,19 @@ const ManualAppointmentForm = () => {
                                             },
                                         },
                                     }}
+                                    renderValue={(selected) =>
+                                        servicos
+                                            .filter((servico) => selected.includes(servico.id))
+                                            .map((servico) => servico.nome)
+                                            .join(", ")
+                                    }
                                 >
-                                    <MenuItem value="luzes">Luzes</MenuItem>
-                                    <MenuItem value="degrade">Degradê</MenuItem>
-                                    <MenuItem value="corte">Social</MenuItem>
+                                    {servicos.map((servico) => (
+                                        <MenuItem key={servico.id} value={servico.id}>
+                                            {servico.nome}
+                                        </MenuItem>
+                                    ))}
+
                                 </Select>
                             </FormControl>
 
@@ -304,5 +449,3 @@ const ManualAppointmentForm = () => {
         </LocalizationProvider>
     );
 }
-
-export default ManualAppointmentForm;
