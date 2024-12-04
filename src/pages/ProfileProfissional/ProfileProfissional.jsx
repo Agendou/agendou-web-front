@@ -38,7 +38,11 @@ const ProfileProfissional = () => {
 
   const fetchFuncionarios = async () => {
     try {
-      const response = await api.get('/funcionarios/listar');
+      const response = await api.get('/funcionarios/listar', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
       setFuncionarios(response.data);
     } catch (error) {
       console.error("Erro ao listar funcionários:", error);

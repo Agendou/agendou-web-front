@@ -60,7 +60,13 @@ export default function ModalServico({ onAddService }) {
 
   const fetchServices = async () => {
     try {
-      const response = await api.get('/servicos/listar');
+      const response = await api.get('/servicos/listar',
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        console.log(response.data);
       setServices(response.data);
     } catch (error) {
       console.error("Erro ao listar serviços:", error);
