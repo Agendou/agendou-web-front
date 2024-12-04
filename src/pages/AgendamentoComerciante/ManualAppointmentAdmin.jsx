@@ -99,23 +99,36 @@ const ManualAppointmentAdmin = () => {
     const fetchAgendamentos = async () => {
         try {
 
-            const response = await api.get("/agendamentos/listar-simples", {
+            const response = await api.get("/agendamentos/listar", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-
-            const agendamentosFiltrados = response.data.map((agendamento) => ({
-                id: agendamento.id,
-                usuario: agendamento.usuario,
-                data: agendamento.data,
-                servico: agendamento.servico,
-            }));
-
-            setAgendamentos(agendamentosFiltrados);
+            setAgendamentos(response.data);
         } catch (error) {
             console.error("Erro ao listar agendamentos:", error);
             toast.error("Erro ao listar agendamentos.");
+        }
+    };
+
+    const fetchAgendamentoById = async (id) => {
+        try {
+            const response = await api.get(`/agendamentos/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const agendamento = response.data;
+            setFormData({
+                profissional: agendamento.fkFuncionario ? agendamento.fkFuncionario.nome : '', // Profissional
+                servico: agendamento.fkServico ? agendamento.fkServico.nome : '', // Serviço
+                usuario: agendamento.fkUsuario ? agendamento.fkUsuario.nome : '', // Usuário
+                dataHoraCorte: agendamento.data ? dayjs(agendamento.data) : dayjs(), // Data e hora do corte
+            });
+            setIsCadastroVisible(true);
+        } catch (error) {
+            console.error("Erro ao buscar agendamento:", error);
+            toast.error("Erro ao buscar agendamento.");
         }
     };
 
@@ -346,75 +359,69 @@ const ManualAppointmentAdmin = () => {
                                         </ListItem>
 
                                         {/* agendamentos */}
-                                        {agendamentos
-                                            .map((agendamento) => (
-                                                <ListItem
-                                                    key={agendamento.id}
-                                                    button
-                                                    onClick={() => {
-                                                        setSelectedAgendamentoId(agendamento.id);
-                                                        setNome(agendamento.nome);
-                                                        setFormData({
-                                                            profissional: agendamento.fkFuncionario || "",
-                                                            servico: agendamento.fkServico || "",
-                                                            usuario: agendamento.fkUsuario || "",
-                                                            dataHoraCorte: dayjs(agendamento.data),
-                                                        })
-                                                        setIsCadastroVisible(true);
+                                        {Array.isArray(agendamentos) && agendamentos.map((agendamento) => (
+                                            <ListItem
+                                                key={agendamento.id}
+                                                button
+                                                onClick={() => {
+                                                    setSelectedAgendamentoId(agendamento.id);
+                                                    fetchAgendamentoById(agendamento.id);
+
+                                                    setIsCadastroVisible(true);
+                                                }}
+                                            >
+                                                {/* Nome do usuário */}
+                                                <ListItemText
+                                                    primary={agendamento.fkUsuario ? agendamento.fkUsuario.nome : ''}
+                                                    sx={{
+                                                        backgroundColor: agendamento.id === selectedAgendamentoId ? 'rgba(248, 244, 248, 0.5)' : 'rgba(248, 244, 248, 0.2)',
+                                                        borderRadius: '20px',
+                                                        padding: '8px',
+                                                        cursor: 'pointer',
+                                                        color: agendamento.id === selectedAgendamentoId ? '#ffffff' : '#f8f4f8',
+                                                        fontWeight: agendamento.id === selectedAgendamentoId ? 'bold' : 'normal',
+                                                        transition: 'transform 0.2s ease-in-out, background-color 0.2s',
+                                                        '&:hover': {
+                                                            transform: 'scale(0.9)',
+                                                        },
                                                     }}
-                                                >
-                                                    {/* Nome do usuário */}
-                                                    <ListItemText
-                                                        primary={agendamento.usuario}
-                                                        sx={{
-                                                            backgroundColor: agendamento.id === selectedAgendamentoId ? 'rgba(248, 244, 248, 0.5)' : 'rgba(248, 244, 248, 0.2)',
-                                                            borderRadius: '20px',
-                                                            padding: '8px',
-                                                            cursor: 'pointer',
-                                                            color: agendamento.id === selectedAgendamentoId ? '#ffffff' : '#f8f4f8',
-                                                            fontWeight: agendamento.id === selectedAgendamentoId ? 'bold' : 'normal',
-                                                            transition: 'transform 0.2s ease-in-out, background-color 0.2s',
-                                                            '&:hover': {
-                                                                transform: 'scale(0.9)',
-                                                            },
-                                                        }}
-                                                    />
+                                                />
 
-                                                    {/* Data e hora do serviço */}
-                                                    <ListItemText
-                                                        primary={new Date(agendamento.data).toLocaleString()}
-                                                        sx={{
-                                                            backgroundColor: agendamento.id === selectedAgendamentoId ? 'rgba(248, 244, 248, 0.5)' : 'rgba(248, 244, 248, 0.2)',
-                                                            borderRadius: '20px',
-                                                            padding: '8px',
-                                                            cursor: 'pointer',
-                                                            color: agendamento.id === selectedAgendamentoId ? '#ffffff' : '#f8f4f8',
-                                                            fontWeight: agendamento.id === selectedAgendamentoId ? 'bold' : 'normal',
-                                                            transition: 'transform 0.2s ease-in-out, background-color 0.2s',
-                                                            '&:hover': {
-                                                                transform: 'scale(0.9)',
-                                                            },
-                                                        }}
-                                                    />
+                                                {/* Data e hora do serviço */}
+                                                <ListItemText
+                                                    primary={new Date(agendamento.data).toLocaleString()}
+                                                    sx={{
+                                                        backgroundColor: agendamento.id === selectedAgendamentoId ? 'rgba(248, 244, 248, 0.5)' : 'rgba(248, 244, 248, 0.2)',
+                                                        borderRadius: '20px',
+                                                        padding: '8px',
+                                                        cursor: 'pointer',
+                                                        color: agendamento.id === selectedAgendamentoId ? '#ffffff' : '#f8f4f8',
+                                                        fontWeight: agendamento.id === selectedAgendamentoId ? 'bold' : 'normal',
+                                                        transition: 'transform 0.2s ease-in-out, background-color 0.2s',
+                                                        '&:hover': {
+                                                            transform: 'scale(0.9)',
+                                                        },
+                                                    }}
+                                                />
 
-                                                    <ListItemText
-                                                        primary={agendamento.servico}
-                                                        sx={{
-                                                            backgroundColor: agendamento.id === selectedAgendamentoId ? 'rgba(248, 244, 248, 0.5)' : 'rgba(248, 244, 248, 0.2)',
-                                                            borderRadius: '20px',
-                                                            padding: '8px',
-                                                            cursor: 'pointer',
-                                                            color: agendamento.id === selectedAgendamentoId ? '#ffffff' : '#f8f4f8',
-                                                            fontWeight: agendamento.id === selectedAgendamentoId ? 'bold' : 'normal',
-                                                            transition: 'transform 0.2s ease-in-out, background-color 0.2s',
-                                                            '&:hover': {
-                                                                transform: 'scale(0.9)',
-                                                            },
-                                                        }}
-                                                    />
-
-                                                </ListItem>
-                                            ))}
+                                                {/* Nome do serviço */}
+                                                <ListItemText
+                                                    primary={agendamento.fkServico ? agendamento.fkServico.nome : ''}
+                                                    sx={{
+                                                        backgroundColor: agendamento.id === selectedAgendamentoId ? 'rgba(248, 244, 248, 0.5)' : 'rgba(248, 244, 248, 0.2)',
+                                                        borderRadius: '20px',
+                                                        padding: '8px',
+                                                        cursor: 'pointer',
+                                                        color: agendamento.id === selectedAgendamentoId ? '#ffffff' : '#f8f4f8',
+                                                        fontWeight: agendamento.id === selectedAgendamentoId ? 'bold' : 'normal',
+                                                        transition: 'transform 0.2s ease-in-out, background-color 0.2s',
+                                                        '&:hover': {
+                                                            transform: 'scale(0.9)',
+                                                        },
+                                                    }}
+                                                />
+                                            </ListItem>
+                                        ))}
                                     </List>
 
                                 </Box>
