@@ -5,6 +5,7 @@ import ScheduleDayList from "../../components/ScheduleDayList/ScheduleDayList";
 import ManualAppointmentForm from "../../components/ManualAppointmentForm/ManualAppointmentForm";
 import CustomCalendar from "../../components/CustomCalendar/CustomCalendar";
 import { Box, Grid } from '@mui/material';
+import ManualAppointments from "../../components/ManualAppointments/ManualAppointments/ManualAppointments";
 
 const ManualAppointmentAdmin = () => {
     return (
