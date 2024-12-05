@@ -13,7 +13,7 @@ const LoginRegisterCliente = () => {
 
   return (
     <div className={styles.page}>
-      <div className={styles.container}>
+      <div className={`${styles.container} ${isLogin ? "" : styles.registerMode}`}>
         <div
           className={`${styles.leftPanel} ${
             isLogin ? styles.showLeftPanel : ""
