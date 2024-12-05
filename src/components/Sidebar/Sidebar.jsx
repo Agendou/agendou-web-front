@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';  // Importe o useState
 import { Link, useNavigate } from 'react-router-dom';
 import './Sidebar.css';
 import logo from '../../assets/images/Logo Branca.png';
@@ -12,9 +12,14 @@ import perfilDash from '../../assets/images/profile.png';
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);  // Estado para controlar a visibilidade da sidebar
 
   const handleLogout = () => {
     navigate('/');
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarVisible(prevState => !prevState);  // Alterna o estado de visibilidade
   };
 
   return (
@@ -80,6 +85,7 @@ const Sidebar = () => {
             <img src={exitIcon} alt="Sair" className="menu-icon" />
           </button>
         </div>
+      </div>
       <button className="hamburger-menu" onClick={toggleSidebar}>
         &#9776;
       </button>

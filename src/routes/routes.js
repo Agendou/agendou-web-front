@@ -12,7 +12,6 @@ import ManualAppointmentAdmin from "../pages/AgendamentoComerciante/ManualAppoin
 import DashboardIndividual from "../pages/DashboardIndividual/DashboardIndividual";
 import PerfilComerciante from "../pages/PerfilComerciante/PerfilComerciante";
 import PerfilCliente from "../pages/PerfilCliente/PerfilCliente";
-import Appointments from "../pages/Agendamentos/Agendamentos";
 
 function Rotas() {
     return (
@@ -32,7 +31,6 @@ function Rotas() {
                 <Route path="/dashboard-individual" element={<DashboardIndividual />} />
                 <Route path="/merchant-profile" element={<PerfilComerciante />} />
                 <Route path="/client-profile" element={<PerfilCliente />} />
-                <Route path="/appointments" element={<Appointments />} />
             </Routes>
         </BrowserRouter>
     );
