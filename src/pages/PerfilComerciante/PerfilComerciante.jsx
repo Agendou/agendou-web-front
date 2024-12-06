@@ -1,63 +1,68 @@
 import { Box, Grid } from "@mui/material";
-import Sidebar from "../../components/Sidebar/Sidebar";
-import MerchantInfo from "../../components/MerchantInfo/MerchantInfo";
-import AddService from "../../components/AddService/AddService";
+import ClienteHeader from "../../components/ClienteHeader/ClientHeader";
+import ClientInfo from "../../components/ClientInfo/ClientInfo";
+import RecentAppointments from "../../components/RecentAppointments/RecentAppointments";
+import Sidebar from '../../components/Sidebar/Sidebar';
+import MerchantInfo from '../../components/MerchantInfo/MerchantInfo';
+import Header from "../../components/HeaderApp/HeaderApp";
 
 const PerfilComerciante = () => {
     return (
         <Box
             sx={{
                 display: "flex",
+                flexDirection: "column",
                 width: "100%",
                 height: "100vh",
             }}
         >
-            {/* Sidebar */}
-            <Sidebar isVisible={true} />
+            <Header title="Painel de Configurações" />
 
-            {/* Conteúdo Principal */}
+            <Sidebar isVisible={true} />
             <Box
                 sx={{
                     display: "flex",
-                    flexDirection: "column",
                     flexGrow: 1,
-                    width: "100%",
-                    padding: 3,
+                    justifyContent: "center",
+                    alignItems: "center",
                 }}
             >
                 <Grid
                     container
+                    spacing={9}
                     sx={{
-                        maxWidth: "100%",
-                        margin: "0 auto",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        width: "100%",
                     }}
                 >
                     <Grid
                         item
                         xs={12}
-                        md={7}
+                        md={6}
                         sx={{
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
+                            width: "100%",
                         }}
                     >
                         <MerchantInfo />
                     </Grid>
 
-                    {/* Adicionar Serviço */}
                     <Grid
                         item
                         xs={12}
-                        md={5}
+                        md={6}
                         sx={{
                             display: "flex",
                             flexDirection: "column",
-                            gap: 1, 
-                            padding: 2,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: "100%",
                         }}
                     >
-                        <AddService />
+                        <RecentAppointments />
                     </Grid>
                 </Grid>
             </Box>
