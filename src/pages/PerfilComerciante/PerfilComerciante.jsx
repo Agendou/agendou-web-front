@@ -5,6 +5,7 @@ import RecentAppointments from "../../components/RecentAppointments/RecentAppoin
 import Sidebar from '../../components/Sidebar/Sidebar';
 import MerchantInfo from '../../components/MerchantInfo/MerchantInfo';
 import Header from "../../components/HeaderApp/HeaderApp";
+import DownloadCsvModal from "../../components/Modal/DownloadCsvModal";
 
 const PerfilComerciante = () => {
     return (
@@ -60,8 +61,10 @@ const PerfilComerciante = () => {
                             justifyContent: "center",
                             alignItems: "center",
                             width: "100%",
+                            gap: 2,
                         }}
                     >
+                        <DownloadCsvModal />
                         <RecentAppointments />
                     </Grid>
                 </Grid>
