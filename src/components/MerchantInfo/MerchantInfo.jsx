@@ -12,13 +12,18 @@ import { Visibility, VisibilityOff, Lock, Edit } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import api from "../../services/api";
 import DeleteAccountModal from "../Modal/ModalValidacao";
+import EditarServicos from "../Modal/ModalAddServico";
 
 const MerchantInfo = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
+  const [openEditarServicos, setOpenEditarServicos] = React.useState(false);
 
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
+
+  const handleOpenEditarServicos = () => setOpenEditarServicos(true);
+  const handleCloseEditarServicos = () => setOpenEditarServicos(false);
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -161,6 +166,11 @@ const MerchantInfo = () => {
         open={openModal}
         onClose={handleCloseModal}
         onConfirm={handleDelete}
+      />
+
+      <EditarServicos
+        open={openEditarServicos}
+        onClose={handleCloseEditarServicos}
       />
 
       <Box
@@ -360,24 +370,11 @@ const MerchantInfo = () => {
             mt: 2,
           }}
         >
-          <Button
-            variant="outlined"
-            sx={{
-              color: "#fff",
-              borderColor: "#ccc",
-              "&:hover": {
-                borderColor: "#fff",
-              },
-            }}
-          >
-            Cancelar
-          </Button>
-
+          {/* Botões alinhados */}
           <Box
             sx={{
               display: "flex",
-              justifyContent: "space-around",
-              flexDirection: "column",
+              flexDirection: "row",
               gap: 2,
               mt: 2,
             }}
@@ -393,6 +390,19 @@ const MerchantInfo = () => {
               }}
             >
               {isLoading ? "Salvando..." : "Salvar alterações"}
+            </Button>
+
+            <Button
+              variant="contained"
+              onClick={handleOpenEditarServicos}
+              sx={{
+                backgroundColor: "#0066CC",
+                "&:hover": {
+                  backgroundColor: "#005BB5",
+                },
+              }}
+            >
+              Editar serviços
             </Button>
 
             <Button
@@ -412,6 +422,7 @@ const MerchantInfo = () => {
             </Button>
           </Box>
         </Box>
+
       </Box>
     </Paper>
   );
