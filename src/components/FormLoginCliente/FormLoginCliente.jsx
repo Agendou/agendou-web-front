@@ -41,7 +41,9 @@ const FormLogin = ({ switchForm }) => {
 
             toast.success("Seja bem vindo(a)!");
 
-            navigate('/dashboard');
+            setTimeout(() => {
+                navigate("/manual-appointment");
+            }, 2000);
 
         } catch (error) {
 

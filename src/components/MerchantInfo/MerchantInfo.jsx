@@ -11,9 +11,14 @@ import {
 import { Visibility, VisibilityOff, Lock, Edit } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import api from "../../services/api";
+import DeleteAccountModal from "../Modal/ModalValidacao";
 
 const MerchantInfo = () => {
   const [showPassword, setShowPassword] = React.useState(false);
+  const [openModal, setOpenModal] = React.useState(false);
+
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -40,7 +45,7 @@ const MerchantInfo = () => {
     }
 
     try {
-      const response = await api.get(`/empresas/${userIdEmpresa}`, {
+      const response = await api.get(`/empresas/listar/${userIdEmpresa}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -61,6 +66,30 @@ const MerchantInfo = () => {
     } catch (error) {
       console.error("Erro na requisição: ", error);
       toast.error("Erro ao carregar os dados. Tente novamente.");
+    }
+  };
+
+  const handleDelete = async () => {
+    const token = localStorage.getItem("token");
+    const userIdEmpresa = localStorage.getItem("userIdEmpresa");
+    try {
+      console.log("Deletando conta:", userIdEmpresa);
+
+      const response = await api.delete(`/empresas/deletar/${userIdEmpresa}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      toast.success("Conta cancelada! Sentiremos sua falta :(");
+
+      setTimeout(() => {
+        window.location.href = "/home";
+      }, 3000);
+
+    } catch (error) {
+      console.error("Erro ao excluir o agendamento:", error);
+      toast.error("Erro ao excluir agendamento. Tente novamente.");
     }
   };
 
@@ -116,9 +145,8 @@ const MerchantInfo = () => {
         backgroundColor: "#010726",
         borderRadius: "16px",
         color: "#fff",
-        maxWidth: "500px",
-        margin: "auto",
-        marginLeft: "270px"
+        maxWidth: "550px",
+        marginLeft: "230px"
       }}
       elevation={3}
     >
@@ -128,6 +156,12 @@ const MerchantInfo = () => {
           <Edit />
         </IconButton>
       </Typography>
+
+      <DeleteAccountModal
+        open={openModal}
+        onClose={handleCloseModal}
+        onConfirm={handleDelete}
+      />
 
       <Box
         component="form"
@@ -256,7 +290,7 @@ const MerchantInfo = () => {
           label="Email"
           variant="outlined"
           value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target })
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })
           }
           fullWidth
           InputLabelProps={{ style: { color: "#ccc" } }}
@@ -338,18 +372,45 @@ const MerchantInfo = () => {
           >
             Cancelar
           </Button>
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
+
+          <Box
             sx={{
-              backgroundColor: "#0066CC",
-              "&:hover": {
-                backgroundColor: "#005BB5",
-              },
+              display: "flex",
+              justifyContent: "space-around",
+              flexDirection: "column",
+              gap: 2,
+              mt: 2,
             }}
           >
-            {isLoading ? "Salvando..." : "Salvar alterações"}
-          </Button>
+            <Button
+              variant="contained"
+              onClick={handleSubmit}
+              sx={{
+                backgroundColor: "#0066CC",
+                "&:hover": {
+                  backgroundColor: "#005BB5",
+                },
+              }}
+            >
+              {isLoading ? "Salvando..." : "Salvar alterações"}
+            </Button>
+
+            <Button
+              variant="outlined"
+              onClick={handleOpenModal}
+              sx={{
+                color: "#fff",
+                backgroundColor: "#7d1414",
+                boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+                borderColor: "#ccc",
+                "&:hover": {
+                  borderColor: "#fff",
+                },
+              }}
+            >
+              Deletar conta
+            </Button>
+          </Box>
         </Box>
       </Box>
     </Paper>
