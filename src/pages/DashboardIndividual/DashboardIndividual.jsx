@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import HeaderApp from '../../components/HeaderApp/HeaderApp';
 import {
@@ -9,68 +9,77 @@ import {
     Grid,
     Box,
 } from '@mui/material';
-import { FilterList } from '@mui/icons-material';
+import {FilterList} from '@mui/icons-material';
 import { Chart } from 'react-google-charts';
 import styles from './DashboardIndividual.module.css';
-import { fontSize } from '@mui/system';
 
 const DashboardIndividual = () => {
-    const [funcionarios, setFuncionarios] = useState([]);
-    const [selectedFuncionario, setSelectedFuncionario] = useState(null);
-    const [dashboardData, setDashboardData] = useState({
-        clientes: 0,
-        agendamentos: 0,
-        avaliacao: '',
-        cancelamento: 0,
-        servicos: [],
-        horarios: [],
-    });
+    const funcionarios = [
+        'Humberto Souza Pereira Silva',
+        'Robson Cleiton Lopes',
+        'José Ribeiro Mendes',
+        'Fernando Teixeira',
+        'José Marques',
+        'Julia Alves',
+        'Kaique Freitas',
+        'Gustavo Ramos',
+        'José Alberto Dias',
+    ];
 
-    useEffect(() => {
-      
-        fetch('/api/funcionarios')
-            .then(response => response.json())
-            .then(data => setFuncionarios(data))
-            .catch(error => console.error('Error fetching funcionarios:', error));
-    }, []);
-
-    useEffect(() => {
-        if (selectedFuncionario) {
-           
-            fetch(`/api/funcionarios/${selectedFuncionario.id}/dashboard`)
-                .then(response => response.json())
-                .then(data => setDashboardData(data))
-                .catch(error => console.error('Error fetching dashboard data:', error));
-        }
-    }, [selectedFuncionario]);
-
-    const handleFuncionarioClick = (funcionario) => {
-        setSelectedFuncionario(funcionario);
+    const optionsServicos = {
+        hAxis: { title: 'Serviços' },
+        vAxis: { title: 'Qtd. Serviços' },
+        pieHole: 0.4,
+        is3D: false,
+        colors: ['#332c58', '#555B94', '#8089a4'],
+        legend: { 
+            position: 'none', 
+        },
+        titleTextStyle: {
+            fontSize: 14, 
+        },
     };
+    
+    const optionsHorarios = {
+        hAxis: { title: 'Horário' },
+        vAxis: { title: 'Qtd. Agendamentos' },
+        colors: ['#332c58', '#555B94', '#8089a4'],
+        legend: { 
+            position: 'none', 
+        },
+        titleTextStyle: {
+            fontSize: 14, 
+        },
+    };
+    
+    const dataServicos = [
+        ['Serviço', 'Quantidade'],
+        ['Corte', 55],
+        ['Coloração', 28],
+        ['Banho', 10],
+        ['Pintura', 15],
+        ['Hidratação', 5],
+    ];
+    
+    const dataHorarios = [
+        ['Horário', 'Alto', 'Médio', 'Baixo'],
+        ['07:00', 200, 150, 100],
+        ['10:00', 300, 250, 200],
+        ['13:00', 400, 300, 250],
+        ['16:00', 600, 400, 350],
+        ['19:00', 500, 450, 300],
+    ];
 
     const getKPIColor = (value, thresholds) => {
-        if (value >= thresholds.high) return '#070035';
-        if (value >= thresholds.medium) return '#241f44';
-        return '#6b668a';
+        if (value >= thresholds.high) return '#070035'; 
+        if (value >= thresholds.medium) return '#241f44'; 
+        return '#6b668a'; 
     };
+    
 
     const thresholds = {
         high: 400,
         medium: 200,
-    };
-
-    const optionsServicos = {
-        title: 'Serviços Mais Requisitados',
-        hAxis: { title: 'Serviço' },
-        vAxis: { title: 'Quantidade' },
-        legend: 'none',
-    };
-
-    const optionsHorarios = {
-        title: 'Horários Mais Agendados',
-        hAxis: { title: 'Horário' },
-        vAxis: { title: 'Quantidade' },
-        legend: 'none',
     };
 
     return (
@@ -118,23 +127,24 @@ const DashboardIndividual = () => {
                                             p: 1,
                                             mt: 1,
                                             '&::-webkit-scrollbar': {
-                                                width: '8px',
+                                                width: '8px',   
                                             },
                                             '&::-webkit-scrollbar-thumb': {
-                                                backgroundColor: '#f8f4f8',
-                                                borderRadius: '10px',
+                                                backgroundColor: '#f8f4f8', 
+                                                borderRadius: '10px', 
                                                 '&:hover': {
-                                                    backgroundColor: '#d1d1d1',
+                                                    backgroundColor: '#d1d1d1', 
                                                 },
                                             },
                                             '&::-webkit-scrollbar-track': {
-                                                backgroundColor: '#010726',
+                                                backgroundColor: '#010726', 
                                             },
                                         }}
+                                        
                                     >
-                                        {funcionarios.map((funcionario) => (
+                                        {funcionarios.map((nome, index) => (
                                             <Typography
-                                                key={funcionario.id}
+                                                key={index}
                                                 variant="body1"
                                                 sx={{
                                                     py: 1,
@@ -149,9 +159,8 @@ const DashboardIndividual = () => {
                                                         scale: (0.9),
                                                     },
                                                 }}
-                                                onClick={() => handleFuncionarioClick(funcionario)}
                                             >
-                                                {funcionario.nome}
+                                                {nome}
                                             </Typography>
                                         ))}
                                     </Box>
@@ -165,8 +174,8 @@ const DashboardIndividual = () => {
                                     <Card className={styles.card}>
                                         <CardContent>
                                             <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Total de Clientes</Typography>
-                                            <Typography variant="subtitle3" sx={{ fontSize: '0.7rem', color: '#737373', fontWeight: 'bold' }}>20/11/24 à 26/11/24</Typography>
-                                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{dashboardData.clientes}</Typography>
+                                            <Typography variant="subtitle3" sx={{ fontSize: '0.7rem', color:'#737373', fontWeight:'bold'}}>20/11/24 à 26/11/24</Typography>
+                                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>10</Typography>
                                             <Box sx={{ width: '100%', height: 5, backgroundColor: '#e0e0e0', borderRadius: '5px', mt: 1 }}>
                                                 <Box sx={{ width: '60%', height: '100%', backgroundColor: '#6C63FF', borderRadius: '5px' }} />
                                             </Box>
@@ -177,8 +186,8 @@ const DashboardIndividual = () => {
                                     <Card className={styles.card}>
                                         <CardContent>
                                             <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Total de agendamentos</Typography>
-                                            <Typography variant="subtitle3" sx={{ fontSize: '0.7rem', color: '#737373', fontWeight: 'bold' }}>20/11/24 à 26/11/24</Typography>
-                                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{dashboardData.agendamentos}</Typography>
+                                            <Typography variant="subtitle3" sx={{ fontSize: '0.7rem', color:'#737373', fontWeight:'bold'}}>20/11/24 à 26/11/24</Typography>
+                                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>125</Typography>
                                             <Box sx={{ width: '100%', height: 5, backgroundColor: '#e0e0e0', borderRadius: '5px', mt: 1 }}>
                                                 <Box sx={{ width: '40%', height: '100%', backgroundColor: '#F44336', borderRadius: '5px' }} />
                                             </Box>
@@ -189,9 +198,8 @@ const DashboardIndividual = () => {
                                     <Card className={styles.card}>
                                         <CardContent>
                                             <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Avaliação</Typography>
-                                            <Typography variant="subtitle3" sx={{ fontSize: '0.7rem', color: '#737373', fontWeight: 'bold' }}>20/11/24 à 26/11/24</Typography>
-                                            <Typography SX={{fontSize: '0.8rem'}}>⭐⭐⭐⭐⭐</Typography>
-                                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{dashboardData.avaliacao}</Typography>
+                                            <Typography variant="subtitle3" sx={{ fontSize: '0.7rem', color:'#737373', fontWeight:'bold'}}>20/11/24 à 26/11/24</Typography>
+                                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>⭐⭐⭐⭐⭐</Typography>
                                             <Box sx={{ width: '100%', height: 5, backgroundColor: '#e0e0e0', borderRadius: '5px', mt: 1 }}>
                                                 <Box sx={{ width: '80%', height: '100%', backgroundColor: '#4CAF50', borderRadius: '5px' }} />
                                             </Box>
@@ -202,8 +210,8 @@ const DashboardIndividual = () => {
                                     <Card className={styles.card}>
                                         <CardContent>
                                             <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Taxa de cancelamento</Typography>
-                                            <Typography variant="subtitle3" sx={{ fontSize: '0.7rem', color: '#737373', fontWeight: 'bold' }}>20/11/24 à 26/11/24</Typography>
-                                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{dashboardData.cancelamento}%</Typography>
+                                            <Typography variant="subtitle3" sx={{ fontSize: '0.7rem', color:'#737373', fontWeight:'bold'}}>20/11/24 à 26/11/24</Typography>
+                                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>30%</Typography>
                                             <Box sx={{ width: '100%', height: 5, backgroundColor: '#e0e0e0', borderRadius: '5px', mt: 1 }}>
                                                 <Box sx={{ width: '30%', height: '100%', backgroundColor: '#FF9800', borderRadius: '5px' }} />
                                             </Box>
@@ -214,10 +222,10 @@ const DashboardIndividual = () => {
                                 <Grid item xs={6}>
                                     <Card>
                                         <CardContent>
-                                            <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '0.8rem' }}>Serviços Mais Requisitados</Typography>
+                                        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '0.8rem' }}>Serviços mais requisitados</Typography>
                                             <Chart
                                                 chartType="ColumnChart"
-                                                data={dashboardData.servicos}
+                                                data={dataServicos}
                                                 options={optionsServicos}
                                                 width="100%"
                                                 height="200px"
@@ -235,7 +243,7 @@ const DashboardIndividual = () => {
                                             <div className={styles.kpiContainer}>
                                                 {['Alto', 'Médio', 'Baixo'].map((label, i) => (
                                                     <React.Fragment key={label}>
-                                                        <div className={styles.kpiDot} style={{ backgroundColor: getKPIColor(dashboardData.horarios[3]?.[i + 1] || 0, thresholds) }}></div>
+                                                        <div className={styles.kpiDot} style={{ backgroundColor: getKPIColor(dataHorarios[3][i + 1], thresholds) }}></div>
                                                         <span>{label}</span>
                                                     </React.Fragment>
                                                 ))}
@@ -247,10 +255,10 @@ const DashboardIndividual = () => {
                                 <Grid item xs={6}>
                                     <Card>
                                         <CardContent>
-                                            <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '0.8rem' }}>Horários Mais Agendados</Typography>
+                                        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '0.8rem' }}>Horários mais agendados</Typography>
                                             <Chart
                                                 chartType="ColumnChart"
-                                                data={dashboardData.horarios}
+                                                data={dataHorarios}
                                                 options={optionsHorarios}
                                                 width="100%"
                                                 height="200px"
@@ -268,7 +276,8 @@ const DashboardIndividual = () => {
                                             <div className={styles.kpiContainer}>
                                                 {['Alto', 'Médio', 'Baixo'].map((label, i) => (
                                                     <React.Fragment key={label}>
-                                                        <div className={styles.kpiDot} style={{ backgroundColor: getKPIColor(dashboardData.horarios[3]?.[i + 1] || 0, thresholds) }}></div>
+                                                        <div className={styles.kpiDot} style={{ backgroundColor: getKPIColor(dataHorarios[3]?.[i + 1] || 0, thresholds) }}
+                                                        ></div>
                                                         <span>{label}</span>
                                                     </React.Fragment>
                                                 ))}

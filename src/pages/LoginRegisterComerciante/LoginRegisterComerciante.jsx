@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import FormLogin from "../../components/FormLogin/FormLogin";
-import FormRegister from "../../components/FormRegisterCliente/FormRegisterCliente";
+import FormRegister from "../../components/FormRegisterComerciante/FormRegisterComerciante";
 import AuthPanel from "../../components/AuthPanel/AuthPanel";
 import styles from "./LoginRegisterComerciante.module.css";
 

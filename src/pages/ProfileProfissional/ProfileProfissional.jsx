@@ -23,13 +23,13 @@ const ProfileProfissional = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [filter, setFilter] = useState('');
   const [isCadastroVisible, setIsCadastroVisible] = useState(false);
-  const [servicos, setServicos] = useState([]);
+  const [servicos, setServicos] = useState([]); // Ensure servicos is initialized as an array
   const [isAscending, setIsAscending] = useState(true);
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [descricao, setDescricao] = useState('');
-  const [funcionarios, setFuncionarios] = useState([]);
+  const [funcionarios, setFuncionarios] = useState([]); // Initialize as an array
   const [selectedFuncionarioId, setSelectedFuncionarioId] = useState(null);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const ProfileProfissional = () => {
       const response = await api.get('/funcionarios/listar', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
+        },  
       });
       setFuncionarios(response.data);
     } catch (error) {
@@ -69,13 +69,40 @@ const ProfileProfissional = () => {
   const handleSave = async () => {
     try {
       toast.dismiss();
-      const response = await api.post('/funcionarios/cadastrar', {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error("Token de autenticação não encontrado.");
+        return;
+      }
+
+      const response = await api.post('/funcionarios/cadastrar', 
+      {
         nome,
         email,
         senha,
-        servicos: servicos.map(service => service.id),
         descricao,
+      }, 
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        }
       });
+  
+      const funcionarioId = response.data.id;
+  
+      await Promise.all(servicos.map(service => {
+        return api.post('/servicosvinculados/cadastrar', {
+          fk_funcionario: funcionarioId,
+          fk_servico: service.id,
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+      }));
+  
       toast.success("Funcionário cadastrado com sucesso!");
       fetchFuncionarios();
       handleCancel();
@@ -84,8 +111,7 @@ const ProfileProfissional = () => {
       toast.error("Erro ao cadastrar funcionário. Verifique os dados preenchidos.");
     }
   };
-
-
+  
   const handleUpdate = async () => {
     try {
       const response = await api.put(`/funcionarios/atualizar/${selectedFuncionarioId}`, {
@@ -94,6 +120,10 @@ const ProfileProfissional = () => {
         senha,
         servicos: servicos.map(service => service.id),
         descricao,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }
       });
       toast.success("Funcionário atualizado com sucesso!");
       fetchFuncionarios();
@@ -103,11 +133,15 @@ const ProfileProfissional = () => {
       toast.error("Erro ao atualizar funcionário. Verifique os dados preenchidos.");
     }
   };
-
+  
   const handleDelete = async () => {
     if (selectedFuncionarioId) {
       try {
-        await api.delete(`/funcionarios/deletar/${selectedFuncionarioId}`);
+        await api.delete(`/funcionarios/deletar/${selectedFuncionarioId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          }
+        });
         toast.success("Funcionário excluído com sucesso!");
         fetchFuncionarios();
         setSelectedFuncionarioId(null);
@@ -205,7 +239,7 @@ const ProfileProfissional = () => {
                   className={styles.scrollbar}
                 >
                   <List>
-                    {funcionarios
+                    {Array.isArray(funcionarios) && funcionarios
                       .filter((funcionario) => funcionario.nome.toLowerCase().includes(filter.toLowerCase()))
                       .sort((a, b) => isAscending ? a.nome.localeCompare(b.nome) : b.nome.localeCompare(a.nome))
                       .map((funcionario) => (
@@ -217,7 +251,7 @@ const ProfileProfissional = () => {
                             setNome(funcionario.nome);
                             setEmail(funcionario.email);
                             setSenha(funcionario.senha);
-                            setServicos(funcionario.servicos);
+                            setServicos(funcionario.servicos || []); // Ensure servicos is an array
                             setIsCadastroVisible(true);
                           }}
                         >
@@ -385,12 +419,12 @@ const ProfileProfissional = () => {
                         Excluir Perfil
                       </Button>
                       <Grid item>
-                        <Button
+                      <Button
                           variant="outlined"
                           color="primary"
                           size="small"
                           onClick={handleCancel}
-                          sx={{ mr: 2 }}
+                          sx={{ mr: 1 }}
                         >
                           Cancelar
                         </Button>
@@ -400,7 +434,7 @@ const ProfileProfissional = () => {
                           size="small"
                           onClick={selectedFuncionarioId ? handleUpdate : handleSave}
                         >
-                          {selectedFuncionarioId ? 'Atualizar' : 'Salvar'}
+                          {selectedFuncionarioId ? 'Atualizar' : 'Cadastrar'}
                         </Button>
                       </Grid>
                     </Grid>
@@ -415,4 +449,4 @@ const ProfileProfissional = () => {
   );
 };
 
-export default ProfileProfissional; 
+export default ProfileProfissional;

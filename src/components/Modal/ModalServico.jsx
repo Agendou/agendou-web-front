@@ -60,13 +60,11 @@ export default function ModalServico({ onAddService }) {
 
   const fetchServices = async () => {
     try {
-      const response = await api.get('/servicos/listar',
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-        console.log(response.data);
+      const response = await api.get('/servicos/listar', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
       setServices(response.data);
     } catch (error) {
       console.error("Erro ao listar serviços:", error);
@@ -120,14 +118,14 @@ export default function ModalServico({ onAddService }) {
               }}
               sx={{ mb: 2 }}
             />
-            <List sx={{ maxHeight: 150, overflow: 'auto', cursor: 'pointer', }}>
+            <List sx={{ maxHeight: 150, overflow: 'auto', cursor: 'pointer' }}>
               {filteredServices.map((service) => (
                 <ListItem key={service.id} button onClick={() => onAddService(service)}>
                   <ListItemText primary={service.nome} />
                 </ListItem>
               ))}
             </List>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3, }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
               <Button
                 variant="contained"
                 sx={{
