@@ -1,63 +1,26 @@
-/* Logo */
-.logo {
-    max-width: 150px;
-}
-
 .page {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0;
-    height: 100vh;
     box-sizing: border-box;
-    background-color: #f8f4f8;
 }
 
+.container {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    height: 100vh;
+}
 
 .container h2 {
     font-weight: bold;
-    font-size: 3rem;
+    font-size: 2.5rem;
+    margin: 0;
 }
 
 .container p {
     font-weight: 400;
     font-size: 1rem;
-}
-
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100vh;
-    margin: 0;
-    background-color: #f8f4f8;
-    border-radius: 0;
-    box-sizing: border-box;
-    overflow: hidden;
-}
-
-::placeholder {
-    color: #000000;
-}
-
-.registerMode .leftPanel {
-    width: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    min-height: 100%;
-    border-bottom-right-radius: 100%;
-    border-top-right-radius: 100%;
-    z-index: 10;
-}
-
-.registerMode .leftPanel h2,
-.registerMode .leftPanel p {
-    color: #f8f4f8;
-
 }
 
 .leftPanel,
@@ -67,234 +30,97 @@
     justify-content: center;
     align-items: center;
     transition: opacity 0.9s;
-    overflow-y: auto;
 }
 
-@media (max-width: 375px) {
-    .logo {
-        max-width: 120px;
-    }
+.registerMode .leftPanel {
+    color: #f8f4f8;
+    display: none;
+}
 
-    .page {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0;
-        height: 100vh;
-        box-sizing: border-box;
-        background-color: #010726;
-    }
+.logo {
+    max-width: 150px;
+}
 
-    .container h2 {
-        font-weight: bold;
-        font-size: 1.5rem;
-    }
-
-    .container p {
-        font-weight: 400;
-        font-size: 0.9rem;
-    }
-
+@media (max-width: 960px) {
     .container {
-        display: flex;
-        max-height: 90vh;
-        justify-content: center;
-        justify-content: space-between;
-        align-items: center;
         flex-direction: column;
-        width: 100%;
-        max-height: 90vh;
-        margin: 0;
-        background-color: #f8f4f8;
-        border-radius: 0;
-        box-sizing: border-box;
+        height: auto;
         overflow-y: auto;
-    }
-
-    ::placeholder {
-        color: #000000;
-    }
-
-    .registerMode .leftPanel {
-        width: 100%;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-        min-height: 100%;
-        border-radius: 0;
-        z-index: 10;
-    }
-
-    .registerMode .leftPanel h2,
-    .registerMode .leftPanel p {
-        color: #f8f4f8;
-
     }
 
     .leftPanel,
     .rightPanel {
-        flex: 1;
         width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: opacity 0.9s;
+    }
+
+    .container h2 {
+        font-size: 2rem;
+    }
+
+    .container p {
+        font-size: 0.9rem;
+    }
+
+    .logo {
+        max-width: 120px;
+    }
+
+    .leftPanel {
+        display: none;
+    }
+
+    .rightPanel {
+        display: none;
+    }
+
+    .showLeftPanel {
+        display: block;
+    }
+
+    .showRightPanel {
+        display: block;
     }
 }
 
 @media (max-width: 600px) {
-    .logo {
-        max-width: 120px;
-    }
-
     .page {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0;
-        height: 100vh;
-        box-sizing: border-box;
-        background-color: #010726;
+        padding: 10px;
     }
 
     .container h2 {
-        font-weight: bold;
         font-size: 1.5rem;
     }
 
     .container p {
-        font-weight: 400;
-        font-size: 0.9rem;
-    }
-
-    .container {
-        display: flex;
-        max-height: 90vh;
-        justify-content: center;
-        justify-content: space-between;
-        align-items: center;
-        flex-direction: column;
-        width: 100%;
-        max-height: 90vh;
-        margin: 0;
-        background-color: #f8f4f8;
-        border-radius: 0;
-        box-sizing: border-box;
-        overflow-y: auto;
-    }
-
-    ::placeholder {
-        color: #000000;
-    }
-
-    .registerMode .leftPanel {
-        width: 100%;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-        min-height: 100%;
-        border-radius: 0;
-        z-index: 10;
-    }
-
-    .registerMode .leftPanel h2,
-    .registerMode .leftPanel p {
-        color: #f8f4f8;
-
+        font-size: 0.8rem;
     }
 
     .leftPanel,
     .rightPanel {
-        flex: 1;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: opacity 0.9s;
+        padding: 15px;
     }
 }
 
-@media (max-width: 960px) {
-    .logo {
-        max-width: 120px;
-    }
-
-    .page {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0;
-        height: 100vh;
-        box-sizing: border-box;
-        background-color: #010726;
-    }
-
-    .container h2 {
-        font-weight: bold;
-        font-size: 1.5rem;
-    }
-
-    .container p {
-        font-weight: 400;
-        font-size: 0.9rem;
-    }
-
+@media (max-width: 375px) {
     .container {
-        display: flex;
-        justify-content: center;
-        justify-content: space-between;
-        align-items: center;
-        flex-direction: column;
-        width: 100%;
-        max-height: 90vh;
-        margin: 0;
-        background-color: #f8f4f8;
-        border-radius: 0;
-        box-sizing: border-box;
+        max-height: 100vh;
         overflow-y: auto;
     }
 
-    ::placeholder {
-        color: #000000;
+    .container h2 {
+        font-size: 1.2rem;
     }
 
-    .registerMode .leftPanel {
-        width: 100%;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-        min-height: 100%;
-        border-radius: 0;
-        z-index: 10;
-    }
-
-    .registerMode .leftPanel h2,
-    .registerMode .leftPanel p {
-        color: #f8f4f8;
-
+    .container p {
+        font-size: 0.8rem;
     }
 
     .leftPanel,
     .rightPanel {
-        flex: 1;
-        width: 100%;
-        display: flex;
-        justify-content: end;
-        align-items: end;
-        transition: opacity 0.9s;
-        margin: 0;
+        padding: 10px;
     }
 
-    .rightPanel {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+    .logo {
+        max-width: 100px;
     }
 }
