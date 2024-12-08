@@ -158,12 +158,21 @@ const Dashboard = () => {
     }
   };
 
-  const fetchTaxaCancelamento = async (token) => {
+  const fetchTaxaCancelamento = async () => {
+    const token = localStorage.getItem('token');
     try {
-      const response = await getTaxaCancelamento(token);
-      setTaxaCancelamento(response);
+      const response = await api.get("/historico/media-cancelados", {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      setTaxaCancelamento(response.data);
+      console.log("Taxa de cancelamento" + response.data);
+      return response.data;
     } catch (error) {
-      console.error('Erro ao buscar taxa de cancelamento:', error);
+      console.error('Erro ao buscar total de agendamentos do mês:', error);
+      throw error;
     }
   };
 
