@@ -79,6 +79,7 @@ const Dashboard = () => {
     fetchTotalClientesAtivos();
     fetchTotalAgendamentosMes();
     fetchNovosClientes();
+    fetchTaxaCancelamento();
   }, []);
 
   const fetchNovosClientes = async () => {
@@ -161,7 +162,7 @@ const Dashboard = () => {
   const fetchTaxaCancelamento = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await api.get("/historico/media-cancelados", {
+      const response = await api.get("/historico/taxa-cancelamentos", {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -225,7 +226,7 @@ const Dashboard = () => {
                 { title: 'Total Clientes Ativos', value: totalClientesAtivos, range: '10/10/24 à 14/10/24' },
                 { title: 'Total Agendamentos', value: totalAgendamentos },
                 { title: 'Novos Clientes', value: novosClientes, range: '10/10/24 à 14/10/24' },
-                { title: 'Taxa de Cancelamento', value: `${taxaCancelamento}%`, range: '10/10/24 à 14/10/24', isCancellation: true },
+                { title: 'Total Agendamentos Cancelados', value: `${taxaCancelamento}` },
               ].map(({ title, value, range, isCancellation }, index) => (
                 <div className={styles.dashboardCard} key={index}>
                   <h3>{title}</h3>
