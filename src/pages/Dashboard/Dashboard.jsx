@@ -3,6 +3,7 @@ import { Chart } from 'react-google-charts';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import styles from './Dashboard.module.css';
 import { FaBell } from 'react-icons/fa';
+import api from '../../services/api';
 import {
   getAgendamentos,
   getTotalClientesAtivos,
@@ -16,7 +17,6 @@ import {
 
 const getColor = (value, maxValue) => {
   const ratio = value / maxValue;
-
   if (ratio < 0.33) return 'rgb(136, 131, 160)';
   if (ratio < 0.67) return 'rgb(85, 91, 148)';
   return 'rgb(116, 147, 194)';
@@ -32,40 +32,153 @@ const Dashboard = () => {
   const [totalClientesAtivos, setTotalClientesAtivos] = useState(0);
   const [totalAgendamentos, setTotalAgendamentos] = useState(0);
   const [novosClientes, setNovosClientes] = useState(0);
-  const [totalAgendamentosMes, setTotalAgendamentosMes] = useState([]);
+  const [totalAgendamentosMes, setTotalAgendamentosMes] = useState(0);
   const [funcionariosMaisRequisitados, setFuncionariosMaisRequisitados] = useState([]);
   const [servicosMaisRequisitados, setServicosMaisRequisitados] = useState([]);
   const [horariosPicoAtendimento, setHorariosPicoAtendimento] = useState([]);
   const [taxaCancelamento, setTaxaCancelamento] = useState(0);
 
+  const fetchTotalClientesAtivos = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await api.get("/agendamentos/usuarios-ativos", {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      setTotalClientesAtivos(response.data.length);
+      console.log("Usuarios ativos:" + response.data.length);
+      return response.data.length;
+    } catch (error) {
+      console.error('Erro ao buscar usuários ativos:', error);
+      throw error;
+    }
+  };
+
+  const fetchTotalAgendamentos = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await api.get("/agendamentos/listar", {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      setTotalAgendamentos(response.data.length);
+      console.log(response.data.length);
+      return response.data.length;
+    } catch (error) {
+      console.error('Erro ao buscar total de agendamentos do mês:', error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [clientesAtivos, agendamentos, novosClientes, agendamentosMes, funcionarios, servicos, horarios, cancelamento] = await Promise.all([
-          getTotalClientesAtivos(),
-          getAgendamentos(),
-          getNovosClientes(),
-          getTotalAgendamentosMes(),
-          getFuncionariosMaisRequisitados(),
-          getServicosMaisRequisitados(),
-          getHorariosPicoAtendimento(),
-          getTaxaCancelamento()
-        ]);
+    fetchTotalAgendamentos();
+    fetchTotalClientesAtivos();
+    fetchTotalAgendamentosMes();
+    fetchNovosClientes();
+  }, []);
 
-        setTotalClientesAtivos(clientesAtivos);
-        setTotalAgendamentos(agendamentos.length);
-        setNovosClientes(novosClientes);
-        setTotalAgendamentosMes(agendamentosMes);
-        setFuncionariosMaisRequisitados(funcionarios);
-        setServicosMaisRequisitados(servicos);
-        setHorariosPicoAtendimento(horarios);
-        setTaxaCancelamento(cancelamento);
-      } catch (error) {
-        console.error('Erro ao buscar dados:', error);
-      }
-    };
+  const fetchNovosClientes = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await api.get("/usuarios/novos-clientes", {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      setNovosClientes(response.data);
+      console.log("Novos clientes" + response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar total de agendamentos do mês:', error);
+      throw error;
+    }
+  };
 
-    fetchData();
+  const fetchTotalAgendamentosMes = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await api.get("/agendamentos/agendamentos-por-mes", {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      console.log("Dados recebidos de agendamentos por mês:", response.data);
+
+      // Converte o objeto em um array de pares [mês, totalAgendamentos]
+      const formattedData = Object.entries(response.data).map(([mes, totalAgendamentos]) => [
+        mes,
+        totalAgendamentos,
+      ]);
+
+      // Adiciona o cabeçalho ao array de dados
+      const chartData = [['Mês', 'Total Agendamentos'], ...formattedData];
+
+      // Atualiza o estado com os dados formatados
+      setTotalAgendamentosMes(chartData);
+
+      // Exibe os dados formatados no console
+      console.log("Dados formatados para o gráfico:", chartData);
+    } catch (error) {
+      console.error('Erro ao buscar total de agendamentos do mês:', error);
+    }
+  };
+
+
+  const fetchFuncionariosMaisRequisitados = async (token) => {
+    try {
+      const response = await getFuncionariosMaisRequisitados(token);
+      setFuncionariosMaisRequisitados(response);
+    } catch (error) {
+      console.error('Erro ao buscar funcionários mais requisitados:', error);
+    }
+  };
+
+  const fetchServicosMaisRequisitados = async (token) => {
+    try {
+      const response = await getServicosMaisRequisitados(token);
+      setServicosMaisRequisitados(response);
+    } catch (error) {
+      console.error('Erro ao buscar serviços mais requisitados:', error);
+    }
+  };
+
+  const fetchHorariosPicoAtendimento = async (token) => {
+    try {
+      const response = await getHorariosPicoAtendimento(token);
+      setHorariosPicoAtendimento(response);
+    } catch (error) {
+      console.error('Erro ao buscar horários de pico de atendimento:', error);
+    }
+  };
+
+  const fetchTaxaCancelamento = async (token) => {
+    try {
+      const response = await getTaxaCancelamento(token);
+      setTaxaCancelamento(response);
+    } catch (error) {
+      console.error('Erro ao buscar taxa de cancelamento:', error);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchTotalClientesAtivos(token);
+      fetchTotalAgendamentos(token);
+      fetchNovosClientes(token);
+      fetchTotalAgendamentosMes(token);
+      fetchFuncionariosMaisRequisitados(token);
+      fetchServicosMaisRequisitados(token);
+      fetchHorariosPicoAtendimento(token);
+      fetchTaxaCancelamento(token);
+    }
   }, []);
 
   const renderGrowthBar = (currentValue, previousValue, isCancellation = false) => {
@@ -101,7 +214,7 @@ const Dashboard = () => {
             <div className={styles.leftDashboards}>
               {[
                 { title: 'Total Clientes Ativos', value: totalClientesAtivos, range: '10/10/24 à 14/10/24' },
-                { title: 'Total Agendamentos', value: totalAgendamentos, range: '10/10/24 à 14/10/24' },
+                { title: 'Total Agendamentos', value: totalAgendamentos },
                 { title: 'Novos Clientes', value: novosClientes, range: '10/10/24 à 14/10/24' },
                 { title: 'Taxa de Cancelamento', value: `${taxaCancelamento}%`, range: '10/10/24 à 14/10/24', isCancellation: true },
               ].map(({ title, value, range, isCancellation }, index) => (
@@ -115,17 +228,14 @@ const Dashboard = () => {
             </div>
 
             <div className={`${styles.dashboardCardLarge} ${styles.rendaMensalBruta}`} style={{ marginTop: '50px', marginRight: '10px' }}>
-              <h3>Total Agendamento Mês</h3>
+              <h3>Total Agendamentos Mês</h3>
               <Chart
                 chartType="LineChart"
                 width="100%"
                 height="200px"
-                data={[
-                  ['Data', 'Quantidade'],
-                  ...totalAgendamentosMes.map(agendamento => [new Date(agendamento.data).toLocaleDateString(), agendamento.quantidade])
-                ]}
+                data={totalAgendamentosMes} // Verifique se é uma matriz 2D
                 options={{
-                  hAxis: { title: 'Data' },
+                  hAxis: { title: 'Mês' },
                   vAxis: { title: 'Quantidade' },
                   legend: { position: 'none' },
                   colors: ['#010726'],
@@ -133,7 +243,10 @@ const Dashboard = () => {
                   pointsVisible: true,
                 }}
               />
+
             </div>
+
+
           </div>
 
           <div className={styles.dashboardContainer}>

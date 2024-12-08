@@ -1,28 +1,29 @@
 import api from './api';
 
-const getToken = () => localStorage.getItem('token');
-
-api.interceptors.request.use(config => {
-  const token = getToken();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-export const getAgendamentos = async () => {
+export const getAgendamentos = async (token) => {
   try {
-    const response = await api.get('/agendamentos/listar');
-    return response.data;
+    const response = await api.get("/agendamentos/listar", {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data.length;
   } catch (error) {
-    console.error('Erro ao buscar agendamentos:', error);
+    console.error('Erro ao buscar total de agendamentos do mês:', error);
     throw error;
   }
 };
 
-export const getTotalClientesAtivos = async () => {
+export const getTotalClientesAtivos = async (token) => {
   try {
-    const response = await api.get('/historico/usuarios-ativos');
+    const response = await api.get('/historico/usuarios-ativos', {}, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
     return response.data.length;
   } catch (error) {
     console.error('Erro ao buscar total de usuários ativos:', error);
@@ -30,9 +31,15 @@ export const getTotalClientesAtivos = async () => {
   }
 };
 
-export const getNovosClientes = async () => {
+export const getNovosClientes = async (token) => {
   try {
-    const response = await api.get('/clientes/novos');
+    const response = await api.get('/clientes/novos', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar novos clientes:', error);
@@ -40,19 +47,30 @@ export const getNovosClientes = async () => {
   }
 };
 
-export const getTotalAgendamentosMes = async () => {
+export const getTotalAgendamentosMes = async (token) => {
   try {
-    const response = await api.get('/agendamentos/mes');
-    return response.data;
+    const response = await api.get("/agendamentos/mes-atual-ou-ultimo", {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data.length;
   } catch (error) {
     console.error('Erro ao buscar total de agendamentos do mês:', error);
     throw error;
   }
 };
 
-export const getFuncionariosMaisRequisitados = async () => {
+export const getFuncionariosMaisRequisitados = async (token) => {
   try {
-    const response = await api.get('/funcionarios/mais-requisitados');
+    const response = await api.get('/funcionarios/mais-requisitados', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar funcionários mais requisitados:', error);
@@ -60,9 +78,15 @@ export const getFuncionariosMaisRequisitados = async () => {
   }
 };
 
-export const getServicosMaisRequisitados = async () => {
+export const getServicosMaisRequisitados = async (token) => {
   try {
-    const response = await api.get('/servicos/mais-requisitados');
+    const response = await api.get('/servicos/mais-requisitados', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar serviços mais requisitados:', error);
@@ -70,9 +94,15 @@ export const getServicosMaisRequisitados = async () => {
   }
 };
 
-export const getHorariosPicoAtendimento = async () => {
+export const getHorariosPicoAtendimento = async (token) => {
   try {
-    const response = await api.get('/horarios/pico');
+    const response = await api.get('/horarios/pico', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar horários de pico de atendimento:', error);
@@ -80,9 +110,15 @@ export const getHorariosPicoAtendimento = async () => {
   }
 };
 
-export const getTaxaCancelamento = async () => {
+export const getTaxaCancelamento = async (token) => {
   try {
-    const response = await api.get('/historico/media-cancelados');
+    const response = await api.get('/historico/media-cancelados', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar taxa de cancelamento:', error);
