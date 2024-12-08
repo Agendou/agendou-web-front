@@ -10,7 +10,8 @@ const PerfilComerciante = () => {
                 display: "flex",
                 flexDirection: "column",
                 width: "100%",
-                height: "100vh",
+                minHeight: "100vh",
+                boxSizing: "border-box",
             }}
         >
             <ClienteHeader />
@@ -20,14 +21,19 @@ const PerfilComerciante = () => {
                     flexGrow: 1,
                     justifyContent: "center",
                     alignItems: "center",
+                    marginTop: {
+                        xs: 2, // Margem superior menor em telas pequenas.
+                        sm: 4, // Margem maior em telas médias.
+                        md: 6, // Margem ainda maior para telas grandes.
+                    },
                 }}
             >
                 <Grid
                     container
-                    spacing={9}
+                    spacing={3} // Espaçamento entre os grids.
                     sx={{
                         justifyContent: "space-around",
-                        alignItems: "center",
+                        alignItems: "flex-start", // Grids alinhados ao topo.
                         width: "100%",
                     }}
                 >

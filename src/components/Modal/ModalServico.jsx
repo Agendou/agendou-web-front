@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
@@ -10,6 +10,9 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Add } from '@mui/icons-material';
+import IconButton from '@mui/material/IconButton';
+import api from '../../api';
 
 const style = {
   position: 'absolute',
@@ -46,36 +49,45 @@ const theme = createTheme({
   },
 });
 
-const services = [
-  'Estética',
-  'Design Sobrancelha',
-  'Iluminação',
-  'Design Barba',
-  'Coloração',
-];
+export default function ModalServico({ onAddService }) {
+  const [open, setOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [services, setServices] = useState([]);
 
-export default function AddServiceModal() {
-  const [open, setOpen] = React.useState(false);
-  const [searchTerm, setSearchTerm] = React.useState('');
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const fetchServices = async () => {
+    try {
+      const response = await api.get('/servicos/listar', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      setServices(response.data);
+    } catch (error) {
+      console.error("Erro ao listar serviços:", error);
+    }
+  };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const filteredServices = services.filter(service =>
-    service.toLowerCase().includes(searchTerm.toLowerCase())
+    service.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <Button
-          variant="contained"
-          color="primary"
+        <IconButton
+          size="small"
+          sx={{ color: '#f8f4f8', '&:hover': { transform: 'scale(0.9)' } }}
           onClick={handleOpen}
-          sx={{ mb: 2 }}
         >
-          Adicionar Serviço
-        </Button>
+          <Add />
+        </IconButton>
         <Modal
           open={open}
           onClose={handleClose}
@@ -106,10 +118,10 @@ export default function AddServiceModal() {
               }}
               sx={{ mb: 2 }}
             />
-            <List sx={{ maxHeight: 150, overflow: 'auto' }}>
-              {filteredServices.map((service, index) => (
-                <ListItem key={index} button>
-                  <ListItemText primary={service} />
+            <List sx={{ maxHeight: 150, overflow: 'auto', cursor: 'pointer' }}>
+              {filteredServices.map((service) => (
+                <ListItem key={service.id} button onClick={() => onAddService(service)}>
+                  <ListItemText primary={service.nome} />
                 </ListItem>
               ))}
             </List>
@@ -121,6 +133,7 @@ export default function AddServiceModal() {
                   color: '#737373',
                   '&:hover': {
                     bgcolor: '#C0C0C0',
+                    cursor: 'pointer',
                   },
                 }}
                 onClick={handleClose}

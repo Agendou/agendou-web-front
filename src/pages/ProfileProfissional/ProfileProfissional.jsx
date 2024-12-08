@@ -17,18 +17,19 @@ import styles from './ProfileProfissional.module.css';
 import api from '../../api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ModalServico from '../../components/Modal/ModalServico';
 
 const ProfileProfissional = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [filter, setFilter] = useState('');
   const [isCadastroVisible, setIsCadastroVisible] = useState(false);
-  const [servicos, setServicos] = useState(['Descoloração', 'Corte de cabelo', 'Sobrancelha']);
+  const [servicos, setServicos] = useState([]); // Ensure servicos is initialized as an array
   const [isAscending, setIsAscending] = useState(true);
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [descricao, setDescricao] = useState('');
-  const [funcionarios, setFuncionarios] = useState([]);
+  const [funcionarios, setFuncionarios] = useState([]); // Initialize as an array
   const [selectedFuncionarioId, setSelectedFuncionarioId] = useState(null);
 
   useEffect(() => {
@@ -37,7 +38,11 @@ const ProfileProfissional = () => {
 
   const fetchFuncionarios = async () => {
     try {
-      const response = await api.get('/funcionarios/listar');
+      const response = await api.get('/funcionarios/listar', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },  
+      });
       setFuncionarios(response.data);
     } catch (error) {
       console.error("Erro ao listar funcionários:", error);
@@ -52,19 +57,52 @@ const ProfileProfissional = () => {
   const toggleCadastro = () => {
     setIsCadastroVisible(true);
   };
- 
+
   const handleRemoveService = (serviceToRemove) => {
-    setServicos((prevServices) => prevServices.filter(service => service !== serviceToRemove));
+    setServicos((prevServices) => prevServices.filter(service => service.id !== serviceToRemove.id));
+  };
+
+  const handleAddService = (service) => {
+    setServicos((prevServices) => [...prevServices, service]);
   };
 
   const handleSave = async () => {
     try {
-      toast.dismiss(); 
-      const response = await api.post('/funcionarios/cadastrar', {
+      toast.dismiss();
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error("Token de autenticação não encontrado.");
+        return;
+      }
+
+      const response = await api.post('/funcionarios/cadastrar', 
+      {
         nome,
         email,
         senha,
+        descricao,
+      }, 
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        }
       });
+  
+      const funcionarioId = response.data.id;
+  
+      await Promise.all(servicos.map(service => {
+        return api.post('/servicosvinculados/cadastrar', {
+          fk_funcionario: funcionarioId,
+          fk_servico: service.id,
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+      }));
+  
       toast.success("Funcionário cadastrado com sucesso!");
       fetchFuncionarios();
       handleCancel();
@@ -74,18 +112,20 @@ const ProfileProfissional = () => {
     }
   };
   
-
   const handleUpdate = async () => {
     try {
       const response = await api.put(`/funcionarios/atualizar/${selectedFuncionarioId}`, {
         nome,
         email,
         senha,
+        servicos: servicos.map(service => service.id),
+        descricao,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }
       });
       toast.success("Funcionário atualizado com sucesso!");
-      // setTimeout(() => {
-      //   window.location.reload();
-      // }, 2000);
       fetchFuncionarios();
       handleCancel();
     } catch (error) {
@@ -93,15 +133,16 @@ const ProfileProfissional = () => {
       toast.error("Erro ao atualizar funcionário. Verifique os dados preenchidos.");
     }
   };
-
+  
   const handleDelete = async () => {
     if (selectedFuncionarioId) {
       try {
-        await api.delete(`/funcionarios/deletar/${selectedFuncionarioId}`);
+        await api.delete(`/funcionarios/deletar/${selectedFuncionarioId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          }
+        });
         toast.success("Funcionário excluído com sucesso!");
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1000);
         fetchFuncionarios();
         setSelectedFuncionarioId(null);
       } catch (error) {
@@ -115,9 +156,10 @@ const ProfileProfissional = () => {
     setNome('');
     setEmail('');
     setSenha('');
+    setServicos([]);
     setDescricao('');
     setSelectedFuncionarioId(null);
-  };  
+  };
 
   return (
     <div className={styles.bodyProfissional}>
@@ -175,8 +217,8 @@ const ProfileProfissional = () => {
                   </IconButton>
                   <IconButton
                     onClick={() => {
-                      handleCancel();  
-                      toggleCadastro();  
+                      handleCancel();
+                      toggleCadastro();
                     }}
                     sx={{ color: '#f8f4f8' }}
                   >
@@ -197,7 +239,7 @@ const ProfileProfissional = () => {
                   className={styles.scrollbar}
                 >
                   <List>
-                    {funcionarios
+                    {Array.isArray(funcionarios) && funcionarios
                       .filter((funcionario) => funcionario.nome.toLowerCase().includes(filter.toLowerCase()))
                       .sort((a, b) => isAscending ? a.nome.localeCompare(b.nome) : b.nome.localeCompare(a.nome))
                       .map((funcionario) => (
@@ -209,6 +251,7 @@ const ProfileProfissional = () => {
                             setNome(funcionario.nome);
                             setEmail(funcionario.email);
                             setSenha(funcionario.senha);
+                            setServicos(funcionario.servicos || []); // Ensure servicos is an array
                             setIsCadastroVisible(true);
                           }}
                         >
@@ -323,11 +366,11 @@ const ProfileProfissional = () => {
                     </Typography>
                     <Grid container spacing={1}>
                       {servicos.map((service) => (
-                        <Grid item key={service} sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Grid item key={service.id} sx={{ display: 'flex', alignItems: 'center' }}>
                           <Button
                             variant="contained"
                             size="small"
-                            value={service}
+                            value={service.nome}
                             sx={{
                               backgroundColor: '#010726',
                               border: '1px solid #f8f4f8',
@@ -339,7 +382,7 @@ const ProfileProfissional = () => {
                               },
                             }}
                           >
-                            {service}
+                            {service.nome}
                           </Button>
                           <IconButton
                             size="small"
@@ -351,9 +394,7 @@ const ProfileProfissional = () => {
                         </Grid>
                       ))}
                       <Grid item>
-                        <IconButton size="small" sx={{ color: '#f8f4f8', '&:hover': { transform: 'scale(0.9)' } }}>
-                          <Add />
-                        </IconButton>
+                        <ModalServico onAddService={handleAddService} />
                       </Grid>
                     </Grid>
                     <TextField
@@ -378,12 +419,12 @@ const ProfileProfissional = () => {
                         Excluir Perfil
                       </Button>
                       <Grid item>
-                        <Button
+                      <Button
                           variant="outlined"
                           color="primary"
                           size="small"
                           onClick={handleCancel}
-                          sx={{ mr: 2 }}
+                          sx={{ mr: 1 }}
                         >
                           Cancelar
                         </Button>
@@ -393,7 +434,7 @@ const ProfileProfissional = () => {
                           size="small"
                           onClick={selectedFuncionarioId ? handleUpdate : handleSave}
                         >
-                          {selectedFuncionarioId ? 'Atualizar' : 'Salvar'}
+                          {selectedFuncionarioId ? 'Atualizar' : 'Cadastrar'}
                         </Button>
                       </Grid>
                     </Grid>
@@ -408,4 +449,4 @@ const ProfileProfissional = () => {
   );
 };
 
-export default ProfileProfissional; 
+export default ProfileProfissional;
