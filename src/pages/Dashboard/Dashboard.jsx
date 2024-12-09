@@ -14,6 +14,7 @@ import {
   getHorariosPicoAtendimento,
   getTaxaCancelamento
 } from '../../services/agendamentoService';
+import Navigation from '../../components/Navigation/Navigation';
 
 const getColor = (value, maxValue) => {
   const ratio = value / maxValue;
@@ -243,6 +244,7 @@ const Dashboard = () => {
         <Sidebar isVisible={true} />
         <div style={{ flex: 1, padding: '20px', overflow: 'hidden' }}>
           <div className={styles.header}>
+      < Navigation />
             <h1 className={styles.headerTitle}>Painel de Monitoramento Geral</h1>
             <div className={styles.headerIcons}>
               {/* <FaBell className={styles.notificationIcon} /> */}

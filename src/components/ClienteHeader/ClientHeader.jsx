@@ -8,6 +8,7 @@ import Badge from '@mui/material/Badge';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { Box, Button } from '@mui/material';
+import Navigation from '../Navigation/Navigation';
 
 function ClientHeader() {
   const navigate = useNavigate();
@@ -44,7 +45,8 @@ function ClientHeader() {
   return (
     <AppBar position="static" sx={{ backgroundColor: '#0A0F1D' }}>
       <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1, color: 'white' }}>
+        < Navigation />
+        <Typography variant="h6" sx={{ flexGrow: 1, color: 'white', padding: '15px', }}>
           {getTitle()}
         </Typography>
 
