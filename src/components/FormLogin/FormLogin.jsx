@@ -104,7 +104,14 @@ const FormLogin = ({ switchForm }) => {
             <div className={styles["linkContainer"]}>
                 <p>Não tem uma conta?</p>
                 <button className={styles["link"]} onClick={switchForm}>Registre-se</button>
+
             </div>
+            <button
+                className={styles["button"]}
+                onClick={() => navigate('/login-register-user')}
+            >
+                Entrar como cliente
+            </button>
         </div>
     );
 }

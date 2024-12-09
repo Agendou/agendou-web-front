@@ -74,7 +74,7 @@ const RecentAppointments = () => {
               }}
             >
               <ListItemText
-                primary={agendamento.agendamento.nomeUsuario || 'Nome não disponível'}
+                primary={agendamento.agendamento.nomeUsuario || "Nome não disponível"}
                 secondary={`${agendamento.agendamento.data} às ${agendamento.agendamento.hora}`}
                 primaryTypographyProps={{ color: 'white', fontSize: '14px', fontWeight: 'bold' }}
                 secondaryTypographyProps={{ color: 'white', fontSize: '12px' }}

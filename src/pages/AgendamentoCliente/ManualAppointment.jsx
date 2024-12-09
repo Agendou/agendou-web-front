@@ -25,6 +25,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from 'dayjs';
 
 const ManualAppointmentAdmin = () => {
+  toast.dismiss();
   const [filter, setFilter] = useState('');
   const [isCadastroVisible, setIsCadastroVisible] = useState(false);
   const [isAscending, setIsAscending] = useState(true);

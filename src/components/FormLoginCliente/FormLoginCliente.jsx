@@ -21,7 +21,7 @@ const FormLogin = ({ switchForm }) => {
             const response = await api.post('/usuarios/login', { email, senha });
             localStorage.setItem('token', response.data.token);
             toast.success("Seja bem vindo(a)!");
-            navigate('/dashboard');
+            navigate('/manual-appointment');
         } catch (error) {
             toast.error("Erro ao fazer login: " + (error.response?.data || error.message));
         }
