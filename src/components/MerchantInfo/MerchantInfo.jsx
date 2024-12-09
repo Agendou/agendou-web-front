@@ -178,7 +178,7 @@ const MerchantInfo = () => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          gap: 2,
+          gap: 1,
           width: "100%",
         }}
       >

@@ -53,11 +53,11 @@ function ClientHeader() {
             {buttonConfig.label}
           </Button>
           
-          <IconButton color="inherit">
+          {/* <IconButton color="inherit">
             <Badge badgeContent={1} color="error">
               <NotificationsIcon />
             </Badge>
-          </IconButton>
+          </IconButton> */}
 
           <IconButton color="inherit">
             <AccountCircle />

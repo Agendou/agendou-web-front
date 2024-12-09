@@ -15,7 +15,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import { Add, FilterList } from '@mui/icons-material';
-import Sidebar from '../../components/Sidebar/Sidebar';
+import Sidebar from '../../components/Sidebar/SidebarUsuario';
 import HeaderApp from '../../components/HeaderApp/HeaderApp';
 import styles from '../ProfileProfissional/ProfileProfissional.module.css';
 import api from '../../api';
@@ -381,12 +381,13 @@ const ManualAppointmentAdmin = () => {
                           }}
                         >
                           {/* Nome do serviço */}
-                          {/* <ListItemText
+                          <ListItemText
                             primary={agendamento.fkServico ? agendamento.fkServico.nome : ''}
                             sx={{
                               backgroundColor: agendamento.id === selectedAgendamentoId ? 'rgba(248, 244, 248, 0.5)' : 'rgba(248, 244, 248, 0.2)',
                               borderRadius: '20px',
                               padding: '8px',
+                              margin: '2%',
                               cursor: 'pointer',
                               color: agendamento.id === selectedAgendamentoId ? '#ffffff' : '#f8f4f8',
                               fontWeight: agendamento.id === selectedAgendamentoId ? 'bold' : 'normal',
@@ -395,7 +396,7 @@ const ManualAppointmentAdmin = () => {
                                 transform: 'scale(0.9)',
                               },
                             }}
-                          /> */}
+                          />
 
                           {/* Data e hora do serviço */}
                           <ListItemText

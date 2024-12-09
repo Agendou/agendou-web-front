@@ -15,6 +15,7 @@ const PerfilComerciante = () => {
                 flexDirection: "column",
                 width: "100%",
                 height: "100vh",
+                mt: 2,
             }}
         >
             <Header title="Painel de Configurações" />
@@ -26,6 +27,8 @@ const PerfilComerciante = () => {
                     flexGrow: 1,
                     justifyContent: "center",
                     alignItems: "center",
+                            height: "50%",
+
                 }}
             >
                 <Grid
@@ -46,6 +49,7 @@ const PerfilComerciante = () => {
                             justifyContent: "center",
                             alignItems: "center",
                             width: "100%",
+
                         }}
                     >
                         <MerchantInfo />

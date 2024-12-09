@@ -35,6 +35,7 @@ const FormLogin = ({ switchForm }) => {
 
             localStorage.setItem('teste', response.data.senha);
             localStorage.setItem('token', response.data.token);
+            localStorage.setItem('userEmpresa', response.data.usuario.representante);
             toast.success("Seja bem vindo(a)!");
 
             navigate('/dashboard');

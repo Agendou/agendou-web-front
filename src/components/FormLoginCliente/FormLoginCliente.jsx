@@ -5,30 +5,39 @@ import logo from '../../assets/images/logoEscuraAgendou.png';
 import { ValidationLoginMessages } from '../FormLogin/ValidationLoginMessages';
 import { toast } from "react-toastify";
 import api from '../../services/api';
+
 const FormLogin = ({ switchForm }) => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
-    const [lembrar, setLembrar] = useState(false);
     const navigate = useNavigate();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         const validationMessages = ValidationLoginMessages(email, senha);
         if (validationMessages) {
             toast.error(validationMessages);
             return;
         }
+
         try {
             const response = await api.post('/usuarios/login', { email, senha });
+
+            const { token, user } = response.data;
             localStorage.setItem('token', response.data.token);
+            localStorage.setItem('user', response.data.usuario.nome);
+
             toast.success("Seja bem vindo(a)!");
-            navigate('/manual-appointment');
+            navigate('/manual-appointment'); 
         } catch (error) {
             toast.error("Erro ao fazer login: " + (error.response?.data || error.message));
         }
     };
+
     const handleLogoClick = () => {
         navigate("/home");
     };
+
     return (
         <div className={styles["form-container"]}>
             <img src={logo} alt="Logotipo Agendou" className={styles["logo"]} onClick={handleLogoClick} />
@@ -59,19 +68,6 @@ const FormLogin = ({ switchForm }) => {
                         placeholder="Insira sua senha"
                     />
                 </div>
-                {/* <div className={styles["checkboxLinkContainer"]}>
-                    <div className={styles["checkboxContainer"]}>
-                        <input
-                            checked={lembrar}
-                            onChange={(e) => setLembrar(e.target.checked)}
-                            type="checkbox"
-                            className={styles["checkboxInput"]}
-                            id="lembrar"
-                        />
-                        <label htmlFor="lembrar" className={styles["label"]}>Lembrar</label>
-                    </div>
-                    <button className={styles["link"]}>Esqueceu sua senha?</button>
-                </div> */}
                 <button type="submit" className={styles["button"]}>Entrar</button>
             </form>
             <div className={styles["linkContainer"]}>
@@ -80,5 +76,6 @@ const FormLogin = ({ switchForm }) => {
             </div>
         </div>
     );
-}
+};
+
 export default FormLogin;
