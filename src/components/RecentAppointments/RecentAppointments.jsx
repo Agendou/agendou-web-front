@@ -6,7 +6,11 @@ import api from '../../services/api';
 const RecentAppointments = () => {
   const [historico, setHistorico] = useState([]);
 
-  // Função para buscar o histórico de agendamentos
+  const handleQueue = (newData) => {
+    const updatedQueue = [...newData, ...historico].slice(0, 10);
+    setHistorico(updatedQueue);
+  };
+
   const getHistorico = async () => {
     const token = localStorage.getItem("token");
 
@@ -22,10 +26,10 @@ const RecentAppointments = () => {
         },
       });
 
-      console.log(response.data); // Verifique o formato dos dados retornados
+      console.log(response.data);
 
       if (response.status === 200) {
-        setHistorico(response.data);
+        handleQueue(response.data);
       } else {
         toast.error("Erro ao carregar o histórico");
       }
@@ -35,7 +39,6 @@ const RecentAppointments = () => {
     }
   };
 
-  
   useEffect(() => {
     getHistorico();
   }, []);
@@ -67,14 +70,14 @@ const RecentAppointments = () => {
             <ListItem
               key={index}
               sx={{
-                backgroundColor: 'rgba(248, 244, 248, 0.2)',
-                borderRadius: '20px',
-                marginBottom: 2,
+                backgroundColor: '#010720',
+                borderRadius: '8px',
+                marginBottom: 1,
                 padding: '8px 16px',
               }}
             >
               <ListItemText
-                primary={agendamento.agendamento.nomeUsuario || "Nome não disponível"}
+                primary={agendamento.agendamento.nomeUsuario || 'Nome não disponível'}
                 secondary={`${agendamento.agendamento.data} às ${agendamento.agendamento.hora}`}
                 primaryTypographyProps={{ color: 'white', fontSize: '14px', fontWeight: 'bold' }}
                 secondaryTypographyProps={{ color: 'white', fontSize: '12px' }}
@@ -82,8 +85,8 @@ const RecentAppointments = () => {
               <ListItemText
                 primary={`Status Anterior: ${agendamento.statusAnterior}`}
                 secondary={`Status Atual: ${agendamento.statusAtual}`}
-                primaryTypographyProps={{ color: '#737373', fontSize: '12px' }}
-                secondaryTypographyProps={{ color: '#f8f4f8', fontSize: '12px', fontWeight: 'normal' }}
+                primaryTypographyProps={{ color: 'yellow', fontSize: '12px' }}
+                secondaryTypographyProps={{ color: 'lightgreen', fontSize: '12px' }}
               />
             </ListItem>
           ))}

@@ -138,6 +138,8 @@ const ManualAppointmentAdmin = () => {
     }
   };
 
+
+
   const toggleCadastro = () => {
     setIsCadastroVisible(true);
   };
