@@ -381,7 +381,7 @@ const ManualAppointmentAdmin = () => {
                           }}
                         >
                           {/* Nome do serviço */}
-                          <ListItemText
+                          {/* <ListItemText
                             primary={agendamento.fkServico ? agendamento.fkServico.nome : ''}
                             sx={{
                               backgroundColor: agendamento.id === selectedAgendamentoId ? 'rgba(248, 244, 248, 0.5)' : 'rgba(248, 244, 248, 0.2)',
@@ -395,7 +395,7 @@ const ManualAppointmentAdmin = () => {
                                 transform: 'scale(0.9)',
                               },
                             }}
-                          />
+                          /> */}
 
                           {/* Data e hora do serviço */}
                           <ListItemText
@@ -622,7 +622,7 @@ const ManualAppointmentAdmin = () => {
                         }
                       }}
                       multiline
-                      rows={4}
+                      rows={6}
                       fullWidth
                       margin="normal"
                       InputProps={{

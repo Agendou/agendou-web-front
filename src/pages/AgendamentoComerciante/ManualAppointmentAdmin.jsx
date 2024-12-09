@@ -357,14 +357,14 @@ const ManualAppointmentAdmin = () => {
                                                     padding: '8px',
                                                 }}
                                             />
-                                            <ListItemText
+                                            {/* <ListItemText
                                                 primary="Serviço"
                                                 sx={{
                                                     fontWeight: 'bold',
                                                     color: '#ffffff',
                                                     padding: '8px',
                                                 }}
-                                            />
+                                            /> */}
                                         </ListItem>
 
                                         {/* agendamentos */}
@@ -393,9 +393,11 @@ const ManualAppointmentAdmin = () => {
                                                         primary={agendamento.fkUsuario ? agendamento.fkUsuario.nome : ''}
                                                         sx={{
                                                             backgroundColor: agendamento.id === selectedAgendamentoId ? 'rgba(248, 244, 248, 0.5)' : 'rgba(248, 244, 248, 0.2)',
-                                                            borderRadius: '20px',
-                                                            padding: '8px',
+                                                            borderRadius: '15px',
+                                                            padding: '5px',
                                                             cursor: 'pointer',
+                                                            textAlign: 'center',
+                                                            margin: '1%',
                                                             color: agendamento.id === selectedAgendamentoId ? '#ffffff' : '#f8f4f8',
                                                             fontWeight: agendamento.id === selectedAgendamentoId ? 'bold' : 'normal',
                                                             transition: 'transform 0.2s ease-in-out, background-color 0.2s',
@@ -410,9 +412,11 @@ const ManualAppointmentAdmin = () => {
                                                         primary={new Date(agendamento.data).toLocaleString()}
                                                         sx={{
                                                             backgroundColor: agendamento.id === selectedAgendamentoId ? 'rgba(248, 244, 248, 0.5)' : 'rgba(248, 244, 248, 0.2)',
-                                                            borderRadius: '20px',
-                                                            padding: '8px',
+                                                            borderRadius: '15px',
+                                                            padding: '5px',
                                                             cursor: 'pointer',
+                                                            textAlign: 'center',
+                                                            margin: '1%',
                                                             color: agendamento.id === selectedAgendamentoId ? '#ffffff' : '#f8f4f8',
                                                             fontWeight: agendamento.id === selectedAgendamentoId ? 'bold' : 'normal',
                                                             transition: 'transform 0.2s ease-in-out, background-color 0.2s',
@@ -423,7 +427,7 @@ const ManualAppointmentAdmin = () => {
                                                     />
 
                                                     {/* Nome do serviço */}
-                                                    <ListItemText
+                                                    {/* <ListItemText
                                                         primary={agendamento.fkServico ? agendamento.fkServico.nome : ''}
                                                         sx={{
                                                             backgroundColor: agendamento.id === selectedAgendamentoId ? 'rgba(248, 244, 248, 0.5)' : 'rgba(248, 244, 248, 0.2)',
@@ -437,7 +441,7 @@ const ManualAppointmentAdmin = () => {
                                                                 transform: 'scale(0.9)',
                                                             },
                                                         }}
-                                                    />
+                                                    /> */}
                                                 </ListItem>
                                             ))
                                         ) : (

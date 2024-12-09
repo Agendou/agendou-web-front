@@ -245,7 +245,7 @@ const Dashboard = () => {
           <div className={styles.header}>
             <h1 className={styles.headerTitle}>Painel de Monitoramento Geral</h1>
             <div className={styles.headerIcons}>
-              <FaBell className={styles.notificationIcon} />
+              {/* <FaBell className={styles.notificationIcon} /> */}
             </div>
           </div>
 

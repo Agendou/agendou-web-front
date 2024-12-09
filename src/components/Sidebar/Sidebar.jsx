@@ -45,11 +45,11 @@ const Sidebar = () => {
                   <img src={googleAnalyticsIcon} alt="Painel Geral" className="menu-icon" /> Painel Geral
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link to="/dashboard-individual">
                   <img src={employeesIcon} alt="Painel de Funcionários" className="menu-icon" /> Painel de Funcionários
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link to="/appointments">
                   <img src={agendaIcon} alt="Agendamentos" className="menu-icon" /> Agendamentos

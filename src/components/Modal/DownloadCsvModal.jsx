@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import axios from "axios";
 import { toast } from "react-toastify";
 import api from "../../services/api";
+import DownloadIcon from '@mui/icons-material/Download';
 
 const DownloadCsvModal = () => {
     const [open, setOpen] = useState(false);
@@ -71,7 +72,12 @@ const DownloadCsvModal = () => {
 
     return (
         <div>
-            <Button variant="contained" color="primary" onClick={handleOpen}>
+            <Button
+                variant="contained"
+                sx={{ backgroundColor: "#04588c" }}
+                onClick={handleOpen}
+                startIcon={<DownloadIcon />}
+            >
                 Baixar Histórico
             </Button>
 
@@ -124,8 +130,8 @@ const DownloadCsvModal = () => {
 
                     <Box sx={{ marginTop: 3, display: "flex", justifyContent: "flex-end" }}>
                         <Button
-                            variant="outlined"
-                            color="secondary"
+                            variant="primary"
+                            color="primary"
                             onClick={handleClose}
                             sx={{ marginRight: 2 }}
                         >
@@ -133,7 +139,7 @@ const DownloadCsvModal = () => {
                         </Button>
                         <Button
                             variant="contained"
-                            color="primary"
+                            sx={{ backgroundColor: "#04588c" }}
                             onClick={handleDownloadCsv}
                             disabled={loading}
                         >

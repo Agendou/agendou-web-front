@@ -35,7 +35,7 @@ const RecentAppointments = () => {
     }
   };
 
-  // Carregar histórico quando o componente for montado
+  
   useEffect(() => {
     getHistorico();
   }, []);
@@ -67,9 +67,9 @@ const RecentAppointments = () => {
             <ListItem
               key={index}
               sx={{
-                backgroundColor: '#010720',
-                borderRadius: '8px',
-                marginBottom: 1,
+                backgroundColor: 'rgba(248, 244, 248, 0.2)',
+                borderRadius: '20px',
+                marginBottom: 2,
                 padding: '8px 16px',
               }}
             >
@@ -82,8 +82,8 @@ const RecentAppointments = () => {
               <ListItemText
                 primary={`Status Anterior: ${agendamento.statusAnterior}`}
                 secondary={`Status Atual: ${agendamento.statusAtual}`}
-                primaryTypographyProps={{ color: 'yellow', fontSize: '12px' }}
-                secondaryTypographyProps={{ color: 'lightgreen', fontSize: '12px' }}
+                primaryTypographyProps={{ color: '#737373', fontSize: '12px' }}
+                secondaryTypographyProps={{ color: '#f8f4f8', fontSize: '12px', fontWeight: 'normal' }}
               />
             </ListItem>
           ))}

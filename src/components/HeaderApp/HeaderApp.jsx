@@ -7,7 +7,7 @@ const Header = ({ title }) => {
     <div className={styles.header}>
       <h1 className={styles.headerTitle}>{title}</h1>
       <div className={styles.headerIcons}>
-        <FaBell className={styles.notificationIcon} />
+        {/* <FaBell className={styles.notificationIcon} /> */}
       </div>
     </div>
   );

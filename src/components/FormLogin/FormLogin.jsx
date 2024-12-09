@@ -83,7 +83,7 @@ const FormLogin = ({ switchForm }) => {
                     />
                 </div>
 
-                <div className={styles["checkboxLinkContainer"]}>
+                {/* <div className={styles["checkboxLinkContainer"]}>
                     <div className={styles["checkboxContainer"]}>
                         <input
                             checked={lembrar}
@@ -96,7 +96,7 @@ const FormLogin = ({ switchForm }) => {
                     </div>
 
                     <button className={styles["link"]}>Esqueceu sua senha?</button>
-                </div>
+                </div> */}
 
                 <button type="submit" className={styles["button"]}>Entrar</button>
             </form>

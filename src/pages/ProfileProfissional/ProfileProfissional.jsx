@@ -306,7 +306,7 @@ const ProfileProfissional = () => {
                       backgroundColor: '#010726',
                       borderRadius: '10px',
                       p: 1,
-                      height: '100%',
+                      height: '80%',
                     }}
                     className={styles.scrollbar}
                   >
@@ -361,7 +361,7 @@ const ProfileProfissional = () => {
                         fieldset: { borderColor: '#f8f4f8' },
                       }}
                     />
-                    <Typography variant="h5" gutterBottom sx={{ mb: 1, color: '#f8f4f8', mt: 2, fontWeight: 'bold' }}>
+                    {/* <Typography variant="h5" gutterBottom sx={{ mb: 1, color: '#f8f4f8', mt: 2, fontWeight: 'bold' }}>
                       Serviços
                     </Typography>
                     <Grid container spacing={1}>
@@ -396,7 +396,7 @@ const ProfileProfissional = () => {
                       <Grid item>
                         <ModalServico onAddService={handleAddService} />
                       </Grid>
-                    </Grid>
+                    </Grid> */}
                     <TextField
                       label="Descrição adicional"
                       fullWidth
