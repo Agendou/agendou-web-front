@@ -80,6 +80,8 @@ const Dashboard = () => {
     fetchTotalAgendamentosMes();
     fetchNovosClientes();
     fetchTaxaCancelamento();
+    fetchFuncionariosMaisRequisitados();
+    fetchServicosMaisRequisitados();
   }, []);
 
   const fetchNovosClientes = async () => {
@@ -132,19 +134,35 @@ const Dashboard = () => {
   };
 
 
-  const fetchFuncionariosMaisRequisitados = async (token) => {
+  const fetchFuncionariosMaisRequisitados = async () => {
+    const token = localStorage.getItem('token');
     try {
-      const response = await getFuncionariosMaisRequisitados(token);
-      setFuncionariosMaisRequisitados(response);
+      const response = await api.get("/agendamentos/funcionarios-mais-requisitados", {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      setFuncionariosMaisRequisitados(
+        response.data.map((item) => [item.nome, item.quantidade])
+      );
+      console.log("Funcionários mais requisitados:", JSON.stringify(response.data, null, 2));
     } catch (error) {
       console.error('Erro ao buscar funcionários mais requisitados:', error);
     }
   };
 
-  const fetchServicosMaisRequisitados = async (token) => {
+  const fetchServicosMaisRequisitados = async () => {
+    const token = localStorage.getItem('token');
     try {
-      const response = await getServicosMaisRequisitados(token);
-      setServicosMaisRequisitados(response);
+      const response = await api.get("/agendamentos/servicos-mais-requisitados", {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      setServicosMaisRequisitados(response.data.map((item) => [item.nome, item.quantidade]));
+      console.log("Serviços mais requisitados:", response.data);
     } catch (error) {
       console.error('Erro ao buscar serviços mais requisitados:', error);
     }
@@ -152,8 +170,19 @@ const Dashboard = () => {
 
   const fetchHorariosPicoAtendimento = async (token) => {
     try {
-      const response = await getHorariosPicoAtendimento(token);
-      setHorariosPicoAtendimento(response);
+      const response = await api.get("/agendamentos/horarios-pico", {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const horarios = response.data.map(item => [
+        `Hora: ${item[0]}`,
+        item[1],
+      ]);
+      setHorariosPicoAtendimento(horarios);
+      console.log("Horários de pico de atendimento:", horarios);
     } catch (error) {
       console.error('Erro ao buscar horários de pico de atendimento:', error);
     }
@@ -162,14 +191,14 @@ const Dashboard = () => {
   const fetchTaxaCancelamento = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await api.get("/historico/taxa-cancelamentos", {
+      const response = await api.get("/historico/cancelados", {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         }
       });
       setTaxaCancelamento(response.data);
-      console.log("Taxa de cancelamento" + response.data);
+      console.log("Número de cancelados" + response.data);
       return response.data;
     } catch (error) {
       console.error('Erro ao buscar total de agendamentos do mês:', error);
@@ -223,9 +252,9 @@ const Dashboard = () => {
           <div className={styles.dashboardContainer}>
             <div className={styles.leftDashboards}>
               {[
-                { title: 'Total Clientes Ativos', value: totalClientesAtivos, range: '10/10/24 à 14/10/24' },
+                { title: 'Total Clientes Ativos', value: totalClientesAtivos },
                 { title: 'Total Agendamentos', value: totalAgendamentos },
-                { title: 'Novos Clientes', value: novosClientes, range: '10/10/24 à 14/10/24' },
+                { title: 'Novos Clientes', value: novosClientes },
                 { title: 'Total Agendamentos Cancelados', value: `${taxaCancelamento}` },
               ].map(({ title, value, range, isCancellation }, index) => (
                 <div className={styles.dashboardCard} key={index}>
@@ -271,17 +300,24 @@ const Dashboard = () => {
                   chartType="ColumnChart"
                   width="100%"
                   height="200px"
-                  data={[['Item', 'Quantidade', { role: 'style' }], ...data.map(item => [item.nome, item.quantidade, getColor(item.quantidade, Math.max(...data.map(i => i.quantidade)))]),]}
+                  data={[
+                    [title, 'Quantidade', { role: 'style' }],
+                    ...data.map(item => [
+                      item[0],
+                      item[1],
+                      getColor(item[1], Math.max(...data.map(i => i[1])))
+                    ]),
+                  ]}
                   options={{
                     hAxis: { textStyle: { fontSize: 11 } },
-                    vAxis: { title: 'Quantidade' },
+                    vAxis: { title: 'Quantidade de Agendamentos' },
                     legend: { position: 'none' },
                   }}
                 />
                 <div className={styles.kpiContainer}>
                   {['Alto', 'Médio', 'Baixo'].map((label, i) => (
                     <React.Fragment key={label}>
-                      <div className={styles.kpiSquare} style={{ backgroundColor: getKPIColor(Math.max(...data.map(i => i.quantidade)), thresholds) }}></div>
+                      <div className={styles.kpiSquare} style={{ backgroundColor: getKPIColor(Math.max(...data.map(i => i[1])), thresholds) }}></div>
                       <span>{label}</span>
                     </React.Fragment>
                   ))}
@@ -289,6 +325,8 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
+
+
         </div>
       </div>
     </div>
