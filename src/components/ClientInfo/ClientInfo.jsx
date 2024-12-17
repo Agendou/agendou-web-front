@@ -12,10 +12,12 @@ import { Visibility, VisibilityOff, Lock, Edit } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import api from "../../services/api";
 import { useEffect } from 'react';
+import DeleteAccountModal from "../Modal/ModalValidacao";
 
 const ClientInfo = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [openModal, setOpenModal] = React.useState(false);
 
   const [formData, setFormData] = React.useState({
     nome: "",
@@ -23,6 +25,9 @@ const ClientInfo = () => {
     email: "",
     senha: "",
   });
+
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
 
   const getClientData = async () => {
     const token = localStorage.getItem("token");
@@ -34,7 +39,7 @@ const ClientInfo = () => {
     }
 
     try {
-      const response = await api.get(`/usuarios/${userId}`, {
+      const response = await api.get(`/usuarios/listar/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -85,8 +90,10 @@ const ClientInfo = () => {
         },
       });
 
+
       if (response.status === 200) {
         toast.success("Perfil atualizado com sucesso!");
+        getClientData();
       } else {
         toast.error("Erro ao atualizar perfil");
       }
@@ -97,6 +104,30 @@ const ClientInfo = () => {
     }
 
   }
+
+  const handleDelete = async () => {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    try {
+      console.log("Deletando conta:", userId);
+
+      const response = await api.delete(`/usuarios/deletar/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      toast.success("Conta cancelada! Sentiremos sua falta :(");
+
+      setTimeout(() => {
+        window.location.href = "/home";
+      }, 3000);
+
+    } catch (error) {
+      console.error("Erro ao excluir o agendamento:", error);
+      toast.error("Erro ao excluir agendamento. Tente novamente.");
+    }
+  };
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -120,6 +151,12 @@ const ClientInfo = () => {
           <Edit />
         </IconButton>
       </Typography>
+
+      <DeleteAccountModal
+        open={openModal}
+        onClose={handleCloseModal}
+        onConfirm={handleDelete}
+      />
 
       <Box
         component="form"
@@ -269,19 +306,44 @@ const ClientInfo = () => {
           >
             Cancelar
           </Button>
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            disable={isLoading}
+          <Box
             sx={{
-              backgroundColor: "#0066CC",
-              "&:hover": {
-                backgroundColor: "#005BB5",
-              },
+              display: "flex",
+              gap: 2,
+              mt: 2,
             }}
           >
-            {isLoading ? "Salvando..." : "Salvar alterações"}
-          </Button>
+            <Button
+              variant="contained"
+              onClick={handleSubmit}
+              disable={isLoading}
+              sx={{
+                backgroundColor: "#0066CC",
+                "&:hover": {
+                  backgroundColor: "#005BB5",
+                },
+              }}
+            >
+              {isLoading ? "Salvando..." : "Salvar alterações"}
+            </Button>
+
+            <Button
+              variant="outlined"
+              onClick={handleOpenModal}
+              sx={{
+                color: "#fff",
+                backgroundColor: "#7d1414",
+                boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+                borderColor: "#ccc",
+                "&:hover": {
+                  borderColor: "#fff",
+                },
+              }}
+            >
+              Deletar conta
+            </Button>
+
+          </Box>
         </Box>
       </Box>
     </Paper>

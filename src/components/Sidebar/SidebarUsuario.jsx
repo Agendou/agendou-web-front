@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Sidebar.css';
 import logo from '../../assets/images/Logo Branca.png';
@@ -9,26 +9,25 @@ import addIcon from '../../assets/images/adicionar.png';
 import userIcon from '../../assets/images/do-utilizador.png';
 import exitIcon from '../../assets/images/exit.png';
 import perfilDash from '../../assets/images/profile.png';
+import { useEffect } from 'react';
 
 const Sidebar = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const navigate = useNavigate();
-  const [userNameR, setUserNameR] = useState('');
-
+  const [userName, setUserName] = useState('');
 
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('response'); 
     navigate('/');
   };
 
   useEffect(() => {
-    const storedUserNameR = localStorage.getItem('userEmpresa');
-    if (storedUserNameR) {
-      setUserNameR(storedUserNameR);
+    const storedUserName = localStorage.getItem('user');
+    if (storedUserName) {
+      setUserName(storedUserName);
     }
   }, []);
 
@@ -44,30 +43,15 @@ const Sidebar = () => {
           </div>
           <div className="user-info">
             <img src={perfilDash} alt="Foto de Perfil" className="profile-pic" />
-            <p>{ userNameR || 'userEmpresa'}</p>
+            <p>{ userName || 'user'}</p>
           </div>
           <hr />
           <div className="menu-section">
-            <h3>Geral</h3>
+            <h3>Agendamento</h3>
+            {/* <hr /> */}
             <ul>
               <li>
-                <Link to="/dashboard">
-                  <img src={googleAnalyticsIcon} alt="Painel Geral" className="menu-icon" /> Painel Geral
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <hr />
-          <div className="menu-section">
-            <h3>Gerenciamento</h3>
-            <ul>
-              <li>
-                <Link to="/profile-profissional">
-                  <img src={employeesIcon} alt="Funcionários" className="menu-icon" /> Funcionários
-                </Link>
-              </li>
-              <li>
-                <Link to="/manual-appointment-admin">
+                <Link to="/manual-appointment">
                   <img src={addIcon} alt="Agenda" className="menu-icon" /> Agenda
                 </Link>
               </li>
@@ -78,7 +62,7 @@ const Sidebar = () => {
             <h3>Conta</h3>
             <ul>
               <li>
-                <Link to="/merchant-profile">
+                <Link to="/client-profile">
                   <img src={userIcon} alt="Perfil" className="menu-icon" /> Perfil
                 </Link>
               </li>

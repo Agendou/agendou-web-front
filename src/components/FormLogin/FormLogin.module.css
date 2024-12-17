@@ -73,13 +73,13 @@ form {
     background-color: #04588c;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     outline: none;
-    color: #f8f4f8;
+    color: #000000;
 }
 
 .input:focus ::placeholder {
     font-size: 18px;
     font-weight: bold;
-    color: #f8f4f8;
+    color: #000000;
 }
 
 .input:valid {
@@ -143,6 +143,7 @@ form {
     justify-content: space-between;
     align-items: center;
     margin-top: 5%;
+    margin-bottom: 5%;
 }
 
 .linkContainer p,

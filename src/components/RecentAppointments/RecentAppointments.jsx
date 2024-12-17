@@ -1,21 +1,47 @@
-import React from 'react';
-import { Box, TextField, Typography, IconButton, List, ListItem, ListItemText, InputAdornment } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, List, ListItem, ListItemText } from '@mui/material';
+import { toast } from 'react-toastify';
+import api from '../../services/api';
 
 const RecentAppointments = () => {
-  const agendamentos = [
-    { nome: 'Humberto Souza Pereira Silva', data: '28/10/24', hora: '18h' },
-    { nome: 'Robson Cleiton Lopes', data: '01/10/24', hora: '10h30' },
-    { nome: 'José Ribeiro Mendes', data: '30/09/24', hora: '11h45' },
-    { nome: 'Fernando Teixeira', data: '26/09/24', hora: '19h' },
-    { nome: 'Maria Eduarda', data: '25/09/24', hora: '15h' },
-    { nome: 'Ana Carolina', data: '24/09/24', hora: '14h' },
-    { nome: 'Lucas Silva', data: '23/09/24', hora: '16h30' },
-    { nome: 'João Paulo', data: '22/09/24', hora: '13h' },
-    { nome: 'Júlia Santos', data: '21/09/24', hora: '17h' },
-    { nome: 'Pedro Henrique', data: '20/09/24', hora: '10h' },
-  ];
+  const [historico, setHistorico] = useState([]);
+
+  const handleQueue = (newData) => {
+    const updatedQueue = [...newData, ...historico].slice(0, 10);
+    setHistorico(updatedQueue);
+  };
+
+  const getHistorico = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      toast.error("Você precisa estar logado para acessar essa página");
+      return;
+    }
+
+    try {
+      const response = await api.get('/historico/todos', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log(response.data);
+
+      if (response.status === 200) {
+        handleQueue(response.data);
+      } else {
+        toast.error("Erro ao carregar o histórico");
+      }
+    } catch (error) {
+      console.error("Erro na requisição: ", error);
+      toast.error("Erro ao carregar os dados. Tente novamente.");
+    }
+  };
+
+  useEffect(() => {
+    getHistorico();
+  }, []);
 
   return (
     <Box
@@ -31,29 +57,41 @@ const RecentAppointments = () => {
       }}
     >
       <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-        Agendamentos Recentes
+        Histórico de Agendamentos
       </Typography>
 
-      <List sx={{ overflowY: 'auto', maxHeight: 390, padding: 0 }}>
-        {agendamentos.map((agendamento, index) => (
-          <ListItem
-            key={index}
-            sx={{
-              backgroundColor: '#010720',
-              borderRadius: '8px',
-              marginBottom: 1,
-              padding: '8px 16px',
-            }}
-          >
-            <ListItemText
-              primary={agendamento.nome}
-              secondary={`${agendamento.data} às ${agendamento.hora}`}
-              primaryTypographyProps={{ color: 'white', fontSize: '14px', fontWeight: 'bold' }}
-              secondaryTypographyProps={{ color: 'white', fontSize: '12px' }}
-            />
-          </ListItem>
-        ))}
-      </List>
+      {historico.length === 0 ? (
+        <Typography sx={{ color: 'white', fontSize: '14px' }}>
+          Nenhum histórico de agendamento encontrado.
+        </Typography>
+      ) : (
+        <List sx={{ overflowY: 'auto', maxHeight: 390, padding: 0 }}>
+          {historico.map((agendamento, index) => (
+            <ListItem
+              key={index}
+              sx={{
+                backgroundColor: 'rba(248, 244, 248, 0.2)',
+                borderRadius: '20px',
+                marginBottom: 2,
+                padding: '8px 16px',
+              }}
+            >
+              <ListItemText
+                primary={agendamento.agendamento.nomeUsuario || 'Nome não disponível'}
+                secondary={`${agendamento.agendamento.data} às ${agendamento.agendamento.hora}`}
+                primaryTypographyProps={{ color: 'white', fontSize: '14px', fontWeight: 'bold' }}
+                secondaryTypographyProps={{ color: 'white', fontSize: '12px' }}
+              />
+              <ListItemText
+                primary={`Status Anterior: ${agendamento.statusAnterior}`}
+                secondary={`Status Atual: ${agendamento.statusAtual}`}
+                primaryTypographyProps={{ color: '#737373', fontSize: '12px' }}
+                secondaryTypographyProps={{ color: '#f8f4f8', fontSize: '12px' }}
+              />
+            </ListItem>
+          ))}
+        </List>
+      )}
     </Box>
   );
 };

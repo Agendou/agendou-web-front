@@ -9,15 +9,12 @@ import api from '../../services/api';
 const FormLogin = ({ switchForm }) => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
-    const [lembrar, setLembrar] = useState(false);
-
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const validationMessages = ValidationLoginMessages(email, senha);
-
         if (validationMessages) {
             toast.error(validationMessages);
             return;
@@ -26,27 +23,14 @@ const FormLogin = ({ switchForm }) => {
         try {
             const response = await api.post('/usuarios/login', { email, senha });
 
-            // const response = await api.post('/usuarios/login', { email, senha }, {
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'Authorization': `Bearer ${localStorage.getItem('token')}`
-            //     }
-            // });
-
-            const { token, usuario } = response.data;
-            const userId = usuario.id;
-
-            localStorage.setItem('token', token);
-            localStorage.setItem('userId', userId);
+            const { token, user } = response.data;
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('user', response.data.usuario.nome);
 
             toast.success("Seja bem vindo(a)!");
-
-            navigate('/dashboard');
-
+            navigate('/manual-appointment'); 
         } catch (error) {
-
             toast.error("Erro ao fazer login: " + (error.response?.data || error.message));
-
         }
     };
 
@@ -59,7 +43,6 @@ const FormLogin = ({ switchForm }) => {
             <img src={logo} alt="Logotipo Agendou" className={styles["logo"]} onClick={handleLogoClick} />
             <h2>Bem vindo!</h2>
             <p>Insira seus dados para continuar</p>
-
             <form onSubmit={handleSubmit}>
                 <div className={styles["inputContainer"]}>
                     <label htmlFor="email" className={styles["label"]}>Email</label>
@@ -73,7 +56,6 @@ const FormLogin = ({ switchForm }) => {
                         placeholder="Insira seu email"
                     />
                 </div>
-
                 <div className={styles["inputContainer"]}>
                     <label htmlFor="senha" className={styles["label"]}>Senha</label>
                     <input
@@ -86,31 +68,14 @@ const FormLogin = ({ switchForm }) => {
                         placeholder="Insira sua senha"
                     />
                 </div>
-
-                <div className={styles["checkboxLinkContainer"]}>
-                    <div className={styles["checkboxContainer"]}>
-                        <input
-                            checked={lembrar}
-                            onChange={(e) => setLembrar(e.target.checked)}
-                            type="checkbox"
-                            className={styles["checkboxInput"]}
-                            id="lembrar"
-                        />
-                        <label htmlFor="lembrar" className={styles["label"]}>Lembrar</label>
-                    </div>
-
-                    <button className={styles["link"]}>Esqueceu sua senha?</button>
-                </div>
-
                 <button type="submit" className={styles["button"]}>Entrar</button>
             </form>
-
             <div className={styles["linkContainer"]}>
                 <p>Não tem uma conta?</p>
                 <button className={styles["link"]} onClick={switchForm}>Registre-se</button>
             </div>
         </div>
     );
-}
+};
 
 export default FormLogin;

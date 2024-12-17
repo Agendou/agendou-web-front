@@ -15,7 +15,7 @@ const pages = ['Quem pode usar', 'Recursos', 'Sobre nós'];
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  
+
   const navigate = useNavigate(); // Initialize useNavigate here
 
   const handleOpenNavMenu = (event) => {
@@ -38,8 +38,8 @@ function ResponsiveAppBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters sx={{ padding: '0 16px' }}>
           <img src={logoImg} alt="Logo" style={{ height: '60px', marginRight: '8px' }} />
-          
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none'} }}>
+
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -98,11 +98,11 @@ function ResponsiveAppBar() {
               onClick={() => {
                 navigate("/login-register-user-admin"); // Use navigate correctly here
               }}
-              sx={{ my: 2, color: 'white', display: 'block', fontFamily: 'Poppins, sans-serif', fontWeight: 'bold', border: 'solid 1px', borderRadius: '15px', padding: '10px'}}
+              sx={{ my: 2, color: 'white', display: 'block', fontFamily: 'Poppins, sans-serif', fontWeight: 'bold', border: 'solid 1px', borderRadius: '15px', padding: '10px' }}
             >
               Login
             </Button>
-          </Box>        
+          </Box>
         </Toolbar>
       </Container>
     </AppBar>

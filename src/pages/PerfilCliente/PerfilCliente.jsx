@@ -50,22 +50,6 @@ const PerfilComerciante = () => {
                     >
                         <ClientInfo />
                     </Grid>
-
-                    <Grid
-                        item
-                        xs={12}
-                        md={6}
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            width: "100%",
-                            minHeight: 500,
-                        }}
-                    >
-                        <RecentAppointments />
-                    </Grid>
                 </Grid>
             </Box>
         </Box>
