@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Sidebar.css';
 import logo from '../../assets/images/Logo Branca.png';
 import googleAnalyticsIcon from '../../assets/images/analitica-do-google.png';
-import employeesIcon from '../../assets/images/employees.png';
 import agendaIcon from '../../assets/images/agenda.png';
 import addIcon from '../../assets/images/adicionar.png';
 import userIcon from '../../assets/images/do-utilizador.png';
@@ -42,11 +41,6 @@ const Sidebar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/dashboard-individual">
-                <img src={employeesIcon} alt="Painel de Funcionários" className="menu-icon" /> Painel de Funcionários
-              </Link>
-            </li>
-            <li>
               <Link to="/appointments">
                 <img src={agendaIcon} alt="Agendamentos" className="menu-icon" /> Agendamentos
               </Link>
@@ -57,11 +51,6 @@ const Sidebar = () => {
         <div className="menu-section">
           <h3>Gerenciamento</h3>
           <ul>
-            <li>
-              <Link to="/profile-profissional">
-                <img src={employeesIcon} alt="Funcionários" className="menu-icon" /> Funcionários
-              </Link>
-            </li>
             <li>
               <Link to="/manual-appointment">
                 <img src={addIcon} alt="Agenda" className="menu-icon" /> Agenda
@@ -109,11 +98,6 @@ const Sidebar = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/profile-profissional">
-                    <img src={employeesIcon} alt="Painel de Funcionários" className="menu-icon" /> Painel de Funcionários
-                  </Link>
-                </li>
-                <li>
                   <Link to="/appointments">
                     <img src={agendaIcon} alt="Agendamentos" className="menu-icon" /> Agendamentos
                   </Link>
@@ -124,11 +108,6 @@ const Sidebar = () => {
             <div className="menu-section">
               <h3>Gerenciamento</h3>
               <ul>
-                <li>
-                  <Link to="/profile-profissional">
-                    <img src={employeesIcon} alt="Funcionários" className="menu-icon" /> Funcionários
-                  </Link>
-                </li>
                 <li>
                   <Link to="/manual-appointment-admin">
                     <img src={addIcon} alt="Agenda" className="menu-icon" /> Agenda

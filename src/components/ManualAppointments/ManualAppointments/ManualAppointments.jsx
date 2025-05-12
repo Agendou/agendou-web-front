@@ -24,13 +24,11 @@ import { useEffect } from "react";
 
 export default function ManualAppointments() {
   const [formData, setFormData] = useState({
-    profissional: "",
     servico: [],
     dataHoraCorte: dayjs(),
   });
 
 
-  const [profissionais, setProfissionais] = useState([]);
   const [servicos, setServicos] = useState([]);
 
   useEffect(() => {
@@ -43,14 +41,6 @@ export default function ManualAppointments() {
           return;
         }
 
-        //get em /funcionarios/listar
-        const profissionaisResponse = await api.get("/funcionarios/listar", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setProfissionais(profissionaisResponse.data);
-
         //get em /servicos
         const servicosResponse = await api.get("/servicos/listar", {
           headers: {
@@ -61,7 +51,6 @@ export default function ManualAppointments() {
 
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
-        toast.error("Erro ao carregar profissionais e serviços.");
       }
     };
 
@@ -93,13 +82,7 @@ export default function ManualAppointments() {
       return;
     }
 
-    if (!formData.profissional || !formData.servico) {
-      toast.error("Preencha todos os campos obrigatórios!");
-      return;
-    }
-
     const agendamento = {
-      fkFuncionario: formData.profissional,
       fkUsuario: userId,
       fkServicos: formData.servico,
       data: formData.dataHoraCorte.format("YYYY-MM-DDTHH:mm:ss"),
@@ -117,7 +100,6 @@ export default function ManualAppointments() {
         toast.success("Agendamento realizado com sucesso!");
 
         setFormData({
-          profissional: "",
           servico: [],
           dataHoraCorte: dayjs(),
         });
@@ -133,7 +115,6 @@ export default function ManualAppointments() {
   };
 
   console.log("Serviços carregados:", servicos);
-  console.log("Profissionais carregados:", profissionais);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -186,67 +167,6 @@ export default function ManualAppointments() {
                   }}
                 />
               </Box>
-
-              <FormControl fullWidth margin="normal">
-                <InputLabel
-                  style={{ color: "white" }}
-                  sx={{
-                    display: formData.profissional ? "none" : "block",
-                  }}
-                  shrink={formData.profissional.length > 0}
-                >
-                  Profissional
-                </InputLabel>
-                <Select
-                  value={formData.profissional}
-                  onChange={(e) =>
-                    handleInputChange("profissional", e.target.value)
-                  }
-                  label="Profissional"
-                  sx={{
-                    color: "white",
-                    backgroundColor: "transparent",
-                    borderColor: "white",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "white",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "white",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "white",
-                    },
-                    "& .MuiSvgIcon-root": {
-                      color: "white",
-                    },
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      style: {
-                        backgroundColor: "#010720",
-                        color: "white",
-                      },
-                    },
-                    MenuListProps: {
-                      sx: {
-                        "& .MuiMenuItem-root": {
-                          color: "white",
-                        },
-                        "& .MuiMenuItem-root:hover": {
-                          backgroundColor: "rgba(255, 255, 255, 0.1)",
-                        },
-                      },
-                    },
-                  }}
-                >
-                  {profissionais.map((funcionario) => (
-                    <MenuItem key={funcionario.id} value={funcionario.id}>
-                      {funcionario.nome}
-                    </MenuItem>
-                  ))}
-
-                </Select>
-              </FormControl>
 
               <FormControl fullWidth margin="normal">
                 <InputLabel

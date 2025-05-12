@@ -25,11 +25,6 @@ const Features = [
     description: 'Reduza o índice de faltas de última hora em até 70% com os lembretes por e-mail.',
   },
   {
-    icon: <GroupIcon style={{ fontSize: 70, color: '#010726' }} />,
-    title: 'Quadro de funcionários',
-    description: 'Tenha uma visão detalhada do rendimento de cada funcionário.',
-  },
-  {
     icon: <DescriptionIcon style={{ fontSize: 70, color: '#010726' }} />,
     title: 'Relatórios',
     description: 'Relatórios periódicos e práticos para manter-se sempre informado sobre seu negócio.',

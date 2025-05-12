@@ -39,7 +39,6 @@ export default function TodayAppointments() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell style={{ textAlign: "center", color: "#FFF" }}>Profissional</TableCell>
                 <TableCell style={{ textAlign: "center", color: "#FFF" }}>Status</TableCell>
               </TableRow>
             </TableHead>

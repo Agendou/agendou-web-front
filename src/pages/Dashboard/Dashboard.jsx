@@ -32,15 +32,6 @@ const mockData = {
     ['Set', 45],
     ['Out', 50],
   ],
-  employees: [
-    ['Employee', 'Quantidade'],
-    ['Joel Lemos', 50],
-    ['Mariana Silva', 180],
-    ['João Albuquerque', 140],
-    ['Carlos Alvares', 200],
-    ['Juliana Alves', 350],
-    ['Bruno Araújo', 190],
-  ],
   services: [
     ['Service', 'Quantity'],
     ['Corte', 250],
@@ -60,11 +51,9 @@ const mockData = {
 };
 
 const Dashboard = () => {
-  const maxEmployees = Math.max(...mockData.employees.slice(1).map(emp => emp[1]));
   const maxServices = Math.max(...mockData.services.slice(1).map(serv => serv[1]));
   const maxSchedule = Math.max(...mockData.schedule.slice(1).map(sch => sch[1]));
 
-  const employeeThresholds = { high: 200, medium: 160, down: 100 };
   const serviceThresholds = { high: 200, medium: 160, down: 80 };
   const scheduleThresholds = { high: 700, medium: 500, down: 300 };
 
@@ -136,7 +125,6 @@ const Dashboard = () => {
 
           <div className={styles.dashboardContainer}>
             {[
-              { title: 'Funcionários Mais Requisitados', data: mockData.employees, thresholds: employeeThresholds },
               { title: 'Serviços Mais Requisitados', data: mockData.services, thresholds: serviceThresholds },
               { title: 'Horário de Pico de Atendimento', data: mockData.schedule, thresholds: scheduleThresholds },
             ].map(({ title, data, thresholds }, index) => (
