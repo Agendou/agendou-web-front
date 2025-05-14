@@ -62,11 +62,6 @@ const Sidebar = () => {
             <h3>Gerenciamento</h3>
             <ul>
               <li>
-                <Link to="/profile-profissional">
-                  <img src={employeesIcon} alt="Funcionários" className="menu-icon" /> Funcionários
-                </Link>
-              </li>
-              <li>
                 <Link to="/manual-appointment-admin">
                   <img src={addIcon} alt="Agenda" className="menu-icon" /> Agenda
                 </Link>

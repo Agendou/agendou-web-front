@@ -32,7 +32,6 @@ const ManualAppointmentAdmin = () => {
     const [isFocused, setIsFocused] = useState(false);
 
     const [agendamentos, setAgendamentos] = useState([]);
-    const [profissionais, setProfissionais] = useState([]);
     const [servicos, setServicos] = useState([]);
     const [usuarios, setUsuarios] = useState([]);
     const [selectedAgendamentoId, setSelectedAgendamentoId] = useState(null);
@@ -40,7 +39,6 @@ const ManualAppointmentAdmin = () => {
     const token = localStorage.getItem("token");
 
     const [formData, setFormData] = useState({
-        profissional: "",
         servico: "",
         usuario: "",
         dataHoraCorte: dayjs(),
@@ -58,14 +56,6 @@ const ManualAppointmentAdmin = () => {
                     toast.error("Usuário não autenticado.");
                     return;
                 }
-
-                //get em /funcionarios/listar
-                const profissionaisResponse = await api.get("/funcionarios/listar", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setProfissionais(profissionaisResponse.data);
 
                 //get em /servicos
                 const servicosResponse = await api.get("/servicos/listar", {
@@ -85,7 +75,6 @@ const ManualAppointmentAdmin = () => {
 
             } catch (error) {
                 console.error("Erro ao buscar dados:", error);
-                toast.error("Erro ao carregar profissionais e serviços.");
             }
         };
 
@@ -122,7 +111,6 @@ const ManualAppointmentAdmin = () => {
                 console.log("Agendamento retornado:", agendamento);
 
                 setFormData({
-                    profissional: agendamento.fkFuncionario.id,
                     servico: agendamento.fkServico.id,
                     usuario: agendamento.fkUsuario.id,
                     dataHoraCorte: dayjs(agendamento.data).isValid() ? dayjs(agendamento.data) : dayjs(),
@@ -155,7 +143,6 @@ const ManualAppointmentAdmin = () => {
 
     const handleSave = async () => {
         const agendamento = {
-            fkFuncionario: formData.profissional,
             fkUsuario: formData.usuario,
             fkServico: formData.servico,
             data: formData.dataHoraCorte.format("YYYY-MM-DDTHH:mm:ss"),
@@ -176,7 +163,6 @@ const ManualAppointmentAdmin = () => {
                 console.log("Agendamento realizado com sucesso:", response.data);
                 toast.success("Agendamento realizado com sucesso!");
                 setFormData({
-                    profissional: "",
                     servico: "",
                     usuario: "",
                     dataHoraCorte: dayjs(),
@@ -205,7 +191,6 @@ const ManualAppointmentAdmin = () => {
             const response = await api.put(
                 `/agendamentos/atualizar/${selectedAgendamentoId}`,
                 {
-                    fkFuncionario: formData.profissional,
                     fkUsuario: formData.usuario,
                     fkServico: formData.servico,
                     data: formData.dataHoraCorte.format("YYYY-MM-DDTHH:mm:ss"),
@@ -252,7 +237,6 @@ const ManualAppointmentAdmin = () => {
 
     const handleCancel = () => {
         setFormData({
-            profissional: "",
             servico: "",
             usuario: "",
             dataHoraCorte: dayjs(),
@@ -380,7 +364,6 @@ const ManualAppointmentAdmin = () => {
 
                                                         console.log("Agendamento selecionado:", {
                                                             usuario: agendamento.fkUsuario.nome,
-                                                            profissional: agendamento.fkFuncionario.nome,
                                                             servico: agendamento.fkServico.nome,
                                                             dataHoraCorte: dayjs(agendamento.data),
                                                         });
@@ -578,68 +561,6 @@ const ManualAppointmentAdmin = () => {
                                                 }}
                                             />
                                         </LocalizationProvider>
-
-                                        <FormControl fullWidth margin="normal">
-                                            <InputLabel
-                                                style={{ color: "white" }}
-                                                sx={{
-                                                    display: formData.profissional ? "none" : "block",
-                                                }}
-                                                shrink={formData.profissional.length > 0}
-                                            >
-                                                Profissionais
-                                            </InputLabel>
-                                            <Select
-                                                value={formData.profissional}
-                                                onChange={(e) =>
-                                                    handleInputChange("profissional", e.target.value)
-                                                }
-                                                label="Profissional"
-                                                sx={{
-                                                    color: "white",
-                                                    backgroundColor: "transparent",
-                                                    borderColor: "white",
-                                                    "& .MuiOutlinedInput-notchedOutline": {
-                                                        borderColor: "white",
-                                                    },
-                                                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                                                        borderColor: "white",
-                                                    },
-                                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                                        borderColor: "white",
-                                                    },
-                                                    "& .MuiSvgIcon-root": {
-                                                        color: "white",
-                                                    },
-                                                }}
-                                                MenuProps={{
-                                                    PaperProps: {
-                                                        style: {
-                                                            backgroundColor: "#010720",
-                                                            color: "white",
-                                                        },
-                                                    },
-                                                    MenuListProps: {
-                                                        sx: {
-                                                            "& .MuiMenuItem-root": {
-                                                                color: "white",
-                                                            },
-                                                            "& .MuiMenuItem-root:hover": {
-                                                                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                                                            },
-                                                        },
-                                                    },
-                                                }}
-                                            >
-                                                {profissionais.map((funcionario) => (
-                                                    <MenuItem key={funcionario.id} value={funcionario.id}>
-                                                        {funcionario.nome}
-                                                    </MenuItem>
-                                                ))}
-
-                                            </Select>
-                                        </FormControl>
-
                                         <FormControl fullWidth margin="normal">
                                             <InputLabel
                                                 style={{ color: "white" }}
