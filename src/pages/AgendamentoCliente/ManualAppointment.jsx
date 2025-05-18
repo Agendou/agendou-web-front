@@ -17,7 +17,7 @@ import {
 import { Add, FilterList } from '@mui/icons-material';
 import Sidebar from '../../components/Sidebar/SidebarUsuario';
 import HeaderApp from '../../components/HeaderApp/HeaderApp';
-import styles from '../ProfileProfissioznal/ProfileProfissional.module.css';
+import styles from '../ProfileProfissional/ProfileProfissional.module.css';
 import api from '../../api';
 import { ToastContainer, toast } from 'react-toastify';
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
