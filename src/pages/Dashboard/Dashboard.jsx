@@ -9,7 +9,6 @@ import {
   getTotalClientesAtivos,
   getNovosClientes,
   getTotalAgendamentosMes,
-  getFuncionariosMaisRequisitados,
   getServicosMaisRequisitados,
   getHorariosPicoAtendimento,
   getTaxaCancelamento
@@ -34,7 +33,6 @@ const Dashboard = () => {
   const [totalAgendamentos, setTotalAgendamentos] = useState(0);
   const [novosClientes, setNovosClientes] = useState(0);
   const [totalAgendamentosMes, setTotalAgendamentosMes] = useState(0);
-  const [funcionariosMaisRequisitados, setFuncionariosMaisRequisitados] = useState([]);
   const [servicosMaisRequisitados, setServicosMaisRequisitados] = useState([]);
   const [horariosPicoAtendimento, setHorariosPicoAtendimento] = useState([]);
   const [taxaCancelamento, setTaxaCancelamento] = useState(0);
@@ -81,7 +79,6 @@ const Dashboard = () => {
     fetchTotalAgendamentosMes();
     fetchNovosClientes();
     fetchTaxaCancelamento();
-    fetchFuncionariosMaisRequisitados();
     fetchServicosMaisRequisitados();
   }, []);
 
@@ -131,25 +128,6 @@ const Dashboard = () => {
       console.log("Dados formatados para o gráfico:", chartData);
     } catch (error) {
       console.error('Erro ao buscar total de agendamentos do mês:', error);
-    }
-  };
-
-
-  const fetchFuncionariosMaisRequisitados = async () => {
-    const token = localStorage.getItem('token');
-    try {
-      const response = await api.get("/agendamentos/funcionarios-mais-requisitados", {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      setFuncionariosMaisRequisitados(
-        response.data.map((item) => [item.nome, item.quantidade])
-      );
-      console.log("Funcionários mais requisitados:", JSON.stringify(response.data, null, 2));
-    } catch (error) {
-      console.error('Erro ao buscar funcionários mais requisitados:', error);
     }
   };
 
@@ -214,7 +192,6 @@ const Dashboard = () => {
       fetchTotalAgendamentos(token);
       fetchNovosClientes(token);
       fetchTotalAgendamentosMes(token);
-      fetchFuncionariosMaisRequisitados(token);
       fetchServicosMaisRequisitados(token);
       fetchHorariosPicoAtendimento(token);
       fetchTaxaCancelamento(token);
@@ -292,7 +269,6 @@ const Dashboard = () => {
 
           <div className={styles.dashboardContainer}>
             {[
-              { title: 'Funcionários Mais Requisitados', data: funcionariosMaisRequisitados, thresholds: { high: 200, medium: 160, down: 100 } },
               { title: 'Serviços Mais Requisitados', data: servicosMaisRequisitados, thresholds: { high: 200, medium: 160, down: 80 } },
               { title: 'Horário de Pico de Atendimento', data: horariosPicoAtendimento, thresholds: { high: 700, medium: 500, down: 300 } },
             ].map(({ title, data, thresholds }, index) => (

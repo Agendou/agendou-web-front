@@ -62,22 +62,6 @@ export const getTotalAgendamentosMes = async (token) => {
   }
 };
 
-export const getFuncionariosMaisRequisitados = async (token) => {
-  try {
-    const response = await api.get('/funcionarios/mais-requisitados', {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Erro ao buscar funcionários mais requisitados:', error);
-    throw error;
-  }
-};
-
 export const getServicosMaisRequisitados = async (token) => {
   try {
     const response = await api.get('/servicos/mais-requisitados', {

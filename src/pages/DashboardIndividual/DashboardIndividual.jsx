@@ -14,18 +14,6 @@ import { Chart } from 'react-google-charts';
 import styles from './DashboardIndividual.module.css';
 
 const DashboardIndividual = () => {
-    const funcionarios = [
-        'Humberto Souza Pereira Silva',
-        'Robson Cleiton Lopes',
-        'José Ribeiro Mendes',
-        'Fernando Teixeira',
-        'José Marques',
-        'Julia Alves',
-        'Kaique Freitas',
-        'Gustavo Ramos',
-        'José Alberto Dias',
-    ];
-
     const optionsServicos = {
         hAxis: { title: 'Serviços' },
         vAxis: { title: 'Qtd. Serviços' },
@@ -142,27 +130,6 @@ const DashboardIndividual = () => {
                                         }}
                                         
                                     >
-                                        {funcionarios.map((nome, index) => (
-                                            <Typography
-                                                key={index}
-                                                variant="body1"
-                                                sx={{
-                                                    py: 1,
-                                                    cursor: 'pointer',
-                                                    backgroundColor: 'rgba(248, 244, 248, 0.1)',
-                                                    borderRadius: '20px',
-                                                    transition: 'all 0.3s',
-                                                    padding: '10px',
-                                                    marginTop: '10px',
-                                                    '&:hover': {
-                                                        backgroundColor: 'rgba(248, 244, 248, 0.4)',
-                                                        scale: (0.9),
-                                                    },
-                                                }}
-                                            >
-                                                {nome}
-                                            </Typography>
-                                        ))}
                                     </Box>
                                 </CardContent>
                             </Card>
