@@ -9,7 +9,6 @@ import api from '../../services/api';
 const FormLogin = ({ switchForm }) => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
-    const [lembrar, setLembrar] = useState(false);
 
     const navigate = useNavigate();
 
@@ -33,9 +32,14 @@ const FormLogin = ({ switchForm }) => {
             //     }
             // });
 
-            localStorage.setItem('teste', response.data.senha);
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('userEmpresa', response.data.usuario.representante);
+
+            localStorage.setItem('empresaId', response.data.usuario.id);
+
+            const empresaId = response.data.usuario.id;
+            console.log(empresaId);
+
             toast.success("Seja bem vindo(a)!");
 
             navigate('/dashboard');
@@ -83,21 +87,6 @@ const FormLogin = ({ switchForm }) => {
                         placeholder="Insira sua senha"
                     />
                 </div>
-
-                {/* <div className={styles["checkboxLinkContainer"]}>
-                    <div className={styles["checkboxContainer"]}>
-                        <input
-                            checked={lembrar}
-                            onChange={(e) => setLembrar(e.target.checked)}
-                            type="checkbox"
-                            className={styles["checkboxInput"]}
-                            id="lembrar"
-                        />
-                        <label htmlFor="lembrar" className={styles["label"]}>Lembrar</label>
-                    </div>
-
-                    <button className={styles["link"]}>Esqueceu sua senha?</button>
-                </div> */}
 
                 <button type="submit" className={styles["button"]}>Entrar</button>
             </form>

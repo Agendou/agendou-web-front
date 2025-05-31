@@ -2,19 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Chart } from 'react-google-charts';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import styles from './Dashboard.module.css';
-import { FaBell } from 'react-icons/fa';
 import api from '../../services/api';
-import {
-  getAgendamentos,
-  getTotalClientesAtivos,
-  getNovosClientes,
-  getTotalAgendamentosMes,
-  getFuncionariosMaisRequisitados,
-  getServicosMaisRequisitados,
-  getHorariosPicoAtendimento,
-  getTaxaCancelamento
-} from '../../services/agendamentoService';
 import Navigation from '../../components/Navigation/Navigation';
+import { toast } from 'react-toastify';
 
 const getColor = (value, maxValue) => {
   const ratio = value / maxValue;
@@ -34,46 +24,88 @@ const Dashboard = () => {
   const [totalAgendamentos, setTotalAgendamentos] = useState(0);
   const [novosClientes, setNovosClientes] = useState(0);
   const [totalAgendamentosMes, setTotalAgendamentosMes] = useState(0);
-  const [funcionariosMaisRequisitados, setFuncionariosMaisRequisitados] = useState([]);
   const [servicosMaisRequisitados, setServicosMaisRequisitados] = useState([]);
   const [horariosPicoAtendimento, setHorariosPicoAtendimento] = useState([]);
   const [taxaCancelamento, setTaxaCancelamento] = useState(0);
 
   const fetchTotalClientesAtivos = async () => {
     const token = localStorage.getItem('token');
+    const empresaId = localStorage.getItem('empresaId');
+
+    if (!token || !empresaId) {
+      console.warn("[fetchServicosMaisRequisitados] Token ou Empresa ID ausente.");
+      toast.warn("Sessão expirada ou dados de empresa não encontrados. Faça login novamente.");
+      return;
+    }
+
     try {
-      const response = await api.get("/agendamentos/usuarios-ativos", {
+      const response = await api.get(`/historico/usuarios-ativos/${empresaId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         }
       });
-      setTotalClientesAtivos(response.data.length);
-      console.log("Usuarios ativos:" + response.data.length);
-      return response.data.length;
+
+      if (Array.isArray(response.data)) {
+        const total = response.data.length;
+        setTotalClientesAtivos(total);
+        console.log(`[Frontend] Total de usuários ativos: ${total}`);
+
+        if (total === 0) {
+          toast.info('Nenhum cliente ativo encontrado nos últimos 2 meses.');
+        }
+
+        return total;
+      } else {
+        console.warn('[Frontend] Resposta inesperada da API:', response.data);
+        toast.error('Erro ao processar os dados de usuários ativos.');
+      }
+
     } catch (error) {
-      console.error('Erro ao buscar usuários ativos:', error);
-      throw error;
+      if (error.response && error.response.status === 404) {
+        console.info('[Frontend] Nenhum usuário ativo encontrado (404).');
+        setTotalClientesAtivos(0);
+        toast.info('Nenhum cliente ativo encontrado nos últimos 2 meses.');
+        return 0;
+      }
     }
   };
 
   const fetchTotalAgendamentos = async () => {
     const token = localStorage.getItem('token');
+    const empresaId = localStorage.getItem('empresaId');
+
+    if (!token || !empresaId) {
+      console.warn("[fetchServicosMaisRequisitados] Token ou Empresa ID ausente.");
+      toast.warn("Sessão expirada ou dados de empresa não encontrados. Faça login novamente.");
+      return;
+    }
+
     try {
-      const response = await api.get("/agendamentos/listar", {
+      const response = await api.get(`/agendamentos/empresa/${empresaId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         }
       });
-      setTotalAgendamentos(response.data.length);
-      console.log(response.data.length);
-      return response.data.length;
+
+      if (Array.isArray(response.data)) {
+        setTotalAgendamentos(response.data.length);
+        console.log(`[Frontend] Total de agendamentos recebidos: ${response.data.length}`);
+        return response.data.length;
+      } else {
+        console.error('[Frontend] Resposta inesperada da API:', response.data);
+        toast.error('Erro ao processar os dados de agendamento.');
+      }
+
     } catch (error) {
-      console.error('Erro ao buscar total de agendamentos do mês:', error);
+      console.error('[Frontend] Erro ao buscar total de agendamentos por empresa:', error);
+      toast.error('Erro ao buscar agendamentos. Tente novamente mais tarde.');
+      setTotalAgendamentos(0);
       throw error;
     }
   };
+
 
   useEffect(() => {
     fetchTotalAgendamentos();
@@ -81,32 +113,62 @@ const Dashboard = () => {
     fetchTotalAgendamentosMes();
     fetchNovosClientes();
     fetchTaxaCancelamento();
-    fetchFuncionariosMaisRequisitados();
     fetchServicosMaisRequisitados();
   }, []);
 
   const fetchNovosClientes = async () => {
+
     const token = localStorage.getItem('token');
+    const empresaId = localStorage.getItem('empresaId');
+
+    if (!token || !empresaId) {
+      console.warn("[fetchServicosMaisRequisitados] Token ou Empresa ID ausente.");
+      toast.warn("Sessão expirada ou dados de empresa não encontrados. Faça login novamente.");
+      return;
+    }
+
     try {
-      const response = await api.get("/usuarios/novos-clientes", {
+      const response = await api.get(`/agendamentos/empresa/novos-clientes-mes-atual/${empresaId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         }
       });
-      setNovosClientes(response.data);
-      console.log("Novos clientes" + response.data);
-      return response.data;
+
+      const totalClientes = response.data;
+
+      setNovosClientes(totalClientes);
+      console.log("Novos clientes:", totalClientes);
+      return totalClientes;
+
     } catch (error) {
+      if (error.response && error.response.status === 404) {
+        toast.info('Nenhum novo cliente encontrado neste mês.');
+        console.log("Nenhum novo cliente encontrado neste mês (404 recebido).");
+        setNovosClientes([]);
+        return [];
+      }
       console.error('Erro ao buscar total de agendamentos do mês:', error);
+      toast.error('Erro ao buscar novos clientes. Tente novamente mais tarde.');
+      setNovosClientes(0);
       throw error;
     }
   };
 
   const fetchTotalAgendamentosMes = async () => {
+
     const token = localStorage.getItem('token');
+    const empresaId = localStorage.getItem('empresaId');
+
+    if (!token || !empresaId) {
+      console.warn("[fetchServicosMaisRequisitados] Token ou Empresa ID ausente.");
+      toast.warn("Sessão expirada ou dados de empresa não encontrados. Faça login novamente.");
+      return;
+    }
+
+
     try {
-      const response = await api.get("/agendamentos/agendamentos-por-mes", {
+      const response = await api.get(`/agendamentos/empresa/agendamentos-por-mes/${empresaId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -115,63 +177,73 @@ const Dashboard = () => {
 
       console.log("Dados recebidos de agendamentos por mês:", response.data);
 
-      // Converte o objeto em um array de pares [mês, totalAgendamentos]
-      const formattedData = Object.entries(response.data).map(([mes, totalAgendamentos]) => [
+      const mesesDoAno = [
+        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+      ];
+
+      const formattedData = mesesDoAno.map(mes => [
         mes,
-        totalAgendamentos,
+        response.data[mes] || 0
       ]);
 
-      // Adiciona o cabeçalho ao array de dados
       const chartData = [['Mês', 'Total Agendamentos'], ...formattedData];
 
-      // Atualiza o estado com os dados formatados
       setTotalAgendamentosMes(chartData);
 
-      // Exibe os dados formatados no console
       console.log("Dados formatados para o gráfico:", chartData);
     } catch (error) {
       console.error('Erro ao buscar total de agendamentos do mês:', error);
-    }
-  };
-
-
-  const fetchFuncionariosMaisRequisitados = async () => {
-    const token = localStorage.getItem('token');
-    try {
-      const response = await api.get("/agendamentos/funcionarios-mais-requisitados", {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      setFuncionariosMaisRequisitados(
-        response.data.map((item) => [item.nome, item.quantidade])
-      );
-      console.log("Funcionários mais requisitados:", JSON.stringify(response.data, null, 2));
-    } catch (error) {
-      console.error('Erro ao buscar funcionários mais requisitados:', error);
+      toast.error('Erro ao buscar total de agendamentos do mês. Tente novamente mais tarde.');
+      setTotalAgendamentosMes([]);
     }
   };
 
   const fetchServicosMaisRequisitados = async () => {
+
     const token = localStorage.getItem('token');
+    const empresaId = localStorage.getItem('empresaId');
+
+    if (!token || !empresaId) {
+      console.warn("[fetchServicosMaisRequisitados] Token ou Empresa ID ausente.");
+      toast.warn("Sessão expirada ou dados de empresa não encontrados. Faça login novamente.");
+      return;
+    }
+
     try {
-      const response = await api.get("/agendamentos/servicos-mais-requisitados", {
+      const response = await api.get(`agendamentos/empresa/servicos-mais-requisitados/${empresaId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
       });
-      setServicosMaisRequisitados(response.data.map((item) => [item.nome, item.quantidade]));
+
+      setServicosMaisRequisitados(response.data.map(item => [item.nome, item.quantidade]));
+
       console.log("Serviços mais requisitados:", response.data);
     } catch (error) {
       console.error('Erro ao buscar serviços mais requisitados:', error);
+      toast.error('Erro ao buscar serviços mais requisitados. Tente novamente mais tarde.');
+      setServicosMaisRequisitados([]);
     }
   };
 
-  const fetchHorariosPicoAtendimento = async (token) => {
+  const fetchHorariosPicoAtendimento = async () => {
+
+    const token = localStorage.getItem('token');
+    const empresaId = localStorage.getItem('empresaId');
+
+    if (!token || !empresaId) {
+      console.warn("[fetchHorariosPicoAtendimento] Token ou Empresa ID ausente.");
+      toast.warn("Sessão expirada ou dados de empresa não encontrados. Faça login novamente.");
+      return;
+    }
+
     try {
-      const response = await api.get("/agendamentos/horarios-pico", {
+
+      console.log(`[fetchHorariosPicoAtendimento] Buscando horários de pico para empresa ID ${empresaId}...`);
+
+      const response = await api.get(`/agendamentos/empresa/horarios-pico/${empresaId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -182,28 +254,51 @@ const Dashboard = () => {
         `Hora: ${item[0]}`,
         item[1],
       ]);
+      console.log("[fetchHorariosPicoAtendimento] Horários de pico:", horarios);
       setHorariosPicoAtendimento(horarios);
       console.log("Horários de pico de atendimento:", horarios);
     } catch (error) {
       console.error('Erro ao buscar horários de pico de atendimento:', error);
+      toast.error('Erro ao buscar horários de pico de atendimento. Tente novamente mais tarde.');
+      setHorariosPicoAtendimento([]);
     }
   };
 
   const fetchTaxaCancelamento = async () => {
+
     const token = localStorage.getItem('token');
+    const empresaId = localStorage.getItem('empresaId');
+
+    if (!token || !empresaId) {
+      console.warn("[fetchTaxaCancelamento] Token ou empresaId não encontrados.");
+      toast.warn("Sessão expirada ou dados da empresa ausentes. Faça login novamente.");
+      return;
+    }
+
     try {
-      const response = await api.get("/historico/cancelados", {
+      console.log(`[fetchTaxaCancelamento] Buscando taxa de cancelamento para empresa ID ${empresaId}...`);
+
+      const response = await api.get(`/historico/cancelados/empresa/${empresaId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         }
       });
-      setTaxaCancelamento(response.data);
-      console.log("Número de cancelados" + response.data);
-      return response.data;
+
+      const totalCancelados = response.data;
+
+      if (totalCancelados === 0) {
+        console.info("[fetchTaxaCancelamento] Nenhum cancelamento registrado.");
+        toast.success("Nenhum cancelamento registrado para esta empresa. Ótimo sinal!");
+      }
+
+      setTaxaCancelamento(totalCancelados);
+      console.log(`[fetchTaxaCancelamento] Total de cancelamentos: ${totalCancelados}`);
+      return totalCancelados;
+
     } catch (error) {
-      console.error('Erro ao buscar total de agendamentos do mês:', error);
-      throw error;
+      console.error("[fetchTaxaCancelamento] Erro ao buscar taxa de cancelamento:", error);
+
     }
   };
 
@@ -214,7 +309,6 @@ const Dashboard = () => {
       fetchTotalAgendamentos(token);
       fetchNovosClientes(token);
       fetchTotalAgendamentosMes(token);
-      fetchFuncionariosMaisRequisitados(token);
       fetchServicosMaisRequisitados(token);
       fetchHorariosPicoAtendimento(token);
       fetchTaxaCancelamento(token);
@@ -244,7 +338,7 @@ const Dashboard = () => {
         <Sidebar isVisible={true} />
         <div style={{ flex: 1, padding: '20px', overflow: 'hidden' }}>
           <div className={styles.header}>
-      < Navigation />
+            < Navigation />
             <h1 className={styles.headerTitle}>Painel de Monitoramento Geral</h1>
             <div className={styles.headerIcons}>
               {/* <FaBell className={styles.notificationIcon} /> */}
@@ -292,7 +386,6 @@ const Dashboard = () => {
 
           <div className={styles.dashboardContainer}>
             {[
-              { title: 'Funcionários Mais Requisitados', data: funcionariosMaisRequisitados, thresholds: { high: 200, medium: 160, down: 100 } },
               { title: 'Serviços Mais Requisitados', data: servicosMaisRequisitados, thresholds: { high: 200, medium: 160, down: 80 } },
               { title: 'Horário de Pico de Atendimento', data: horariosPicoAtendimento, thresholds: { high: 700, medium: 500, down: 300 } },
             ].map(({ title, data, thresholds }, index) => (
