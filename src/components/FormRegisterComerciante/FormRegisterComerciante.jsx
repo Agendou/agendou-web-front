@@ -34,7 +34,7 @@ const FormRegisterComerciante = ({ switchForm }) => {
         }
 
         try {
-            const response = await api.post('/empresas/cadastrar', formValues, {
+            const response = await api.post('/api/empresas/cadastrar', formValues, {
                 headers: {
                     'Content-Type': 'application/json'
                 }

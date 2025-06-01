@@ -1,6 +1,4 @@
 import { Box, Grid } from "@mui/material";
-import ClienteHeader from "../../components/ClienteHeader/ClientHeader";
-import ClientInfo from "../../components/ClientInfo/ClientInfo";
 import RecentAppointments from "../../components/RecentAppointments/RecentAppointments";
 import Sidebar from '../../components/Sidebar/Sidebar';
 import MerchantInfo from '../../components/MerchantInfo/MerchantInfo';
@@ -27,7 +25,7 @@ const PerfilComerciante = () => {
                     flexGrow: 1,
                     justifyContent: "center",
                     alignItems: "center",
-                            height: "50%",
+                    height: "50%",
 
                 }}
             >

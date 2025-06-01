@@ -32,7 +32,7 @@ const FormRegisterCliente = ({ switchForm }) => {
         }
 
         try {
-            const response = await api.post("/usuarios/cadastrar", formValues, {
+            const response = await api.post("/api/usuarios/cadastrar", formValues, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
