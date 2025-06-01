@@ -14,7 +14,6 @@ import {
     Select,
     MenuItem,
 } from '@mui/material';
-import { Add, FilterList } from '@mui/icons-material';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import HeaderApp from '../../components/HeaderApp/HeaderApp';
 import styles from '../ProfileProfissional/ProfileProfissional.module.css';
@@ -25,10 +24,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from 'dayjs';
 
 const ManualAppointmentAdmin = () => {
-    const [filter, setFilter] = useState('');
     const [isCadastroVisible, setIsCadastroVisible] = useState(false);
-    const [isAscending, setIsAscending] = useState(true);
-    const [toggle, setToggle] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
 
     const [agendamentos, setAgendamentos] = useState([]);
@@ -311,9 +307,6 @@ const ManualAppointmentAdmin = () => {
                                     <Typography variant="h6" gutterBottom sx={{ mr: 1, fontWeight: 'bold', ml: 2 }}>
                                         Agendamentos
                                     </Typography>
-                                    <IconButton onClick={() => setFilter('')} sx={{ color: '#f8f4f8' }}>
-                                        <FilterList />
-                                    </IconButton>
                                     <IconButton
                                         onClick={() => {
                                             handleCancel();
@@ -321,7 +314,6 @@ const ManualAppointmentAdmin = () => {
                                         }}
                                         sx={{ color: '#f8f4f8' }}
                                     >
-                                        <Add />
                                     </IconButton>
 
                                 </Box>

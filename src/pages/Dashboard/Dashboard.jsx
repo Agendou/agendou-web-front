@@ -39,7 +39,7 @@ const Dashboard = () => {
     }
 
     try {
-      const response = await api.get(`/historico/usuarios-ativos/${empresaId}`, {
+      const response = await api.get(`/api/historico/usuarios-ativos/${empresaId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -82,7 +82,7 @@ const Dashboard = () => {
     }
 
     try {
-      const response = await api.get(`/agendamentos/empresa/${empresaId}`, {
+      const response = await api.get(`/api/agendamentos/empresa/${empresaId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -128,7 +128,7 @@ const Dashboard = () => {
     }
 
     try {
-      const response = await api.get(`/agendamentos/empresa/novos-clientes-mes-atual/${empresaId}`, {
+      const response = await api.get(`/api/agendamentos/empresa/novos-clientes-mes-atual/${empresaId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -168,7 +168,7 @@ const Dashboard = () => {
 
 
     try {
-      const response = await api.get(`/agendamentos/empresa/agendamentos-por-mes/${empresaId}`, {
+      const response = await api.get(`/api/agendamentos/empresa/agendamentos-por-mes/${empresaId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -211,7 +211,7 @@ const Dashboard = () => {
     }
 
     try {
-      const response = await api.get(`agendamentos/empresa/servicos-mais-requisitados/${empresaId}`, {
+      const response = await api.get(`/api/agendamentos/empresa/servicos-mais-requisitados/${empresaId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -243,7 +243,7 @@ const Dashboard = () => {
 
       console.log(`[fetchHorariosPicoAtendimento] Buscando horários de pico para empresa ID ${empresaId}...`);
 
-      const response = await api.get(`/agendamentos/empresa/horarios-pico/${empresaId}`, {
+      const response = await api.get(`/api/agendamentos/empresa/horarios-pico/${empresaId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -278,7 +278,7 @@ const Dashboard = () => {
     try {
       console.log(`[fetchTaxaCancelamento] Buscando taxa de cancelamento para empresa ID ${empresaId}...`);
 
-      const response = await api.get(`/historico/cancelados/empresa/${empresaId}`, {
+      const response = await api.get(`/api/historico/cancelados/empresa/${empresaId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`

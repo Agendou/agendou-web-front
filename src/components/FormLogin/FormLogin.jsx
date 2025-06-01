@@ -23,7 +23,7 @@ const FormLogin = ({ switchForm }) => {
         }
 
         try {
-            const response = await api.post('/empresas/login', { email, senha });
+            const response = await api.post('api/empresas/login', { email, senha });
 
             // const response = await api.post('/usuarios/login', { email, senha }, {
             //     headers: {
