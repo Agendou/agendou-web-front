@@ -42,7 +42,7 @@ const MerchantInfo = () => {
 
   const dataMerchantInfo = async () => {
     const token = localStorage.getItem("token");
-    const userIdEmpresa = localStorage.getItem("userIdEmpresa");
+    const empresaId = localStorage.getItem('empresaId');
 
     if (!token) {
       toast.error("Você precisa estar logado para acessar essa página");
@@ -50,7 +50,11 @@ const MerchantInfo = () => {
     }
 
     try {
-      const response = await api.get(`/empresas/listar/${userIdEmpresa}`, {
+      if (!token) {
+        toast.error("Você precisa estar logado para acessar essa página");
+        return;
+      }
+      const response = await api.get(`/api/empresas/listar/${empresaId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -76,11 +80,16 @@ const MerchantInfo = () => {
 
   const handleDelete = async () => {
     const token = localStorage.getItem("token");
-    const userIdEmpresa = localStorage.getItem("userIdEmpresa");
-    try {
-      console.log("Deletando conta:", userIdEmpresa);
+    const empresaId = localStorage.getItem('empresaId');
 
-      const response = await api.delete(`/empresas/deletar/${userIdEmpresa}`, {
+    try {
+      if (!token) {
+        toast.error("Você precisa estar logado para acessar essa página");
+        return;
+      }
+      console.log("Deletando conta:", empresaId);
+
+      const response = await api.delete(`/api/empresas/deletar/${empresaId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -99,8 +108,9 @@ const MerchantInfo = () => {
   };
 
   const handleSubmit = async () => {
+
     const token = localStorage.getItem("token");
-    const userIdEmpresa = localStorage.getItem("userIdEmpresa");
+    const empresaId = localStorage.getItem('empresaId');
 
     if (!token) {
       toast.error("Você precisa estar logado para acessar essa página")
@@ -118,7 +128,7 @@ const MerchantInfo = () => {
     setIsLoading(true);
 
     try {
-      const response = await api.put(`/empresas/atualizar/${userIdEmpresa}`, perfilAtualizado, {
+      const response = await api.put(`/api/empresas/atualizar/${empresaId}`, perfilAtualizado, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

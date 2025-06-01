@@ -21,14 +21,14 @@ const FormLogin = ({ switchForm }) => {
         }
 
         try {
-            const response = await api.post('/usuarios/login', { email, senha });
+            const response = await api.post('/api/usuarios/login', { email, senha });
 
             const { token, user } = response.data;
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', response.data.usuario.nome);
 
             toast.success("Seja bem vindo(a)!");
-            navigate('/manual-appointment'); 
+            navigate('/manual-appointment');
         } catch (error) {
             toast.error("Erro ao fazer login: " + (error.response?.data || error.message));
         }
