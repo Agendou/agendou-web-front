@@ -24,21 +24,21 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from 'dayjs';
 
 const ManualAppointmentAdmin = () => {
-    const [isCadastroVisible, setIsCadastroVisible] = useState(false);
+    const [isCadastroVisible, setIsCadastroVisible] = useState(true);
     const [isFocused, setIsFocused] = useState(false);
 
     const [agendamentos, setAgendamentos] = useState([]);
-    const [profissionais, setProfissionais] = useState([]);
     const [servicos, setServicos] = useState([]);
     const [usuarios, setUsuarios] = useState([]);
+    const [empresa, setEmpresa] = useState([]);
     const [selectedAgendamentoId, setSelectedAgendamentoId] = useState(null);
 
     const token = localStorage.getItem("token");
 
     const [formData, setFormData] = useState({
-        profissional: "",
         servico: "",
         usuario: "",
+        empresa: "",
         dataHoraCorte: dayjs(),
     });
 
@@ -49,30 +49,19 @@ const ManualAppointmentAdmin = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-
                 if (!token) {
                     toast.error("Usuário não autenticado.");
                     return;
                 }
 
-                //get em /funcionarios/listar
-                const profissionaisResponse = await api.get("/funcionarios/listar", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setProfissionais(profissionaisResponse.data);
-
-                //get em /servicos
-                const servicosResponse = await api.get("/servicos/listar", {
+                const servicosResponse = await api.get("/api/servicos/listar", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
                 setServicos(servicosResponse.data);
 
-                //get em /usuarios
-                const usuariosResponse = await api.get("/usuarios/listar", {
+                const usuariosResponse = await api.get("/api/usuarios/listar", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -81,7 +70,7 @@ const ManualAppointmentAdmin = () => {
 
             } catch (error) {
                 console.error("Erro ao buscar dados:", error);
-                toast.error("Erro ao carregar profissionais e serviços.");
+                toast.error("Erro ao carregar usuários e serviços.");
             }
         };
 
@@ -89,24 +78,34 @@ const ManualAppointmentAdmin = () => {
     }, []);
 
     const fetchAgendamentos = async () => {
-        try {
 
-            const response = await api.get("/agendamentos/listar", {
+        const token = localStorage.getItem('token');
+        const empresaId = localStorage.getItem('empresaId');
+
+        try {
+            const response = await api.get(`/api/agendamentos/empresa/${empresaId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
+
             setAgendamentos(response.data);
+            console.log("Agendamentos carregados:", response.data);
+
+            if (response.data.length === 0) {
+                toast.info("Nenhum agendamento encontrado para essa empresa.");
+            }
+
         } catch (error) {
             console.error("Erro ao listar agendamentos:", error);
-            toast.error("Erro ao listar agendamentos.");
+            toast.error("Erro ao listar agendamentos. Tente novamente.");
         }
     };
 
     const fetchAgendamentoById = async (id) => {
         if (selectedAgendamentoId) {
             try {
-                const response = await api.get(`/agendamentos/listar/${selectedAgendamentoId}`, {
+                const response = await api.get(`/api/agendamentos/listar/${selectedAgendamentoId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -118,13 +117,13 @@ const ManualAppointmentAdmin = () => {
                 console.log("Agendamento retornado:", agendamento);
 
                 setFormData({
-                    profissional: agendamento.fkFuncionario.id,
                     servico: agendamento.fkServico.id,
+                    empresa: agendamento.fkEmpresa.id,
                     usuario: agendamento.fkUsuario.id,
                     dataHoraCorte: dayjs(agendamento.data).isValid() ? dayjs(agendamento.data) : dayjs(),
                 });
 
-                setIsCadastroVisible(true); // Mostra o formulário de edição
+                setIsCadastroVisible(true);
             } catch (error) {
                 console.error("Erro ao buscar agendamento:", error);
                 toast.error("Erro ao buscar agendamento.");
@@ -150,10 +149,13 @@ const ManualAppointmentAdmin = () => {
     };
 
     const handleSave = async () => {
+
+        const empresaId = localStorage.getItem('empresaId');
+
         const agendamento = {
-            fkFuncionario: formData.profissional,
-            fkUsuario: formData.usuario,
-            fkServico: formData.servico,
+            fkEmpresaId: empresaId,
+            fkUsuarioId: formData.usuario,
+            fkServicoId: formData.servico,
             data: formData.dataHoraCorte.format("YYYY-MM-DDTHH:mm:ss"),
         };
 
@@ -161,7 +163,7 @@ const ManualAppointmentAdmin = () => {
 
         try {
             toast.dismiss();
-            const response = await api.post("/agendamentos/cadastrar", agendamento, {
+            const response = await api.post("/api/agendamentos/cadastrar", agendamento, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -172,7 +174,7 @@ const ManualAppointmentAdmin = () => {
                 console.log("Agendamento realizado com sucesso:", response.data);
                 toast.success("Agendamento realizado com sucesso!");
                 setFormData({
-                    profissional: "",
+                    empresa: "",
                     servico: "",
                     usuario: "",
                     dataHoraCorte: dayjs(),
@@ -195,15 +197,19 @@ const ManualAppointmentAdmin = () => {
     console.log("ID do agendamento:", selectedAgendamentoId);
 
     const handleUpdate = async () => {
+
+        const empresaId = localStorage.getItem('empresaId');
+        const token = localStorage.getItem('token');
+
         console.log("FormData antes de atualizar:", formData);
 
         try {
             const response = await api.put(
-                `/agendamentos/atualizar/${selectedAgendamentoId}`,
+                `/api/agendamentos/atualizar/${selectedAgendamentoId}`,
                 {
-                    fkFuncionario: formData.profissional,
-                    fkUsuario: formData.usuario,
-                    fkServico: formData.servico,
+                    fkUsuarioId: formData.usuario,
+                    fkServicoId: formData.servico,
+                    fkEmpresaId: empresaId,
                     data: formData.dataHoraCorte.format("YYYY-MM-DDTHH:mm:ss"),
                 },
                 {
@@ -230,7 +236,7 @@ const ManualAppointmentAdmin = () => {
             try {
                 console.log("Deletando agendamento:", selectedAgendamentoId);
 
-                const response = await api.delete(`/agendamentos/deletar/${selectedAgendamentoId}`, {
+                const response = await api.delete(`/api/agendamentos/deletar/${selectedAgendamentoId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -248,7 +254,6 @@ const ManualAppointmentAdmin = () => {
 
     const handleCancel = () => {
         setFormData({
-            profissional: "",
             servico: "",
             usuario: "",
             dataHoraCorte: dayjs(),
@@ -372,8 +377,8 @@ const ManualAppointmentAdmin = () => {
 
                                                         console.log("Agendamento selecionado:", {
                                                             usuario: agendamento.fkUsuario.nome,
-                                                            profissional: agendamento.fkFuncionario.nome,
                                                             servico: agendamento.fkServico.nome,
+                                                            empresa: agendamento.fkEmpresa.nome,
                                                             dataHoraCorte: dayjs(agendamento.data),
                                                         });
 
@@ -570,67 +575,6 @@ const ManualAppointmentAdmin = () => {
                                                 }}
                                             />
                                         </LocalizationProvider>
-
-                                        <FormControl fullWidth margin="normal">
-                                            <InputLabel
-                                                style={{ color: "white" }}
-                                                sx={{
-                                                    display: formData.profissional ? "none" : "block",
-                                                }}
-                                                shrink={formData.profissional.length > 0}
-                                            >
-                                                Profissionais
-                                            </InputLabel>
-                                            <Select
-                                                value={formData.profissional}
-                                                onChange={(e) =>
-                                                    handleInputChange("profissional", e.target.value)
-                                                }
-                                                label="Profissional"
-                                                sx={{
-                                                    color: "white",
-                                                    backgroundColor: "transparent",
-                                                    borderColor: "white",
-                                                    "& .MuiOutlinedInput-notchedOutline": {
-                                                        borderColor: "white",
-                                                    },
-                                                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                                                        borderColor: "white",
-                                                    },
-                                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                                        borderColor: "white",
-                                                    },
-                                                    "& .MuiSvgIcon-root": {
-                                                        color: "white",
-                                                    },
-                                                }}
-                                                MenuProps={{
-                                                    PaperProps: {
-                                                        style: {
-                                                            backgroundColor: "#010720",
-                                                            color: "white",
-                                                        },
-                                                    },
-                                                    MenuListProps: {
-                                                        sx: {
-                                                            "& .MuiMenuItem-root": {
-                                                                color: "white",
-                                                            },
-                                                            "& .MuiMenuItem-root:hover": {
-                                                                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                                                            },
-                                                        },
-                                                    },
-                                                }}
-                                            >
-                                                {profissionais.map((funcionario) => (
-                                                    <MenuItem key={funcionario.id} value={funcionario.id}>
-                                                        {funcionario.nome}
-                                                    </MenuItem>
-                                                ))}
-
-                                            </Select>
-                                        </FormControl>
 
                                         <FormControl fullWidth margin="normal">
                                             <InputLabel

@@ -72,6 +72,7 @@ const Dashboard = () => {
   };
 
   const fetchTotalAgendamentos = async () => {
+
     const token = localStorage.getItem('token');
     const empresaId = localStorage.getItem('empresaId');
 
