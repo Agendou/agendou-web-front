@@ -14,38 +14,33 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import { Add, FilterList } from '@mui/icons-material';
-import Sidebar from '../../components/Sidebar/SidebarUsuario';
+import { Add } from '@mui/icons-material';
+import Sidebar from '../../components/Sidebar/Sidebar';
 import HeaderApp from '../../components/HeaderApp/HeaderApp';
 import styles from '../ProfileProfissional/ProfileProfissional.module.css';
 import api from '../../api';
 import { ToastContainer, toast } from 'react-toastify';
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 
-const ManualAppointmentAdmin = () => {
-  toast.dismiss();
-  const [filter, setFilter] = useState('');
+const ManualAppointment = () => {
   const [isCadastroVisible, setIsCadastroVisible] = useState(false);
-  const [isAscending, setIsAscending] = useState(true);
-  const [toggle, setToggle] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-
   const [agendamentos, setAgendamentos] = useState([]);
-  const [profissionais, setProfissionais] = useState([]);
   const [servicos, setServicos] = useState([]);
-  const [usuarios, setUsuarios] = useState([]);
+  const [empresas, setEmpresas] = useState([]);
   const [selectedAgendamentoId, setSelectedAgendamentoId] = useState(null);
 
-  const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem('token');
+  const userId = localStorage.getItem('userId');
 
   const [formData, setFormData] = useState({
-    profissional: "",
-    servico: "",
+    servico: '',
+    empresa: '',
     usuario: userId,
     dataHoraCorte: dayjs(),
+    infoAdicional: '',
   });
 
   useEffect(() => {
@@ -55,235 +50,181 @@ const ManualAppointmentAdmin = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         if (!token) {
-          toast.error("Usuário não autenticado.");
+          toast.error('Usuário não autenticado.');
           return;
         }
 
-        //get em /funcionarios/listar
-        const profissionaisResponse = await api.get("/funcionarios/listar", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setProfissionais(profissionaisResponse.data);
-
-        //get em /servicos
-        const servicosResponse = await api.get("/servicos/listar", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        // Buscar serviços
+        const servicosResponse = await api.get('/api/servicos/listar', {
+          headers: { Authorization: `Bearer ${token}` },
         });
         setServicos(servicosResponse.data);
 
-        //get em /usuarios
-        const usuariosResponse = await api.get("/usuarios/listar", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        // Buscar empresas
+        const empresasResponse = await api.get('/api/empresas/listar', {
+          headers: { Authorization: `Bearer ${token}` },
         });
-        setUsuarios(usuariosResponse.data);
-
+        setEmpresas(empresasResponse.data);
       } catch (error) {
-        console.error("Erro ao buscar dados:", error);
-        toast.error("Erro ao carregar profissionais e serviços.");
+        console.error('Erro ao buscar dados:', error);
+        toast.error('Erro ao carregar serviços e empresas.');
       }
     };
 
     fetchData();
-  }, []);
+  }, [token]);
 
   const fetchAgendamentos = async () => {
     try {
-
-      const response = await api.get(`/agendamentos/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await api.get(`/api/agendamentos/usuario/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
       setAgendamentos(response.data);
     } catch (error) {
-      console.error("Erro ao listar agendamentos deste usuário:", error);
-      toast.error("Erro ao listar agendamentos deste usuário.");
+      console.error('Erro ao listar agendamentos:', error);
+      toast.error('Erro ao listar agendamentos.');
     }
   };
 
   const fetchAgendamentoById = async (id) => {
-    if (selectedAgendamentoId) {
-      try {
-        const response = await api.get(`/agendamentos/listar/${selectedAgendamentoId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const agendamento = response.data;
-
-        // Debug para verificar os dados retornados
-        console.log("Agendamento retornado:", agendamento);
-
-        setFormData({
-          profissional: agendamento.fkFuncionario.id,
-          servico: agendamento.fkServico.id,
-          usuario: userId,
-          dataHoraCorte: dayjs(agendamento.data).isValid() ? dayjs(agendamento.data) : dayjs(),
-        });
-
-        setIsCadastroVisible(true); // Mostra o formulário de edição
-      } catch (error) {
-        console.error("Erro ao buscar agendamento:", error);
-        toast.error("Erro ao buscar agendamento.");
-      }
+    try {
+      const response = await api.get(`/api/agendamentos/listar/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const agendamento = response.data;
+      setFormData({
+        servico: agendamento.fkServico?.id || '',
+        empresa: agendamento.fkEmpresa?.id || '',
+        usuario: userId,
+        dataHoraCorte: dayjs(agendamento.data).isValid() ? dayjs(agendamento.data) : dayjs(),
+        infoAdicional: agendamento.infoAdicional || '',
+      });
+      setIsCadastroVisible(true);
+    } catch (error) {
+      console.error('Erro ao buscar agendamento:', error);
+      toast.error('Erro ao buscar agendamento.');
     }
   };
 
-
-
   const toggleCadastro = () => {
     setIsCadastroVisible(true);
+    setSelectedAgendamentoId(null);
+    setFormData({
+      servico: '',
+      empresa: '',
+      usuario: userId,
+      dataHoraCorte: dayjs(),
+      infoAdicional: '',
+    });
   };
 
   const handleInputChange = (field, value) => {
-    console.log("Antes da atualização:", formData);
-    console.log(`Campo: ${field}, Valor: ${value}`);
-    setFormData((prevState) => {
-      const updatedState = {
-        ...prevState,
-        [field]: value,
-      };
-      console.log("Depois da atualização:", updatedState);
-      return updatedState;
-    });
+    setFormData((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
   };
 
   const handleSave = async () => {
     const agendamento = {
-      fkFuncionario: formData.profissional,
-      fkUsuario: userId,
-      fkServico: formData.servico,
-      data: formData.dataHoraCorte.format("YYYY-MM-DDTHH:mm:ss"),
+      fkUsuarioId: formData.usuario,
+      fkServicoId: formData.servico,
+      fkEmpresaId: formData.empresa,
+      data: formData.dataHoraCorte.format('YYYY-MM-DDTHH:mm:ss'),
+      infoAdicional: formData.infoAdicional,
     };
-
-    console.log("Enviando agendamento:", agendamento);
 
     try {
       toast.dismiss();
-      const response = await api.post("/agendamentos/cadastrar", agendamento, {
+      const response = await api.post('/api/agendamentos/cadastrar', agendamento, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       });
 
       if (response.status === 201) {
-        console.log("Agendamento realizado com sucesso:", response.data);
-        toast.success("Agendamento realizado com sucesso!");
+        toast.success('Agendamento realizado com sucesso!');
         setFormData({
-          profissional: "",
-          servico: "",
+          servico: '',
+          empresa: '',
+          usuario: userId,
           dataHoraCorte: dayjs(),
+          infoAdicional: '',
         });
         fetchAgendamentos();
-        handleCancel();
-      } else {
-        console.error("Erro no agendamento:", response.statusText);
-        toast.error("Erro ao realizar o agendamento. Tente novamente.");
+        setIsCadastroVisible(false);
       }
     } catch (error) {
-      console.error("Erro ao cadastrar agendamento:", error);
-      if (error.response) {
-        console.error("Resposta do servidor:", error.response.data);
-      }
-      toast.error("Erro ao cadastrar agendamento. Verifique os dados preenchidos.");
+      console.error('Erro ao cadastrar agendamento:', error);
+      toast.error('Erro ao cadastrar agendamento. Verifique os dados.');
     }
   };
 
-  console.log("ID do agendamento:", selectedAgendamentoId);
-
   const handleUpdate = async () => {
-    console.log("FormData antes de atualizar:", formData);
-
     try {
       const response = await api.put(
-        `/agendamentos/atualizar/${selectedAgendamentoId}`,
+        `/api/agendamentos/atualizar/${selectedAgendamentoId}`,
         {
-          fkFuncionario: formData.profissional,
-          fkUsuario: userId,
-          fkServico: formData.servico,
-          data: formData.dataHoraCorte.format("YYYY-MM-DDTHH:mm:ss"),
+          fkUsuarioId: formData.usuario,
+          fkServicoId: formData.servico,
+          fkEmpresaId: formData.empresa,
+          data: formData.dataHoraCorte.format('YYYY-MM-DDTHH:mm:ss'),
+          infoAdicional: formData.infoAdicional,
         },
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          }
+            'Content-Type': 'application/json',
+          },
         }
       );
 
+      toast.success('Agendamento atualizado com sucesso!');
       fetchAgendamentos();
-      toast.success("Agendamento atualizado com sucesso!");
-
-      handleCancel();
+      setIsCadastroVisible(false);
+      setSelectedAgendamentoId(null);
     } catch (error) {
-      console.error("Erro ao atualizar o agendamento:", error);
-      toast.error("Erro ao atualizar agendamento. Verifique os dados preenchidos.");
+      console.error('Erro ao atualizar agendamento:', error);
+      toast.error('Erro ao atualizar agendamento.');
     }
   };
 
-
   const handleDelete = async () => {
-    if (selectedAgendamentoId) {
-      try {
-        console.log("Deletando agendamento:", selectedAgendamentoId);
-
-        const response = await api.delete(`/agendamentos/deletar/${selectedAgendamentoId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        toast.success("Agendamento cancelado");
-        fetchAgendamentos();
-        setSelectedAgendamentoId(null);
-      } catch (error) {
-        console.error("Erro ao excluir o agendamento:", error);
-        toast.error("Erro ao excluir agendamento. Tente novamente.");
-      }
+    if (!selectedAgendamentoId) return;
+    try {
+      await api.delete(`/api/agendamentos/deletar/${selectedAgendamentoId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success('Agendamento cancelado com sucesso!');
+      fetchAgendamentos();
+      setSelectedAgendamentoId(null);
+      setIsCadastroVisible(false);
+    } catch (error) {
+      console.error('Erro ao excluir agendamento', error);
+      toast.error('Erro ao excluir agendamento.');
     }
   };
 
   const handleCancel = () => {
     setFormData({
-      profissional: "",
-      servico: "",
+      servico: '',
+      empresa: '',
+      usuario: userId,
       dataHoraCorte: dayjs(),
+      infoAdicional: '',
     });
     setSelectedAgendamentoId(null);
+    setIsCadastroVisible(false);
   };
 
   return (
     <div className={styles.bodyProfissional}>
       <ToastContainer />
-      <Box
-        sx={{
-          display: 'flex',
-          minHeight: '100vh',
-          fontFamily: 'Poppins, sans-serif',
-          marginLeft: '30px',
-        }}
-      >
+      <Box sx={{ display: 'flex', minHeight: '100vh', fontFamily: 'Poppins, sans-serif', marginLeft: '30px' }}>
         <Sidebar isVisible={true} />
-
-        <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            p: 3,
-            ml: '200px',
-            width: 'calc(90vw - 95px)',
-          }}
-        >
+        <Box component="main" sx={{ flexGrow: 1, p: 3, ml: '200px', width: 'calc(90vw - 95px)' }}>
           <HeaderApp title="Painel de Agendamentos" />
 
           <Grid container spacing={2} sx={{ mt: 2, alignItems: 'stretch' }}>
@@ -302,30 +243,13 @@ const ManualAppointmentAdmin = () => {
                   maxHeight: '550px',
                 }}
               >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    mb: 1,
-                    color: '#f8f4f8',
-                  }}
-                >
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, color: '#f8f4f8' }}>
                   <Typography variant="h6" gutterBottom sx={{ mr: 1, fontWeight: 'bold', ml: 2 }}>
-                    Seus agendamentos
+                    Seus Agendamentos
                   </Typography>
-                  <IconButton onClick={() => setFilter('')} sx={{ color: '#f8f4f8' }}>
-                    <FilterList />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => {
-                      handleCancel();
-                      toggleCadastro();
-                    }}
-                    sx={{ color: '#f8f4f8' }}
-                  >
+                  <IconButton onClick={toggleCadastro} sx={{ color: '#f8f4f8' }}>
                     <Add />
                   </IconButton>
-
                 </Box>
                 <Box
                   sx={{
@@ -339,92 +263,55 @@ const ManualAppointmentAdmin = () => {
                   }}
                   className={styles.scrollbar}
                 >
-
                   <List>
-                    {/* títulos */}
                     <ListItem>
-                      <ListItemText
-                        primary="Serviço"
-                        sx={{
-                          fontWeight: 'bold',
-                          color: '#ffffff',
-                          padding: '8px',
-                        }}
-                      />
-                      <ListItemText
-                        primary="Data e Hora"
-                        sx={{
-                          fontWeight: 'bold',
-                          color: '#ffffff',
-                          padding: '8px',
-                        }}
-                      />
+                      <ListItemText primary="Serviço" sx={{ fontWeight: 'bold', color: '#ffffff', padding: '8px', textAlign: 'center' }} />
+                      <ListItemText primary="Data e Hora" sx={{ fontWeight: 'bold', color: '#ffffff', padding: '8px', textAlign: 'center' }} />
                     </ListItem>
-
-                    {/* agendamentos */}
                     {Array.isArray(agendamentos) && agendamentos.length > 0 ? (
                       agendamentos.map((agendamento) => (
                         <ListItem
                           key={agendamento.id}
-                          value={agendamento.id}
                           button
                           onClick={() => {
                             setSelectedAgendamentoId(agendamento.id);
-                            fetchAgendamentoById(selectedAgendamentoId);
-
-                            console.log("Agendamento selecionado:", {
-                              usuario: agendamento.fkUsuario.nome,
-                              profissional: agendamento.fkFuncionario.nome,
-                              servico: agendamento.fkServico.nome,
-                              dataHoraCorte: dayjs(agendamento.data),
-                            });
-
-                            setIsCadastroVisible(true);
+                            fetchAgendamentoById(agendamento.id);
                           }}
                         >
-                          {/* Nome do serviço */}
                           <ListItemText
-                            primary={agendamento.fkServico ? agendamento.fkServico.nome : ''}
+                            primary={agendamento.fkServico?.nome || ''}
                             sx={{
                               backgroundColor: agendamento.id === selectedAgendamentoId ? 'rgba(248, 244, 248, 0.5)' : 'rgba(248, 244, 248, 0.2)',
-                              borderRadius: '20px',
-                              padding: '8px',
-                              margin: '2%',
-                              cursor: 'pointer',
-                              color: agendamento.id === selectedAgendamentoId ? '#ffffff' : '#f8f4f8',
+                              borderRadius: '15px',
+                              padding: '5px',
+                              textAlign: 'center',
+                              margin: '1%',
+                              color: '#f8f4f8',
                               fontWeight: agendamento.id === selectedAgendamentoId ? 'bold' : 'normal',
                               transition: 'transform 0.2s ease-in-out, background-color 0.2s',
-                              '&:hover': {
-                                transform: 'scale(0.9)',
-                              },
+                              '&:hover': { transform: 'scale(0.95)' },
                             }}
                           />
-
-                          {/* Data e hora do serviço */}
                           <ListItemText
                             primary={new Date(agendamento.data).toLocaleString()}
                             sx={{
                               backgroundColor: agendamento.id === selectedAgendamentoId ? 'rgba(248, 244, 248, 0.5)' : 'rgba(248, 244, 248, 0.2)',
-                              borderRadius: '20px',
-                              padding: '8px',
-                              cursor: 'pointer',
-                              color: agendamento.id === selectedAgendamentoId ? '#ffffff' : '#f8f4f8',
+                              borderRadius: '15px',
+                              padding: '5px',
+                              textAlign: 'center',
+                              margin: '1%',
+                              color: '#f8f4f8',
                               fontWeight: agendamento.id === selectedAgendamentoId ? 'bold' : 'normal',
                               transition: 'transform 0.2s ease-in-out, background-color 0.2s',
-                              '&:hover': {
-                                transform: 'scale(0.9)',
-                              },
+                              '&:hover': { transform: 'scale(0.95)' },
                             }}
                           />
-
                         </ListItem>
                       ))
                     ) : (
-                      <p>Sem agendamentos para exibir.</p>
+                      <Typography sx={{ color: '#f8f4f8', p: 2 }}>Sem agendamentos para exibir.</Typography>
                     )}
-
                   </List>
-
                 </Box>
               </Box>
             </Grid>
@@ -442,163 +329,86 @@ const ManualAppointmentAdmin = () => {
                     marginTop: 3,
                     backgroundColor: '#010726',
                     borderRadius: '10px',
-                    p: 1,
+                    p: 2,
                     ml: 2,
                     height: '100%',
                     maxHeight: '550px',
                     width: '100%',
-                    gap: 3,
-                    padding: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2,
                   }}
                 >
                   <Typography variant="h6" gutterBottom sx={{ color: '#f8f4f8', fontWeight: 'bold', ml: 2 }}>
                     {selectedAgendamentoId ? 'Atualizar Agendamento' : 'Cadastrar Agendamento'}
                   </Typography>
-                  <Box
-                    sx={{
-                      maxHeight: '490px',
-                      backgroundColor: '#010726',
-                      borderRadius: '10px',
-                      p: 1,
-                      height: '100%',
-                    }}
-                    className={styles.scrollbar}
-                  >
-
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DateTimePicker
-                        label="Data e Hora do Agendamento"
-                        value={formData.dataHoraCorte && dayjs(formData.dataHoraCorte).isValid() ? formData.dataHoraCorte : null}
-                        onChange={(date) => handleInputChange("dataHoraCorte", date)}
-                        renderInput={(params) => <TextField {...params} />}
-                        sx={{
-                          "& .MuiInputBase-input": {
-                            color: "white",
-                          },
-                          "& .MuiInputLabel-root": {
-                            color: "white",
-                          },
-                          "& .MuiSvgIcon-root": {
-                            color: "white",
-                          },
-                          "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
-                          {
-                            borderColor: "white",
-                          },
-                          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                          {
-                            borderColor: "white",
-                          },
-                        }}
-                      />
-                    </LocalizationProvider>
-
+                  <Box sx={{ maxHeight: '490px', overflow: 'auto', p: 1 }} className={styles.scrollbar}>
                     <FormControl fullWidth margin="normal">
-                      <InputLabel
-                        style={{ color: "white" }}
-                        sx={{
-                          display: formData.profissional ? "none" : "block",
-                        }}
-                        shrink={formData.profissional.length > 0}
-                      >
-                        Profissionais
+                      <InputLabel style={{ color: 'white' }} shrink={!!formData.empresa}>
+                        Empresa
                       </InputLabel>
                       <Select
-                        value={formData.profissional}
-                        onChange={(e) =>
-                          handleInputChange("profissional", e.target.value)
-                        }
-                        label="Profissional"
+                        value={formData.empresa}
+                        onChange={(e) => handleInputChange('empresa', e.target.value)}
+                        label="Empresa"
                         sx={{
-                          color: "white",
-                          backgroundColor: "transparent",
-                          borderColor: "white",
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "white",
-                          },
-                          "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "white",
-                          },
-                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "white",
-                          },
-                          "& .MuiSvgIcon-root": {
-                            color: "white",
-                          },
+                          color: 'white',
+                          backgroundColor: 'transparent',
+                          '& .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                          '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                          '& .MuiSvgIcon-root': { color: 'white' },
                         }}
                         MenuProps={{
                           PaperProps: {
-                            style: {
-                              backgroundColor: "#010720",
-                              color: "white",
-                            },
+                            style: { backgroundColor: '#010720', color: 'white' },
                           },
                           MenuListProps: {
                             sx: {
-                              "& .MuiMenuItem-root": {
-                                color: "white",
-                              },
-                              "& .MuiMenuItem-root:hover": {
-                                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                              },
+                              '& .MuiMenuItem-root': { color: 'white' },
+                              '& .MuiMenuItem-root:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+                              '& .Mui-selected': { backgroundColor: 'rgba(255, 255, 255, 0.2)', color: 'white' },
                             },
                           },
                         }}
                       >
-                        {profissionais.map((funcionario) => (
-                          <MenuItem key={funcionario.id} value={funcionario.id}>
-                            {funcionario.nome}
-                          </MenuItem>
-                        ))}
-
+                        {empresas.length > 0 ? (
+                          empresas.map((empresa) => (
+                            <MenuItem key={empresa.id} value={empresa.id}>
+                              {empresa.nomeEmpresa}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <MenuItem disabled>Nenhuma empresa disponível</MenuItem>
+                        )}
                       </Select>
                     </FormControl>
 
                     <FormControl fullWidth margin="normal">
-                      <InputLabel
-                        style={{ color: "white" }}
-                        shrink={!!formData.servico}
-                      >
+                      <InputLabel style={{ color: 'white' }} shrink={!!formData.servico}>
                         Serviço
                       </InputLabel>
                       <Select
                         value={formData.servico}
-                        onChange={(e) => {
-                          handleInputChange("servico", e.target.value);
-                        }}
+                        onChange={(e) => handleInputChange('servico', e.target.value)}
                         label="Serviço"
                         sx={{
-                          color: "white",
-                          backgroundColor: "transparent",
-                          borderColor: "white",
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "white",
-                          },
-                          "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "white",
-                          },
-                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "white",
-                          },
-                          "& .MuiSvgIcon-root": {
-                            color: "white",
-                          },
+                          color: 'white',
+                          backgroundColor: 'transparent',
+                          '& .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                          '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                          '& .MuiSvgIcon-root': { color: 'white' },
                         }}
                         MenuProps={{
                           PaperProps: {
-                            style: {
-                              backgroundColor: "#010720",
-                              color: "white",
-                            },
+                            style: { backgroundColor: '#010720', color: 'white' },
                           },
                           MenuListProps: {
                             sx: {
-                              "& .MuiMenuItem-root": {
-                                color: "white",
-                              },
-                              "& .MuiMenuItem-root:hover": {
-                                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                              },
+                              '& .MuiMenuItem-root': { color: 'white' },
+                              '& .MuiMenuItem-root:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+                              '& .Mui-selected': { backgroundColor: 'rgba(255, 255, 255, 0.2)', color: 'white' },
                             },
                           },
                         }}
@@ -608,51 +418,57 @@ const ManualAppointmentAdmin = () => {
                             {servico.nome}
                           </MenuItem>
                         ))}
-
                       </Select>
                     </FormControl>
 
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DateTimePicker
+                        label="Data e Hora do Agendamento"
+                        value={formData.dataHoraCorte && dayjs(formData.dataHoraCorte).isValid() ? formData.dataHoraCorte : null}
+                        onChange={(date) => handleInputChange('dataHoraCorte', date)}
+                        slotProps={{ textField: { fullWidth: true, margin: 'normal' } }}
+                        sx={{
+                          '& .MuiInputBase-input': { color: 'white' },
+                          '& .MuiInputLabel-root': { color: 'white' },
+                          '& .MuiSvgIcon-root': { color: 'white' },
+                          '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                          '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                          '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                        }}
+                      />
+                    </LocalizationProvider>
+
                     <TextField
-                      label={!isFocused ? "Informações Adicionais" : ""}
+                      label={!isFocused ? 'Informações Adicionais' : ''}
                       value={formData.infoAdicional}
-                      onChange={(e) =>
-                        handleInputChange("infoAdicional", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange('infoAdicional', e.target.value)}
                       onFocus={() => setIsFocused(true)}
                       onBlur={() => {
-                        if (formData.infoAdicional === "") {
-                          setIsFocused(false);
-                        }
+                        if (!formData.infoAdicional) setIsFocused(false);
                       }}
                       multiline
-                      rows={6}
+                      rows={4}
                       fullWidth
                       margin="normal"
-                      InputProps={{
-                        style: {
-                          color: "white",
-                          backgroundColor: "#010726",
-                        },
-                      }}
-                      InputLabelProps={{
-                        style: { color: "white" },
-                      }}
+                      InputProps={{ style: { color: 'white', backgroundColor: '#010726' } }}
+                      InputLabelProps={{ style: { color: 'white' } }}
                       sx={{
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          borderColor: "white",
-                        },
-                        "&:hover .MuiOutlinedInput-notchedOutline": {
-                          borderColor: "white",
-                        },
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                          borderColor: "white",
-                        },
+                        '& .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                        '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
                       }}
                     />
 
-                    <Grid container justifyContent="space-between" sx={{ mt: 1 }}>
-                      <Button variant="contained" color="error" size="small" onClick={handleDelete}>
-                        Deletar agendamento
+                    <Grid container justifyContent="space-between" sx={{ mt: 2 }}>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        size="small"
+                        onClick={handleDelete}
+                        disabled={!selectedAgendamentoId}
+                        sx={{ transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.05)' } }}
+                      >
+                        Deletar Agendamento
                       </Button>
                       <Grid item>
                         <Button
@@ -660,7 +476,7 @@ const ManualAppointmentAdmin = () => {
                           color="primary"
                           size="small"
                           onClick={handleCancel}
-                          sx={{ mr: 2 }}
+                          sx={{ mr: 2, transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.05)' } }}
                         >
                           Cancelar
                         </Button>
@@ -669,6 +485,8 @@ const ManualAppointmentAdmin = () => {
                           color="primary"
                           size="small"
                           onClick={selectedAgendamentoId ? handleUpdate : handleSave}
+                          disabled={!formData.servico || !formData.empresa}
+                          sx={{ transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.05)' } }}
                         >
                           {selectedAgendamentoId ? 'Atualizar' : 'Salvar'}
                         </Button>
@@ -685,4 +503,4 @@ const ManualAppointmentAdmin = () => {
   );
 };
 
-export default ManualAppointmentAdmin;
+export default ManualAppointment;
