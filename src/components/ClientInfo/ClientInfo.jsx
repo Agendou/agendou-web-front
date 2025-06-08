@@ -39,7 +39,7 @@ const ClientInfo = () => {
     }
 
     try {
-      const response = await api.get(`/usuarios/listar/${userId}`, {
+      const response = await api.get(`/api/usuarios/listar/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -84,7 +84,7 @@ const ClientInfo = () => {
     setIsLoading(true);
 
     try {
-      const response = await api.put(`/usuarios/atualizar/${userId}`, perfilAtualizado, {
+      const response = await api.put(`/api/usuarios/atualizar/${userId}`, perfilAtualizado, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -111,7 +111,7 @@ const ClientInfo = () => {
     try {
       console.log("Deletando conta:", userId);
 
-      const response = await api.delete(`/usuarios/deletar/${userId}`, {
+      const response = await api.delete(`/api/usuarios/deletar/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -3,8 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Sidebar.css';
 import logo from '../../assets/images/Logo Branca.png';
 import googleAnalyticsIcon from '../../assets/images/analitica-do-google.png';
-import employeesIcon from '../../assets/images/employees.png';
-import agendaIcon from '../../assets/images/agenda.png';
 import addIcon from '../../assets/images/adicionar.png';
 import userIcon from '../../assets/images/do-utilizador.png';
 import exitIcon from '../../assets/images/exit.png';
@@ -21,7 +19,7 @@ const Sidebar = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('response'); 
+    localStorage.removeItem('response');
     navigate('/');
   };
 
@@ -44,7 +42,7 @@ const Sidebar = () => {
           </div>
           <div className="user-info">
             <img src={perfilDash} alt="Foto de Perfil" className="profile-pic" />
-            <p>{ userNameR || 'userEmpresa'}</p>
+            <p>{userNameR || 'userEmpresa'}</p>
           </div>
           <hr />
           <div className="menu-section">
@@ -62,9 +60,6 @@ const Sidebar = () => {
             <h3>Gerenciamento</h3>
             <ul>
               <li>
-                <Link to="/profile-profissional">
-                  <img src={employeesIcon} alt="Funcionários" className="menu-icon" /> Funcionários
-                </Link>
               </li>
               <li>
                 <Link to="/manual-appointment-admin">

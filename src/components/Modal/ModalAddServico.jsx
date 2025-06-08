@@ -25,7 +25,7 @@ const EditarServicos = ({ open, onClose }) => {
     // Função para buscar serviços da API
     const carregarServicos = async () => {
         try {
-            const servicosResponse = await api.get("/servicos/listar", {
+            const servicosResponse = await api.get("/api/servicos/listar", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -47,7 +47,7 @@ const EditarServicos = ({ open, onClose }) => {
         }
 
         try {
-            const response = await api.post("/servicos/cadastrar", novoServico, {
+            const response = await api.post("/api/servicos/cadastrar", novoServico, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -74,7 +74,7 @@ const EditarServicos = ({ open, onClose }) => {
     // Função para deletar um serviço via API
     const deletarServico = async (id) => {
         try {
-            await api.delete(`/servicos/deletar/${id}`, {
+            await api.delete(`/api/servicos/deletar/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

@@ -26,6 +26,7 @@ const FormLogin = ({ switchForm }) => {
             const { token, user } = response.data;
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', response.data.usuario.nome);
+            localStorage.setItem('userId', response.data.usuario.id);
 
             toast.success("Seja bem vindo(a)!");
             navigate('/manual-appointment');
