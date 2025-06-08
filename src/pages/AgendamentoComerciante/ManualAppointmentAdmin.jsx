@@ -131,10 +131,6 @@ const ManualAppointmentAdmin = () => {
         }
     };
 
-    const toggleCadastro = () => {
-        setIsCadastroVisible(true);
-    };
-
     const handleInputChange = (field, value) => {
         console.log("Antes da atualização:", formData);
         console.log(`Campo: ${field}, Valor: ${value}`);
@@ -315,7 +311,6 @@ const ManualAppointmentAdmin = () => {
                                     <IconButton
                                         onClick={() => {
                                             handleCancel();
-                                            toggleCadastro();
                                         }}
                                         sx={{ color: '#f8f4f8' }}
                                     >

@@ -1,428 +1,779 @@
-import React, { useEffect, useState } from 'react';
-import { Chart } from 'react-google-charts';
-import Sidebar from '../../components/Sidebar/Sidebar';
+import React, { useEffect, useState, Component, useCallback } from 'react';
+import { Bar, Line } from 'react-chartjs-2';
+import { FaUsers, FaCalendarCheck, FaChartLine, FaTimesCircle, FaMoneyBillWave, FaExchangeAlt, FaArrowLeft } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import styles from './Dashboard.module.css';
 import api from '../../services/api';
 import Navigation from '../../components/Navigation/Navigation';
 import { toast } from 'react-toastify';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
+
+class ErrorBoundary extends Component {
+  state = { hasError: false, error: null, errorInfo: null };
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Chart Error:', error, errorInfo);
+    this.setState({ error, errorInfo });
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className={`${styles.errorText} text-sm`}>
+          Erro ao renderizar o gráfico: {this.state.error?.message || 'Erro desconhecido'}
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const getColor = (value, maxValue) => {
+  if (!maxValue || isNaN(value) || isNaN(maxValue)) return '#D1D5DB';
   const ratio = value / maxValue;
-  if (ratio < 0.33) return 'rgb(136, 131, 160)';
-  if (ratio < 0.67) return 'rgb(85, 91, 148)';
-  return 'rgb(116, 147, 194)';
+  if (ratio < 0.33) return '#D1D5DB';
+  if (ratio < 0.67) return '#3B82F6';
+  return '#1E3A8A';
 };
 
 const getKPIColor = (value, thresholds) => {
-  if (value >= thresholds.high) return 'rgb(56, 49, 92)';
-  if (value >= thresholds.medium) return 'rgb(85, 91, 148)';
-  return 'rgb(116, 147, 194)';
+  if (!value || !thresholds) return '#D1D5DB';
+  if (value >= thresholds.high) return '#1E3A8A';
+  if (value >= thresholds.medium) return '#3B82F6';
+  return '#D1D5DB';
 };
 
 const Dashboard = () => {
-  const [totalClientesAtivos, setTotalClientesAtivos] = useState(0);
+  const [totalClientesAtivos, setTotalClientesAtivos] = useState({ count: 0, list: [] });
   const [totalAgendamentos, setTotalAgendamentos] = useState(0);
-  const [novosClientes, setNovosClientes] = useState(0);
-  const [totalAgendamentosMes, setTotalAgendamentosMes] = useState(0);
+  const [novosClientes, setNovosClientes] = useState({ count: 0, list: [] });
+  const [totalAgendamentosMes, setTotalAgendamentosMes] = useState([]);
   const [servicosMaisRequisitados, setServicosMaisRequisitados] = useState([]);
   const [horariosPicoAtendimento, setHorariosPicoAtendimento] = useState([]);
   const [taxaCancelamento, setTaxaCancelamento] = useState(0);
+  const [ganhosPrevistos, setGanhosPrevistos] = useState({ total: 0, monthly: [] });
+  const [movimentacoes, setMovimentacoes] = useState(0);
+  const [agendamentosRealizados, setAgendamentosRealizados] = useState(0);
+  const [hasShownNoCancellationToast, setHasShownNoCancellationToast] = useState(false);
+  const [hasShownSuccessToast, setHasShownSuccessToast] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const fetchTotalClientesAtivos = async () => {
-    const token = localStorage.getItem('token');
-    const empresaId = localStorage.getItem('empresaId');
-
-    if (!token || !empresaId) {
-      console.warn("[fetchServicosMaisRequisitados] Token ou Empresa ID ausente.");
-      toast.warn("Sessão expirada ou dados de empresa não encontrados. Faça login novamente.");
-      return;
-    }
-
-    try {
-      const response = await api.get(`/api/historico/usuarios-ativos/${empresaId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (Array.isArray(response.data)) {
-        const total = response.data.length;
-        setTotalClientesAtivos(total);
-        console.log(`[Frontend] Total de usuários ativos: ${total}`);
-
-        if (total === 0) {
-          toast.info('Nenhum cliente ativo encontrado nos últimos 2 meses.');
-        }
-
-        return total;
-      } else {
-        console.warn('[Frontend] Resposta inesperada da API:', response.data);
-        toast.error('Erro ao processar os dados de usuários ativos.');
-      }
-
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        console.info('[Frontend] Nenhum usuário ativo encontrado (404).');
-        setTotalClientesAtivos(0);
-        toast.info('Nenhum cliente ativo encontrado nos últimos 2 meses.');
-        return 0;
+  const checkCache = useCallback((key, ttl) => {
+    const cached = localStorage.getItem(key);
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+      if (Date.now() - timestamp < ttl && data) {
+        return data;
       }
     }
-  };
-
-  const fetchTotalAgendamentos = async () => {
-
-    const token = localStorage.getItem('token');
-    const empresaId = localStorage.getItem('empresaId');
-
-    if (!token || !empresaId) {
-      console.warn("[fetchServicosMaisRequisitados] Token ou Empresa ID ausente.");
-      toast.warn("Sessão expirada ou dados de empresa não encontrados. Faça login novamente.");
-      return;
-    }
-
-    try {
-      const response = await api.get(`/api/agendamentos/empresa/${empresaId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (Array.isArray(response.data)) {
-        setTotalAgendamentos(response.data.length);
-        console.log(`[Frontend] Total de agendamentos recebidos: ${response.data.length}`);
-        return response.data.length;
-      } else {
-        console.error('[Frontend] Resposta inesperada da API:', response.data);
-        toast.error('Erro ao processar os dados de agendamento.');
-      }
-
-    } catch (error) {
-      console.error('[Frontend] Erro ao buscar total de agendamentos por empresa:', error);
-      toast.error('Erro ao buscar agendamentos. Tente novamente mais tarde.');
-      setTotalAgendamentos(0);
-      throw error;
-    }
-  };
-
-
-  useEffect(() => {
-    fetchTotalAgendamentos();
-    fetchTotalClientesAtivos();
-    fetchTotalAgendamentosMes();
-    fetchNovosClientes();
-    fetchTaxaCancelamento();
-    fetchServicosMaisRequisitados();
+    return null;
   }, []);
 
-  const fetchNovosClientes = async () => {
+  const setCache = useCallback((key, data) => {
+    localStorage.setItem(key, JSON.stringify({ data, timestamp: Date.now() }));
+  }, []);
 
-    const token = localStorage.getItem('token');
-    const empresaId = localStorage.getItem('empresaId');
+  const clearCache = useCallback((key) => {
+    localStorage.removeItem(key);
+  }, []);
 
-    if (!token || !empresaId) {
-      console.warn("[fetchServicosMaisRequisitados] Token ou Empresa ID ausente.");
-      toast.warn("Sessão expirada ou dados de empresa não encontrados. Faça login novamente.");
-      return;
+  const fetchTotalClientesAtivos = useCallback(async (token, empresaId) => {
+    const cacheKey = `clientesAtivos_${empresaId}`;
+    const cachedData = checkCache(cacheKey, 5 * 60 * 1000);
+    if (cachedData) {
+      setTotalClientesAtivos(cachedData);
+      console.log(`[fetchTotalClientesAtivos] Dados carregados do cache: ${JSON.stringify(cachedData)}`);
+      return cachedData;
     }
 
     try {
-      const response = await api.get(`/api/agendamentos/empresa/novos-clientes-mes-atual/${empresaId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
+      console.log(`[fetchTotalClientesAtivos] Buscando dados do endpoint /api/historico/usuarios-ativos/${empresaId}`);
+      const response = await api.get(`/api/historico/usuarios-ativos/${empresaId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
       });
 
-      const totalClientes = response.data;
-
-      setNovosClientes(totalClientes);
-      console.log("Novos clientes:", totalClientes);
-      return totalClientes;
-
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        toast.info('Nenhum novo cliente encontrado neste mês.');
-        console.log("Nenhum novo cliente encontrado neste mês (404 recebido).");
-        setNovosClientes([]);
-        return [];
+      if (Array.isArray(response.data)) {
+        const data = {
+          count: response.data.length,
+          list: response.data.map(nome => ({ nome: nome || 'Sem nome' }))
+        };
+        setTotalClientesAtivos(data);
+        setCache(cacheKey, data);
+        console.log(`[fetchTotalClientesAtivos] Total de clientes ativos: ${data.count}, Lista: ${JSON.stringify(data.list)}`);
+        if (data.count === 0) {
+          toast.info('Nenhum cliente ativo encontrado nos últimos 2 meses.');
+        }
+        return data;
+      } else {
+        console.warn(`[fetchTotalClientesAtivos] Resposta inesperada: ${JSON.stringify(response.data)}`);
+        toast.error('Erro ao carregar clientes ativos. Tente novamente.');
+        return { count: 0, list: [] };
       }
-      console.error('Erro ao buscar total de agendamentos do mês:', error);
-      toast.error('Erro ao buscar novos clientes. Tente novamente mais tarde.');
-      setNovosClientes(0);
-      throw error;
+    } catch (error) {
+      console.error(`[fetchTotalClientesAtivos] Erro: ${error.message}`);
+      if (error.response?.status === 404) {
+        setTotalClientesAtivos({ count: 0, list: [] });
+        toast.info('Nenhum cliente ativo encontrado nos últimos 2 meses.');
+      } else {
+        toast.error('Erro ao conectar com o servidor. Verifique sua conexão.');
+      }
+      return { count: 0, list: [] };
     }
-  };
+  }, [checkCache, setCache]);
 
-  const fetchTotalAgendamentosMes = async () => {
-
-    const token = localStorage.getItem('token');
-    const empresaId = localStorage.getItem('empresaId');
-
-    if (!token || !empresaId) {
-      console.warn("[fetchServicosMaisRequisitados] Token ou Empresa ID ausente.");
-      toast.warn("Sessão expirada ou dados de empresa não encontrados. Faça login novamente.");
-      return;
+  const fetchTotalAgendamentos = useCallback(async (token, empresaId) => {
+    const cacheKey = `agendamentos_${empresaId}`;
+    const cachedData = checkCache(cacheKey, 5 * 60 * 1000);
+    if (cachedData) {
+      setTotalAgendamentos(cachedData);
+      console.log(`[fetchTotalAgendamentos] Dados carregados do cache: ${cachedData}`);
+      return cachedData;
     }
-
 
     try {
-      const response = await api.get(`/api/agendamentos/empresa/agendamentos-por-mes/${empresaId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
+      console.log(`[fetchTotalAgendamentos] Buscando dados do endpoint /api/agendamentos/empresa/${empresaId}`);
+      const response = await api.get(`/api/agendamentos/empresa/${empresaId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
       });
 
-      console.log("Dados recebidos de agendamentos por mês:", response.data);
+      if (Array.isArray(response.data)) {
+        const count = response.data.length;
+        setTotalAgendamentos(count);
+        setCache(cacheKey, count);
+        console.log(`[fetchTotalAgendamentos] Total de agendamentos: ${count}`);
+        if (count >= 100 && !hasShownSuccessToast) {
+          toast.success('Parabéns! Você atingiu 100 agendamentos hoje! 🎉');
+          setHasShownSuccessToast(true);
+        }
+        return count;
+      } else {
+        console.warn(`[fetchTotalAgendamentos] Resposta inesperada: ${JSON.stringify(response.data)}`);
+        toast.error('Erro ao carregar agendamentos.');
+        return 0;
+      }
+    } catch (error) {
+      console.error(`[fetchTotalAgendamentos] Erro: ${error.message}`);
+      toast.error('Erro ao buscar agendamentos. Tente novamente.');
+      setTotalAgendamentos(0);
+      return 0;
+    }
+  }, [checkCache, setCache, hasShownSuccessToast]);
+
+  const fetchNovosClientes = useCallback(async (token, empresaId) => {
+    const cacheKey = `novosClientes_${empresaId}`;
+    const cachedData = checkCache(cacheKey, 5 * 60 * 1000);
+    if (cachedData) {
+      setNovosClientes(cachedData);
+      console.log(`[fetchNovosClientes] Dados carregados do cache: ${JSON.stringify(cachedData)}`);
+      return cachedData;
+    }
+
+    try {
+      console.log(`[fetchNovosClientes] Buscando dados do endpoint /api/agendamentos/empresa/novos-clientes-mes-atual/${empresaId}`);
+      const response = await api.get(`/api/agendamentos/empresa/novos-clientes-mes-atual/${empresaId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const data = Array.isArray(response.data)
+        ? { count: response.data.length, list: response.data.map(item => ({ nome: item.nome || 'Sem nome', ...item })) }
+        : { count: response.data?.count || 0, list: [] };
+      setNovosClientes(data);
+      setCache(cacheKey, data);
+      console.log(`[fetchNovosClientes] Total de novos clientes: ${data.count}, Lista: ${JSON.stringify(data.list)}`);
+      if (data.count === 0) {
+        toast.info('Nenhum novo cliente registrado este mês.');
+      }
+      return data;
+    } catch (error) {
+      console.error(`[fetchNovosClientes] Erro: ${error.message}`);
+      if (error.response?.status === 404) {
+        toast.info('Nenhum novo cliente registrado este mês.');
+        setNovosClientes({ count: 0, list: [] });
+      } else {
+        toast.error('Erro ao carregar novos clientes.');
+      }
+      return { count: 0, list: [] };
+    }
+  }, [checkCache, setCache]);
+
+  const fetchTotalAgendamentosMes = useCallback(async (token, empresaId) => {
+    const cacheKey = `agendamentosMes_${empresaId}`;
+    clearCache(cacheKey);
+    const cachedData = checkCache(cacheKey, 5 * 60 * 1000);
+    if (cachedData) {
+      setTotalAgendamentosMes(cachedData);
+      console.log(`[fetchTotalAgendamentosMes] Dados carregados do cache: ${JSON.stringify(cachedData)}`);
+      return cachedData;
+    }
+
+    try {
+      console.log(`[fetchTotalAgendamentosMes] Buscando dados do endpoint /api/agendamentos/empresa/agendamentos-por-mes/${empresaId}`);
+      const response = await api.get(`/api/agendamentos/empresa/agendamentos-por-mes/${empresaId}`, {
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+      });
 
       const mesesDoAno = [
         "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
       ];
 
-      const formattedData = mesesDoAno.map(mes => [
-        mes,
-        response.data[mes] || 0
-      ]);
+      const formattedData = mesesDoAno.map(mes => ({
+        month: mes,
+        count: response.data[mes] || 0
+      }));
 
-      const chartData = [['Mês', 'Total Agendamentos'], ...formattedData];
-
-      setTotalAgendamentosMes(chartData);
-
-      console.log("Dados formatados para o gráfico:", chartData);
+      setTotalAgendamentosMes(formattedData);
+      setCache(cacheKey, formattedData);
+      console.log(`[fetchTotalAgendamentosMes] Dados formatados: ${JSON.stringify(formattedData)}`);
+      return formattedData;
     } catch (error) {
-      console.error('Erro ao buscar total de agendamentos do mês:', error);
-      toast.error('Erro ao buscar total de agendamentos do mês. Tente novamente mais tarde.');
+      console.error(`[fetchTotalAgendamentosMes] Erro: ${error.message}`);
+      toast.error('Erro ao carregar agendamentos mensais');
       setTotalAgendamentosMes([]);
+      return [];
     }
-  };
+  }, [checkCache, setCache, clearCache]);
 
-  const fetchServicosMaisRequisitados = async () => {
-
-    const token = localStorage.getItem('token');
-    const empresaId = localStorage.getItem('empresaId');
-
-    if (!token || !empresaId) {
-      console.warn("[fetchServicosMaisRequisitados] Token ou Empresa ID ausente.");
-      toast.warn("Sessão expirada ou dados de empresa não encontrados. Faça login novamente.");
-      return;
+  const fetchServicosMaisRequisitados = useCallback(async (token, empresaId) => {
+    const cacheKey = `servicosRequisitados_${empresaId}`;
+    clearCache(cacheKey);
+    const cachedData = checkCache(cacheKey, 5 * 60 * 1000);
+    if (cachedData) {
+      setServicosMaisRequisitados(cachedData);
+      console.log(`[fetchServicosMaisRequisitados] Dados carregados do cache: ${JSON.stringify(cachedData)}`);
+      return cachedData;
     }
 
     try {
+      console.log(`[fetchServicosMaisRequisitados] Buscando dados do endpoint /api/agendamentos/empresa/servicos-mais-requisitados/${empresaId}`);
       const response = await api.get(`/api/agendamentos/empresa/servicos-mais-requisitados/${empresaId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
       });
 
-      setServicosMaisRequisitados(response.data.map(item => [item.nome, item.quantidade]));
-
-      console.log("Serviços mais requisitados:", response.data);
-    } catch (error) {
-      console.error('Erro ao buscar serviços mais requisitados:', error);
-      toast.error('Erro ao buscar serviços mais requisitados. Tente novamente mais tarde.');
-      setServicosMaisRequisitados([]);
-    }
-  };
-
-  const fetchHorariosPicoAtendimento = async () => {
-
-    const token = localStorage.getItem('token');
-    const empresaId = localStorage.getItem('empresaId');
-
-    if (!token || !empresaId) {
-      console.warn("[fetchHorariosPicoAtendimento] Token ou Empresa ID ausente.");
-      toast.warn("Sessão expirada ou dados de empresa não encontrados. Faça login novamente.");
-      return;
-    }
-
-    try {
-
-      console.log(`[fetchHorariosPicoAtendimento] Buscando horários de pico para empresa ID ${empresaId}...`);
-
-      const response = await api.get(`/api/agendamentos/empresa/horarios-pico/${empresaId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      const horarios = response.data.map(item => [
-        `Hora: ${item[0]}`,
-        item[1],
-      ]);
-      console.log("[fetchHorariosPicoAtendimento] Horários de pico:", horarios);
-      setHorariosPicoAtendimento(horarios);
-      console.log("Horários de pico de atendimento:", horarios);
-    } catch (error) {
-      console.error('Erro ao buscar horários de pico de atendimento:', error);
-      toast.error('Erro ao buscar horários de pico de atendimento. Tente novamente mais tarde.');
-      setHorariosPicoAtendimento([]);
-    }
-  };
-
-  const fetchTaxaCancelamento = async () => {
-
-    const token = localStorage.getItem('token');
-    const empresaId = localStorage.getItem('empresaId');
-
-    if (!token || !empresaId) {
-      console.warn("[fetchTaxaCancelamento] Token ou empresaId não encontrados.");
-      toast.warn("Sessão expirada ou dados da empresa ausentes. Faça login novamente.");
-      return;
-    }
-
-    try {
-      console.log(`[fetchTaxaCancelamento] Buscando taxa de cancelamento para empresa ID ${empresaId}...`);
-
-      const response = await api.get(`/api/historico/cancelados/empresa/${empresaId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      const totalCancelados = response.data;
-
-      if (totalCancelados === 0) {
-        console.info("[fetchTaxaCancelamento] Nenhum cancelamento registrado.");
-        toast.success("Nenhum cancelamento registrado para esta empresa. Ótimo sinal!");
+      if (!Array.isArray(response.data)) {
+        console.warn(`[fetchServicosMaisRequisitados] Resposta inválida: ${JSON.stringify(response.data)}`);
+        toast.error('Dados de serviços mais requisitados inválidos.');
+        setServicosMaisRequisitados([]);
+        return [];
       }
 
-      setTaxaCancelamento(totalCancelados);
-      console.log(`[fetchTaxaCancelamento] Total de cancelamentos: ${totalCancelados}`);
-      return totalCancelados;
-
+      const data = response.data.map(item => ({
+        service: item.nome || 'Sem nome',
+        count: Number(item.quantidade || 0)
+      }));
+      setServicosMaisRequisitados(data);
+      setCache(cacheKey, data);
+      console.log(`[fetchServicosMaisRequisitados] Dados formatados: ${JSON.stringify(data)}`);
+      return data;
     } catch (error) {
-      console.error("[fetchTaxaCancelamento] Erro ao buscar taxa de cancelamento:", error);
-
+      console.error(`[fetchServicosMaisRequisitados] Erro: ${error.message}`);
+      toast.error('Erro ao carregar serviços mais requisitados.');
+      setServicosMaisRequisitados([]);
+      return [];
     }
-  };
+  }, [checkCache, setCache, clearCache]);
+
+  const fetchHorariosPicoAtendimento = useCallback(async (token, empresaId) => {
+    const cacheKey = `horariosPico_${empresaId}`;
+    clearCache(cacheKey);
+    const cachedData = checkCache(cacheKey, 5 * 60 * 1000);
+    if (cachedData) {
+      setHorariosPicoAtendimento(cachedData);
+      console.log(`[fetchHorariosPicoAtendimento] Dados carregados do cache: ${JSON.stringify(cachedData)}`);
+      return cachedData;
+    }
+
+    try {
+      console.log(`[fetchHorariosPicoAtendimento] Buscando dados do endpoint /api/agendamentos/empresa/horarios-pico/${empresaId}`);
+      const response = await api.get(`/api/agendamentos/empresa/horarios-pico/${empresaId}`, {
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+      });
+
+      if (!Array.isArray(response.data)) {
+        console.warn(`[fetchHorariosPicoAtendimento] Resposta inválida: ${JSON.stringify(response.data)}`);
+        toast.error('Dados de horários de pico inválidos.');
+        setHorariosPicoAtendimento([]);
+        return [];
+      }
+
+      const data = response.data.map(item => ({
+        hour: `${Number(item[0]).toString().padStart(2, '0')}:00`,
+        count: Number(item[1] || 0)
+      }));
+      setHorariosPicoAtendimento(data);
+      setCache(cacheKey, data);
+      console.log(`[fetchHorariosPicoAtendimento] Dados formatados: ${JSON.stringify(data)}`);
+      return data;
+    } catch (error) {
+      console.error(`[fetchHorariosPicoAtendimento] Erro: ${error.message}`);
+      toast.error('Erro ao carregar horários de pico.');
+      setHorariosPicoAtendimento([]);
+      return [];
+    }
+  }, [checkCache, setCache, clearCache]);
+
+  const fetchTaxaCancelamento = useCallback(async (token, empresaId) => {
+    const cacheKey = `taxaCancelamento_${empresaId}`;
+    clearCache(cacheKey);
+    const cachedData = checkCache(cacheKey, 5 * 60 * 1000);
+    if (cachedData) {
+      setTaxaCancelamento(cachedData);
+      console.log(`[fetchTaxaCancelamento] Dados carregados do cache: ${cachedData}`);
+      return cachedData;
+    }
+
+    try {
+      console.log(`[fetchTaxaCancelamento] Buscando dados do endpoint /api/historico/cancelados/empresa/${empresaId}`);
+      const response = await api.get(`/api/historico/cancelados/empresa/${empresaId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const totalCancelados = Array.isArray(response.data) ? response.data.length : response.data || 0;
+      setTaxaCancelamento(totalCancelados);
+      setCache(cacheKey, totalCancelados);
+      console.log(`[fetchTaxaCancelamento] Total de cancelamentos: ${totalCancelados}`);
+      if (totalCancelados === 0 && !hasShownNoCancellationToast) {
+        toast.success('Nenhum cancelamento registrado. Ótimo trabalho! 🎉');
+        setHasShownNoCancellationToast(true);
+      }
+      if (totalAgendamentos > 0 && (totalCancelados / totalAgendamentos) * 100 > 10 && !hasShownNoCancellationToast) {
+        toast.warn('Atenção! A taxa de cancelamentos está aumentando. Considere revisar sua política de agendamentos.');
+        setHasShownNoCancellationToast(true);
+      }
+      return totalCancelados;
+    } catch (error) {
+      console.error(`[fetchTaxaCancelamento] Erro: ${error.message}`);
+      toast.error('Erro ao carregar taxa de cancelamento.');
+      setTaxaCancelamento(0);
+      return 0;
+    }
+  }, [checkCache, setCache, clearCache, hasShownNoCancellationToast, totalAgendamentos]);
+
+  const fetchGanhosPrevistos = useCallback(async (token, empresaId) => {
+    const cacheKey = `ganhosPrevistos_${empresaId}`;
+    clearCache(cacheKey);
+    const cachedData = checkCache(cacheKey, 5 * 60 * 1000);
+    if (cachedData) {
+      setGanhosPrevistos(cachedData);
+      console.log(`[fetchGanhosPrevistos] Dados carregados do cache: ${JSON.stringify(cachedData)}`);
+      return cachedData;
+    }
+
+    try {
+      console.log(`[fetchGanhosPrevistos] Buscando dados do endpoint /api/agendamentos/empresa/ganhos/${empresaId}`);
+      const response = await api.get(`/api/agendamentos/empresa/ganhos/${empresaId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      console.log(`[fetchGanhosPrevistos] Resposta crua do backend: ${JSON.stringify(response.data)}`);
+
+      const total = Number(response.data) || 0;
+      const data = { total, monthly: [] };
+
+      setGanhosPrevistos(data);
+      setCache(cacheKey, data);
+      console.log(`[fetchGanhosPrevistos] Ganhos formatados: ${JSON.stringify(data)}`);
+      return data;
+    } catch (error) {
+      console.error(`[fetchGanhosPrevistos] Erro: ${error.message}`);
+      toast.error('Erro ao carregar ganhos previstos.');
+      const fallbackData = { total: 0, monthly: [] };
+      setGanhosPrevistos(fallbackData);
+      setCache(cacheKey, fallbackData);
+      return fallbackData;
+    }
+  }, [checkCache, setCache, clearCache]);
+
+  const fetchMovimentacoes = useCallback(async (token, empresaId) => {
+    const cacheKey = `movimentacoes_${empresaId}`;
+    const cachedData = checkCache(cacheKey, 5 * 60 * 1000);
+    if (cachedData) {
+      setMovimentacoes(cachedData);
+      console.log(`[fetchMovimentacoes] Dados carregados do cache: ${cachedData}`);
+      return cachedData;
+    }
+
+    try {
+      console.log(`[fetchMovimentacoes] Buscando dados do endpoint /api/historico/empresa/listar/${empresaId}`);
+      const response = await api.get(`/api/historico/empresa/listar/${empresaId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const count = Array.isArray(response.data) ? response.data.length : response.data || 0;
+      setMovimentacoes(count);
+      setCache(cacheKey, count);
+      console.log(`[fetchMovimentacoes] Total de movimentações: ${count}`);
+      return count;
+    } catch (error) {
+      console.error(`[fetchMovimentacoes] Erro: ${error.message}`);
+      toast.error('Erro ao carregar movimentações.');
+      setMovimentacoes(0);
+      return 0;
+    }
+  }, [checkCache, setCache]);
+
+  const fetchAgendamentosRealizados = useCallback(async (token) => {
+    const cacheKey = `agendamentosRealizados`;
+    const cachedData = checkCache(cacheKey, 5 * 60 * 1000);
+    if (cachedData) {
+      setAgendamentosRealizados(cachedData);
+      console.log(`[fetchAgendamentosRealizados] Dados carregados do cache: ${cachedData}`);
+      return cachedData;
+    }
+
+    try {
+      console.log(`[fetchAgendamentosRealizados] Buscando dados do endpoint /api/historico/por-status?status=REALIZADO`);
+      const response = await api.get(`/api/historico/por-status?status=REALIZADO`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const count = Array.isArray(response.data) ? response.data.length : response.data || 0;
+      setAgendamentosRealizados(count);
+      setCache(cacheKey, count);
+      console.log(`[fetchAgendamentosRealizados] Total de agendamentos realizados: ${count}`);
+      return count;
+    } catch (error) {
+      console.error(`[fetchAgendamentosRealizados] Erro: ${error.message}`);
+      toast.error('Erro ao carregar agendamentos realizados.');
+      setAgendamentosRealizados(0);
+      return 0;
+    }
+  }, [checkCache, setCache]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      fetchTotalClientesAtivos(token);
-      fetchTotalAgendamentos(token);
-      fetchNovosClientes(token);
-      fetchTotalAgendamentosMes(token);
-      fetchServicosMaisRequisitados(token);
-      fetchHorariosPicoAtendimento(token);
-      fetchTaxaCancelamento(token);
+    const empresaId = localStorage.getItem('empresaId');
+    if (!token || !empresaId) {
+      toast.warn('Sessão expirada! Faça login novamente para continuar.');
+      setLoading(false);
+      return;
     }
-  }, []);
+
+    const fetchAllData = async () => {
+      setLoading(true);
+      try {
+        await Promise.all([
+          fetchTotalClientesAtivos(token, empresaId),
+          fetchTotalAgendamentos(token, empresaId),
+          fetchNovosClientes(token, empresaId),
+          fetchTotalAgendamentosMes(token, empresaId),
+          fetchServicosMaisRequisitados(token, empresaId),
+          fetchHorariosPicoAtendimento(token, empresaId),
+          fetchTaxaCancelamento(token, empresaId),
+          fetchGanhosPrevistos(token, empresaId),
+          fetchMovimentacoes(token, empresaId),
+          fetchAgendamentosRealizados(token)
+        ]);
+      } catch (error) {
+        console.error(`[fetchAllData] Erro ao carregar dados: ${error.message}`);
+        toast.error('Erro ao carregar dados do dashboard.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllData();
+  }, [
+    fetchTotalClientesAtivos,
+    fetchTotalAgendamentos,
+    fetchNovosClientes,
+    fetchTotalAgendamentosMes,
+    fetchServicosMaisRequisitados,
+    fetchHorariosPicoAtendimento,
+    fetchTaxaCancelamento,
+    fetchGanhosPrevistos,
+    fetchMovimentacoes,
+    fetchAgendamentosRealizados
+  ]);
+
+  useEffect(() => {
+    console.log('totalAgendamentosMes:', JSON.stringify(totalAgendamentosMes));
+    console.log('servicosMaisRequisitados:', JSON.stringify(servicosMaisRequisitados));
+    console.log('horariosPicoAtendimento:', JSON.stringify(horariosPicoAtendimento));
+    console.log('totalClientesAtivos:', JSON.stringify(totalClientesAtivos));
+    console.log('ganhosPrevistos:', JSON.stringify(ganhosPrevistos));
+  }, [totalAgendamentosMes, servicosMaisRequisitados, horariosPicoAtendimento, totalClientesAtivos, ganhosPrevistos]);
 
   const renderGrowthBar = (currentValue, previousValue, isCancellation = false) => {
     const growth = currentValue - previousValue;
-    const percentageGrowth = (growth / previousValue) * 100;
+    const percentageGrowth = previousValue ? (growth / previousValue) * 100 : 0;
 
     return (
-      <div className={styles.growthBarContainer}>
+      <div className="w-full bg-gray-200 rounded h-2.5">
         <div
-          className={styles.growthBar}
+          className="h-2.5 rounded"
           style={{
-            width: `${Math.abs(percentageGrowth)}%`,
-            backgroundColor: isCancellation ? 'red' : 'green',
+            width: `${Math.min(Math.abs(percentageGrowth), 100)}%`,
+            backgroundColor: isCancellation ? '#EF4444' : '#10B981'
           }}
         />
       </div>
     );
   };
 
+  const agendamentosMesChartData = {
+    labels: totalAgendamentosMes.map(item => item.month),
+    datasets: [{
+      label: 'Total Agendamentos',
+      data: totalAgendamentosMes.map(item => item.count),
+      borderColor: '#3B82F6',
+      backgroundColor: '#3B82F6',
+      fill: false,
+      tension: 0.1,
+      pointRadius: 4
+    }]
+  };
+
+  const servicosRequisitadosChartData = {
+    labels: servicosMaisRequisitados.map(item => item.service),
+    datasets: [{
+      label: 'Quantidade',
+      data: servicosMaisRequisitados.map(item => item.count),
+      backgroundColor: servicosMaisRequisitados.map(item =>
+        getColor(item.count, Math.max(...servicosMaisRequisitados.map(i => i.count) || [1]))
+      ),
+      borderColor: '#1E3A8A',
+      borderWidth: 1
+    }]
+  };
+
+  const horariosPicoChartData = {
+    labels: horariosPicoAtendimento.map(item => item.hour),
+    datasets: [{
+      label: 'Quantidade',
+      data: horariosPicoAtendimento.map(item => item.count),
+      backgroundColor: horariosPicoAtendimento.map(item =>
+        getColor(item.count, Math.max(...horariosPicoAtendimento.map(i => i.count) || [1]))
+      ),
+      borderColor: '#1E3A8A',
+      borderWidth: 1
+    }]
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      title: { display: false }
+    },
+    scales: {
+      x: {
+        title: { display: true, text: '', color: '#ffffff', font: { size: 10 } },
+        ticks: { color: '#ffffff', font: { size: 10 } }
+      },
+      y: {
+        title: { display: true, text: 'Quantidade', color: '#ffffff', font: { size: 10 } },
+        ticks: { color: '#ffffff', font: { size: 10 } },
+        beginAtZero: true
+      }
+    },
+    animation: { duration: 800, easing: 'easeOutCubic' }
+  };
+
+  if (loading) {
+    return <div className={`${styles.loadingText} text-center p-4`}>Carregando dashboard...</div>;
+  }
+
   return (
-    <div className={styles.bodyD} style={{ overflow: 'hidden', height: '100vh' }}>
-      <div style={{ display: 'flex', height: '100%' }}>
-        <Sidebar isVisible={true} />
-        <div style={{ flex: 1, padding: '20px', overflow: 'hidden' }}>
-          <div className={styles.header}>
-            < Navigation />
-            <h1 className={styles.headerTitle}>Painel de Monitoramento Geral</h1>
-            <div className={styles.headerIcons}>
-              {/* <FaBell className={styles.notificationIcon} /> */}
-            </div>
-          </div>
+    <div className={styles.container}>
+      <Link to="/manual-appointment-admin" className={styles.arrowLink} title="Voltar para Agendamentos">
+        <FaArrowLeft />
+      </Link>
+      <div className={styles.content}>
+        <div className={styles.header}>
+          <Navigation />
+          <h1 className="text-lg font-bold text-white">Painel de Monitoramento Geral</h1>
+          <div>{/* Ícones de notificação ou perfil podem ser adicionados aqui */}</div>
+        </div>
 
-          <div className={styles.dashboardContainer}>
-            <div className={styles.leftDashboards}>
-              {[
-                { title: 'Total Clientes Ativos', value: totalClientesAtivos },
-                { title: 'Total Agendamentos', value: totalAgendamentos },
-                { title: 'Novos Clientes', value: novosClientes },
-                { title: 'Total Agendamentos Cancelados', value: `${taxaCancelamento}` },
-              ].map(({ title, value, range, isCancellation }, index) => (
-                <div className={styles.dashboardCard} key={index}>
-                  <h3>{title}</h3>
-                  <span className={`${styles.dateRange} ${isCancellation ? styles.redDateRange : ''}`}>{range}</span>
-                  <p>{value}</p>
-                  {isCancellation && renderGrowthBar(800, 550, isCancellation)}
+        <div className={styles.kpiGrid}>
+          {[
+            {
+              title: 'Total Clientes Ativos',
+              subtitle: 'Usuários que realizaram agendamentos nos últimos 2 meses',
+              value: totalClientesAtivos.count,
+              icon: <FaUsers />,
+              list: totalClientesAtivos.list
+            },
+            {
+              title: 'Total Agendamentos',
+              subtitle: 'Total de agendamentos registrados na plataforma',
+              value: totalAgendamentos,
+              icon: <FaCalendarCheck />
+            },
+            {
+              title: 'Novos Clientes',
+              subtitle: 'Clientes que realizaram seu primeiro agendamento este mês',
+              value: novosClientes.count,
+              icon: <FaUsers />,
+              list: novosClientes.list
+            },
+            {
+              title: 'Agendamentos Cancelados',
+              subtitle: 'Total de agendamentos cancelados recentemente',
+              value: taxaCancelamento,
+              icon: <FaTimesCircle />,
+              isCancellation: true
+            },
+            {
+              title: 'Ganhos Previstos',
+              subtitle: 'Ganhos previstos nos agendamentos ainda não realizados',
+              value: `R$ ${ganhosPrevistos.total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+              icon: <FaMoneyBillWave />
+            },
+            {
+              title: 'Movimentações',
+              subtitle: 'Movimentações dos usuários dentro do app',
+              value: movimentacoes,
+              icon: <FaExchangeAlt />
+            },
+            {
+              title: 'Atendimentos Realizados',
+              subtitle: 'Total de agendamentos concluídos com sucesso',
+              value: agendamentosRealizados,
+              icon: <FaChartLine />
+            }
+          ].map(({ title, subtitle, value, icon, list, isCancellation }, index) => (
+            <div key={index} className={styles.kpiCard}>
+              <div className="flex items-center space-x-2">
+                <div className="text-white text-2xl">{icon}</div>
+                <div>
+                  <h3 className={styles.kpiTitle}>{title}</h3>
+                  <p className={styles.kpiSubtitle}>{subtitle}</p>
                 </div>
-              ))}
+              </div>
+              <p className={styles.kpiValue}>{value}</p>
+              {list && list.length > 0 && (
+                <details className="mt-2">
+                  <summary className={`${styles.clientListText} text-sm cursor-pointer`}>Ver clientes</summary>
+                  <ul className={`${styles.clientListText} text-sm list-disc pl-5`}>
+                    {list.map((usuario, i) => (
+                      <li key={i}>
+                        {usuario.nome} <button className={`${styles.detailButton} hover:underline`}>Oferecer Desconto</button>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+              {isCancellation && renderGrowthBar(800, 550, true)}
             </div>
+          ))}
+        </div>
 
-            <div className={`${styles.dashboardCardLarge} ${styles.rendaMensalBruta}`} style={{ marginTop: '50px', marginRight: '10px' }}>
-              <h3>Total Agendamentos Mês</h3>
-              <Chart
-                chartType="LineChart"
-                width="100%"
-                height="200px"
-                data={totalAgendamentosMes} // Verifique se é uma matriz 2D
-                options={{
-                  hAxis: { title: 'Mês' },
-                  vAxis: { title: 'Quantidade' },
-                  legend: { position: 'none' },
-                  colors: ['#010726'],
-                  lineWidth: 3,
-                  pointsVisible: true,
-                }}
-              />
-
+        <div className={styles.chartGrid}>
+          {totalAgendamentosMes.length > 0 ? (
+            <ErrorBoundary>
+              <div className={styles.chartCard}>
+                <h3 className={styles.chartTitle}>Total Agendamentos por Mês</h3>
+                <div style={{ height: '200px' }}>
+                  <Line
+                    data={agendamentosMesChartData}
+                    options={{
+                      ...chartOptions,
+                      scales: {
+                        ...chartOptions.scales,
+                        x: { ...chartOptions.scales.x, title: { ...chartOptions.scales.x.title, text: 'Mês' } }
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </ErrorBoundary>
+          ) : (
+            <div className={styles.chartCard}>
+              <h3 className={styles.chartTitle}>Total Agendamentos por Mês</h3>
+              <p className={`${styles.clientListText} text-sm`}>Nenhum dado disponível para exibição.</p>
             </div>
+          )}
 
-
-          </div>
-
-          <div className={styles.dashboardContainer}>
-            {[
-              { title: 'Serviços Mais Requisitados', data: servicosMaisRequisitados, thresholds: { high: 200, medium: 160, down: 80 } },
-              { title: 'Horário de Pico de Atendimento', data: horariosPicoAtendimento, thresholds: { high: 700, medium: 500, down: 300 } },
-            ].map(({ title, data, thresholds }, index) => (
-              <div key={index} className={`${styles.dashboardCardLarge} ${styles.whiteBackground}`}>
-                <h3>{title}</h3>
-                <Chart
-                  chartType="ColumnChart"
-                  width="100%"
-                  height="200px"
-                  data={[
-                    [title, 'Quantidade', { role: 'style' }],
-                    ...data.map(item => [
-                      item[0],
-                      item[1],
-                      getColor(item[1], Math.max(...data.map(i => i[1])))
-                    ]),
-                  ]}
-                  options={{
-                    hAxis: { textStyle: { fontSize: 11 } },
-                    vAxis: { title: 'Quantidade de Agendamentos' },
-                    legend: { position: 'none' },
-                  }}
-                />
-                <div className={styles.kpiContainer}>
+          {servicosMaisRequisitados.length > 0 ? (
+            <ErrorBoundary>
+              <div className={styles.chartCard}>
+                <h3 className={styles.chartTitle}>Serviços Mais Requisitados</h3>
+                <div style={{ height: '200px' }}>
+                  <Bar
+                    data={servicosRequisitadosChartData}
+                    options={{
+                      ...chartOptions,
+                      scales: {
+                        ...chartOptions.scales,
+                        x: { ...chartOptions.scales.x, title: { ...chartOptions.scales.x.title, text: 'Serviço' } }
+                      }
+                    }}
+                  />
+                </div>
+                <div className="flex justify-center mt-1 space-x-2 text-xs">
                   {['Alto', 'Médio', 'Baixo'].map((label, i) => (
-                    <React.Fragment key={label}>
-                      <div className={styles.kpiSquare} style={{ backgroundColor: getKPIColor(Math.max(...data.map(i => i[1])), thresholds) }}></div>
-                      <span>{label}</span>
-                    </React.Fragment>
+                    <div key={label} className="flex items-center">
+                      <div
+                        className="w-2 h-2 rounded"
+                        style={{
+                          backgroundColor: getKPIColor(
+                            Math.max(...servicosMaisRequisitados.map(i => i.count) || [0]),
+                            { high: 10, medium: 5, down: 1 }
+                          )
+                        }}
+                      ></div>
+                      <span className={`${styles.clientListText} ml-1`}>{label}</span>
+                    </div>
                   ))}
                 </div>
               </div>
-            ))}
-          </div>
+            </ErrorBoundary>
+          ) : (
+            <div className={styles.chartCard}>
+              <h3 className={styles.chartTitle}>Serviços Mais Requisitados</h3>
+              <p className={`${styles.clientListText} text-sm`}>Nenhum dado disponível para exibição.</p>
+            </div>
+          )}
 
-
+          {horariosPicoAtendimento.length > 0 ? (
+            <ErrorBoundary>
+              <div className={styles.chartCard}>
+                <h3 className={styles.chartTitle}>Horários de Pico</h3>
+                <div style={{ height: '200px' }}>
+                  <Bar
+                    data={horariosPicoChartData}
+                    options={{
+                      ...chartOptions,
+                      scales: {
+                        ...chartOptions.scales,
+                        x: { ...chartOptions.scales.x, title: { ...chartOptions.scales.x.title, text: 'Hora' } }
+                      }
+                    }}
+                  />
+                </div>
+                <div className="flex justify-center mt-1 space-x-2 text-xs">
+                  {['Alto', 'Médio', 'Baixo'].map((label, i) => (
+                    <div key={label} className="flex items-center">
+                      <div
+                        className="w-2 h-2 rounded"
+                        style={{
+                          backgroundColor: getKPIColor(
+                            Math.max(...horariosPicoAtendimento.map(i => i.count) || [0]),
+                            { high: 8, medium: 4, down: 1 }
+                          )
+                        }}
+                      ></div>
+                      <span className={`${styles.clientListText} ml-1`}>{label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </ErrorBoundary>
+          ) : (
+            <div className={styles.chartCard}>
+              <h3 className={styles.chartTitle}>Horários de Pico</h3>
+              <p className={`${styles.clientListText} text-sm`}>Nenhum dado disponível para exibição.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
