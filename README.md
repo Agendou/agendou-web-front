@@ -28,7 +28,7 @@ NPM ou Yarn
 bash
 Copiar
 Editar
-git clone https://github.com/seu-usuario/agendou-frontend.git
+git clone https://github.com/seu-usuario/agendou-web-front.git
 cd agendou-frontend
 3. Instalar Dependências
 bash
