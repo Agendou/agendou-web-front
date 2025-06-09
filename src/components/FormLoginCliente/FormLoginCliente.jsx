@@ -21,7 +21,7 @@ const FormLogin = ({ switchForm }) => {
         }
 
         try {
-            const response = await api.post('/api/usuarios/login', { email, senha });
+            const response = await api.post('/usuarios/login', { email, senha });
 
             const { token, user } = response.data;
             localStorage.setItem('token', response.data.token);

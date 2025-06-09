@@ -54,7 +54,7 @@ const MerchantInfo = () => {
         toast.error("Você precisa estar logado para acessar essa página");
         return;
       }
-      const response = await api.get(`/api/empresas/listar/${empresaId}`, {
+      const response = await api.get(`/empresas/listar/${empresaId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -89,7 +89,7 @@ const MerchantInfo = () => {
       }
       console.log("Deletando conta:", empresaId);
 
-      const response = await api.delete(`/api/empresas/deletar/${empresaId}`, {
+      const response = await api.delete(`/empresas/deletar/${empresaId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -128,7 +128,7 @@ const MerchantInfo = () => {
     setIsLoading(true);
 
     try {
-      const response = await api.put(`/api/empresas/atualizar/${empresaId}`, perfilAtualizado, {
+      const response = await api.put(`/empresas/atualizar/${empresaId}`, perfilAtualizado, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -54,14 +54,14 @@ const ManualAppointmentAdmin = () => {
                     return;
                 }
 
-                const servicosResponse = await api.get("/api/servicos/listar", {
+                const servicosResponse = await api.get("/servicos/listar", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
                 setServicos(servicosResponse.data);
 
-                const usuariosResponse = await api.get("/api/usuarios/listar", {
+                const usuariosResponse = await api.get("/usuarios/listar", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -83,7 +83,7 @@ const ManualAppointmentAdmin = () => {
         const empresaId = localStorage.getItem('empresaId');
 
         try {
-            const response = await api.get(`/api/agendamentos/empresa/${empresaId}`, {
+            const response = await api.get(`/agendamentos/empresa/${empresaId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -105,7 +105,7 @@ const ManualAppointmentAdmin = () => {
     const fetchAgendamentoById = async (id) => {
         if (selectedAgendamentoId) {
             try {
-                const response = await api.get(`/api/agendamentos/listar/${selectedAgendamentoId}`, {
+                const response = await api.get(`/agendamentos/listar/${selectedAgendamentoId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -159,7 +159,7 @@ const ManualAppointmentAdmin = () => {
 
         try {
             toast.dismiss();
-            const response = await api.post("/api/agendamentos/cadastrar", agendamento, {
+            const response = await api.post("/agendamentos/cadastrar", agendamento, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -201,7 +201,7 @@ const ManualAppointmentAdmin = () => {
 
         try {
             const response = await api.put(
-                `/api/agendamentos/atualizar/${selectedAgendamentoId}`,
+                `/agendamentos/atualizar/${selectedAgendamentoId}`,
                 {
                     fkUsuarioId: formData.usuario,
                     fkServicoId: formData.servico,
@@ -232,7 +232,7 @@ const ManualAppointmentAdmin = () => {
             try {
                 console.log("Deletando agendamento:", selectedAgendamentoId);
 
-                const response = await api.delete(`/api/agendamentos/deletar/${selectedAgendamentoId}`, {
+                const response = await api.delete(`/agendamentos/deletar/${selectedAgendamentoId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

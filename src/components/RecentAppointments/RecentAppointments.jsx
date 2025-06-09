@@ -21,7 +21,7 @@ const RecentAppointments = () => {
     }
 
     try {
-      const response = await api.get(`/api/historico/empresa/listar/${empresaId}`, {
+      const response = await api.get(`/historico/empresa/listar/${empresaId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -56,13 +56,13 @@ const ManualAppointment = () => {
         }
 
         // Buscar serviços
-        const servicosResponse = await api.get('/api/servicos/listar', {
+        const servicosResponse = await api.get('/servicos/listar', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setServicos(servicosResponse.data);
 
         // Buscar empresas
-        const empresasResponse = await api.get('/api/empresas/listar', {
+        const empresasResponse = await api.get('/empresas/listar', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setEmpresas(empresasResponse.data);
@@ -77,7 +77,7 @@ const ManualAppointment = () => {
 
   const fetchAgendamentos = async () => {
     try {
-      const response = await api.get(`/api/agendamentos/usuario/${userId}`, {
+      const response = await api.get(`/agendamentos/usuario/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAgendamentos(response.data);
@@ -89,7 +89,7 @@ const ManualAppointment = () => {
 
   const fetchAgendamentoById = async (id) => {
     try {
-      const response = await api.get(`/api/agendamentos/listar/${id}`, {
+      const response = await api.get(`/agendamentos/listar/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const agendamento = response.data;
@@ -137,7 +137,7 @@ const ManualAppointment = () => {
 
     try {
       toast.dismiss();
-      const response = await api.post('/api/agendamentos/cadastrar', agendamento, {
+      const response = await api.post('/agendamentos/cadastrar', agendamento, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ const ManualAppointment = () => {
   const handleUpdate = async () => {
     try {
       const response = await api.put(
-        `/api/agendamentos/atualizar/${selectedAgendamentoId}`,
+        `/agendamentos/atualizar/${selectedAgendamentoId}`,
         {
           fkUsuarioId: formData.usuario,
           fkServicoId: formData.servico,
@@ -194,7 +194,7 @@ const ManualAppointment = () => {
   const handleDelete = async () => {
     if (!selectedAgendamentoId) return;
     try {
-      await api.delete(`/api/agendamentos/deletar/${selectedAgendamentoId}`, {
+      await api.delete(`/agendamentos/deletar/${selectedAgendamentoId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success('Agendamento cancelado com sucesso!');
